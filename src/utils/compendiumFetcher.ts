@@ -1,0 +1,97 @@
+export interface CompendiumMonster {
+  name: string;
+  source: string;
+  page?: number;
+  action?: Array<{ name: string; entries: any[] }>;
+  trait?: Array<{ name: string; entries: any[] }>;
+  reaction?: Array<{ name: string; entries: any[] }>;
+  legendary?: Array<{ name: string; entries: any[] }>;
+  str?: number;
+  dex?: number;
+  con?: number;
+  int?: number;
+  wis?: number;
+  cha?: number;
+  save?: Record<string, string>;
+}
+
+export interface CompendiumItem {
+  name: string;
+  source: string;
+  dmg1?: string;
+  dmg2?: string;
+  weaponCategory?: string;
+  property?: string[];
+  type?: string; // "M" (Melee), "R" (Ranged), etc.
+}
+
+const BASE_URL = "https://raw.githubusercontent.com/5etools-mirror-3/5etools-src/master/data";
+
+let bestiaryCache: CompendiumMonster[] | null = null;
+let itemsCache: CompendiumItem[] | null = null;
+
+export async function fetchAllMonsters(): Promise<CompendiumMonster[]> {
+  if (bestiaryCache) return bestiaryCache;
+
+  try {
+    // Fetch index to know all files
+    const indexRes = await fetch(`${BASE_URL}/bestiary/index.json`);
+    const indexData = await indexRes.json();
+    
+    // indexData is a map of source -> filename, e.g. "MM": "bestiary-mm.json"
+    const files = Object.values(indexData) as string[];
+    
+    // Fetch all files in parallel
+    const promises = files.map(file => 
+      fetch(`${BASE_URL}/bestiary/${file}`).then(res => res.json())
+    );
+    
+    const results = await Promise.all(promises);
+    
+    // Combine all monsters
+    const allMonsters: CompendiumMonster[] = [];
+    for (const result of results) {
+      if (result.monster && Array.isArray(result.monster)) {
+        allMonsters.push(...result.monster);
+      }
+    }
+    
+    bestiaryCache = allMonsters;
+    return allMonsters;
+  } catch (error) {
+    console.error("Failed to fetch monsters:", error);
+    return [];
+  }
+}
+
+export async function fetchAllItems(): Promise<CompendiumItem[]> {
+  if (itemsCache) return itemsCache;
+
+  try {
+    // Fetch base items and magic items
+    const [baseRes, itemsRes] = await Promise.all([
+      fetch(`${BASE_URL}/items-base.json`),
+      fetch(`${BASE_URL}/items.json`)
+    ]);
+    
+    const baseData = await baseRes.json();
+    const itemsData = await itemsRes.json();
+    
+    const allItems: CompendiumItem[] = [];
+    if (baseData.baseitem && Array.isArray(baseData.baseitem)) {
+      allItems.push(...baseData.baseitem);
+    }
+    if (itemsData.item && Array.isArray(itemsData.item)) {
+      allItems.push(...itemsData.item);
+    }
+    
+    // Filter to only items that have damage
+    const weapons = allItems.filter(i => i.dmg1 || i.dmg2 || i.weaponCategory);
+    
+    itemsCache = weapons;
+    return weapons;
+  } catch (error) {
+    console.error("Failed to fetch items:", error);
+    return [];
+  }
+}
