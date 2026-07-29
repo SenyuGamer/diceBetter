@@ -5,7 +5,6 @@ import Box from "@mui/material/Box";
 
 import { PopoverTray } from "./PopoverTray";
 import { getPluginId } from "./getPluginId";
-import { useSimplify3D } from "./useSimplify3D";
 
 export function PopoverTrays() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -43,10 +42,7 @@ export function PopoverTrays() {
     }
   }
 
-  // Hide popover when no trays are visible
   const hidden = visibleTrays.length === 0;
-  
-  const { simplify } = useSimplify3D();
 
   useEffect(() => {
     if (hidden) {
@@ -54,11 +50,11 @@ export function PopoverTrays() {
       OBR.popover.setWidth(getPluginId("popover"), 0);
     } else {
       // Height = Tray + Name + Bottom
-      OBR.popover.setHeight(getPluginId("popover"), simplify ? 48 : 298);
+      OBR.popover.setHeight(getPluginId("popover"), 298);
       // Width = Tray + Right
       OBR.popover.setWidth(getPluginId("popover"), 266);
     }
-  }, [hidden, simplify]);
+  }, [hidden]);
 
   return (
     <Box
