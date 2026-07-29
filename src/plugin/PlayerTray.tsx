@@ -26,7 +26,6 @@ import { AudioListenerProvider } from "../audio/AudioListenerProvider";
 import { Tray } from "../tray/Tray";
 import { useDebugStore } from "../debug/store";
 import { TraySuspense } from "../tray/TraySuspense";
-import { useSimplify3D } from "./useSimplify3D";
 
 export function PlayerTray({
   player,
@@ -34,46 +33,43 @@ export function PlayerTray({
   player?: Player; // Make player optional to allow for preloading of the tray
 }) {
   const allowOrbit = useDebugStore((state) => state.allowOrbit);
-  const { simplify } = useSimplify3D();
 
   return (
     <Box component="div" position="relative" display="flex">
-      {!simplify && (
-        <Box
-          component="div"
-          borderRadius={0.5}
-          height="100vh"
-          width="calc(100vh / 2)"
-          overflow="hidden"
-          position="relative"
-        >
-          <TraySuspense>
-            <Canvas frameloop="demand">
-              <AudioListenerProvider>
-                <Environment files={environment} />
-                <ContactShadows
-                  resolution={256}
-                  scale={[1, 2]}
-                  position={[0, 0, 0]}
-                  blur={0.5}
-                  opacity={0.5}
-                  far={1}
-                  color="#222222"
-                />
-                <Tray />
-                <PlayerDiceRoll player={player} />
-                <PerspectiveCamera
-                  makeDefault
-                  fov={28}
-                  position={[0, 4.3, 0]}
-                  rotation={[-Math.PI / 2, 0, 0]}
-                />
-                {allowOrbit && <OrbitControls />}
-              </AudioListenerProvider>
-            </Canvas>
-          </TraySuspense>
-        </Box>
-      )}
+      <Box
+        component="div"
+        borderRadius={0.5}
+        height="100vh"
+        width="calc(100vh / 2)"
+        overflow="hidden"
+        position="relative"
+      >
+        <TraySuspense>
+          <Canvas frameloop="demand">
+            <AudioListenerProvider>
+              <Environment files={environment} />
+              <ContactShadows
+                resolution={256}
+                scale={[1, 2]}
+                position={[0, 0, 0]}
+                blur={0.5}
+                opacity={0.5}
+                far={1}
+                color="#222222"
+              />
+              <Tray />
+              <PlayerDiceRoll player={player} />
+              <PerspectiveCamera
+                makeDefault
+                fov={28}
+                position={[0, 4.3, 0]}
+                rotation={[-Math.PI / 2, 0, 0]}
+              />
+              {allowOrbit && <OrbitControls />}
+            </AudioListenerProvider>
+          </Canvas>
+        </TraySuspense>
+      </Box>
       <PlayerTrayResults player={player} />
       <Box
         sx={{

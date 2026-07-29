@@ -77,7 +77,7 @@ export function PopoverTray({
           <Paper
             elevation={8}
             sx={{
-              width: simplify ? "200px" : "250px",
+              width: "250px",
               height: simplify ? "32px" : "282px",
               borderRadius: 2,
               overflow: "hidden",
@@ -116,7 +116,18 @@ export function PopoverTray({
               noWrap
             >
               {player?.name}
-              {finishedRolling && <span> | {finalValue}</span>}
+              {finishedRolling && (
+                <span>
+                  {" | "}
+                  {diceRoll?.bonus ? (
+                    <>
+                      {finalValue} ({finalValue !== null ? finalValue - diceRoll.bonus : 0} {diceRoll.bonus > 0 ? "+" : "-"} {Math.abs(diceRoll.bonus)})
+                    </>
+                  ) : (
+                    finalValue
+                  )}
+                </span>
+              )}
             </Typography>
           </Paper>
         </ButtonBase>

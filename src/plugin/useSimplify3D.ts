@@ -9,23 +9,34 @@ export function useSimplify3D() {
   });
 
   useEffect(() => {
-    const handleStorage = () => {
-      setSimplify(localStorage.getItem(STORAGE_KEY) === "true");
-    };
-    
-    // Listen to storage events from other frames/tabs on same domain
-    window.addEventListener("storage", handleStorage);
-    
-    // Also set up a BroadcastChannel for immediate sync in case storage event is delayed or blocked
     let channel: BroadcastChannel | null = null;
+
     if (window.BroadcastChannel) {
       channel = new BroadcastChannel(getPluginId("simplify-sync"));
+      
       channel.onmessage = (event) => {
-        if (event.data === "sync") {
-          handleStorage();
+        if (event.data && event.data.type === "STATE_UPDATE") {
+          const newValue = Boolean(event.data.value);
+          setSimplify(newValue);
+          localStorage.setItem(STORAGE_KEY, newValue ? "true" : "false");
+        } else if (event.data && event.data.type === "REQUEST_STATE") {
+          // Send our current state back
+          // We read from localStorage to be sure we send the latest committed state
+          const currentVal = localStorage.getItem(STORAGE_KEY) === "true";
+          channel?.postMessage({ type: "STATE_UPDATE", value: currentVal });
         }
       };
+
+      // Request state from other frames just in case our localStorage is partitioned/outdated
+      channel.postMessage({ type: "REQUEST_STATE" });
     }
+
+    const handleStorage = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEY) {
+        setSimplify(e.newValue === "true");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
 
     return () => {
       window.removeEventListener("storage", handleStorage);
@@ -40,7 +51,7 @@ export function useSimplify3D() {
     
     if (window.BroadcastChannel) {
       const channel = new BroadcastChannel(getPluginId("simplify-sync"));
-      channel.postMessage("sync");
+      channel.postMessage({ type: "STATE_UPDATE", value: newValue });
       channel.close();
     }
   };
