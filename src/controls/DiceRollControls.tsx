@@ -333,7 +333,8 @@ function FinishedRollControls() {
           left: 0,
           width: "100%",
           pointerEvents: "none",
-          padding: 3,
+          pt: 3,
+          px: 11,
         }}
         component="div"
       >
