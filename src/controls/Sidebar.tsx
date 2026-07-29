@@ -8,6 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutlineRounded";
 import BookmarkIcon from "@mui/icons-material/BookmarkRounded";
 import MenuBookIcon from "@mui/icons-material/MenuBookRounded";
+import SpeedIcon from "@mui/icons-material/SpeedRounded";
 
 import { DiceSetPicker } from "./DiceSetPicker";
 import { DicePicker } from "./DicePicker";
@@ -24,11 +25,14 @@ import { PluginGate } from "../plugin/PluginGate";
 import { DiceRollSync } from "../plugin/DiceRollSync";
 import { PartyTrays } from "../plugin/PartyTrays";
 import { ResizeObserver as PluginResizeObserver } from "../plugin/ResizeObserver";
+import { useSimplify3D } from "../plugin/useSimplify3D";
 
 export function Sidebar() {
   const [additionsOpen, setAdditionsOpen] = useState(false);
   const [savedRollsOpen, setSavedRollsOpen] = useState(false);
   const [compendiumOpen, setCompendiumOpen] = useState(false);
+
+  const { simplify, toggleSimplify } = useSimplify3D();
 
   return (
     <SimpleBar
@@ -48,6 +52,14 @@ export function Sidebar() {
         <DiceHidden />
         <DiceExtras />
         <DiceHistory />
+        <Tooltip title={simplify ? "Activar modelo 3D para otras tiradas" : "Desactivar modelo 3D para otras tiradas (Mejor rendimiento)"} placement="top" disableInteractive>
+          <IconButton
+            onClick={toggleSimplify}
+            color={simplify ? "primary" : "default"}
+          >
+            <SpeedIcon />
+          </IconButton>
+        </Tooltip>
         <Tooltip title="Tiradas Guardadas" placement="top" disableInteractive>
           <IconButton
             id="saved-rolls-button"
