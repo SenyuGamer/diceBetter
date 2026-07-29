@@ -610,6 +610,22 @@ function SaveCurrentRollForm({
           )}
           disabled={!hasDice}
         />
+        <Autocomplete
+          freeSolo
+          options={["Acciones y Ataques", "Pruebas de Característica", "Tiradas de Salvación", "Armas y Daño"]}
+          value={category}
+          onChange={(_, newValue) => setCategory(newValue || "")}
+          onInputChange={(_, newValue) => setCategory(newValue)}
+          renderInput={(params) => (
+            <TextField 
+              {...params} 
+              label="Categoría (Opcional)" 
+              size="small" 
+              placeholder="Ej. Acciones, Habilidades..." 
+            />
+          )}
+          disabled={!hasDice}
+        />
         <Button
           variant="contained"
           startIcon={<SaveIcon />}
