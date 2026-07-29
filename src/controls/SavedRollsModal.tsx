@@ -28,6 +28,8 @@ import ArrowDownwardIcon from "@mui/icons-material/ArrowDownwardRounded";
 import CheckIcon from "@mui/icons-material/CheckRounded";
 import StarIcon from "@mui/icons-material/StarRounded";
 import StarBorderIcon from "@mui/icons-material/StarBorderRounded";
+import DownloadIcon from "@mui/icons-material/DownloadRounded";
+import UploadIcon from "@mui/icons-material/UploadRounded";
 
 import { SavedRoll, useSavedRollsStore } from "./savedRolls";
 import { useDiceControlsStore, Advantage } from "./store";
@@ -50,6 +52,8 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
     (state) => state.toggleFavoriteGroup
   );
   const editRoll = useSavedRollsStore((state) => state.editRoll);
+  const addGroup = useSavedRollsStore((state) => state.addGroup);
+  const addRoll = useSavedRollsStore((state) => state.addRoll);
 
   const setDiceCounts = useDiceControlsStore((state) => state.setDiceCounts);
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
@@ -81,6 +85,60 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
     setEditGroupValue("");
   }
 
+  function handleExportGroup(groupName: string) {
+    const groupRolls = savedRolls.filter((r) => r.group === groupName);
+    const exportData = {
+      type: "better-dice-mod-pj",
+      version: 1,
+      group: groupName,
+      rolls: groupRolls.map(({ id, ...rest }) => rest), // exclude ids
+    };
+    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${groupName}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target?.result as string;
+        const data = JSON.parse(content);
+        if (data.type !== "better-dice-mod-pj" || !data.group || !Array.isArray(data.rolls)) {
+          alert("Archivo inválido o corrupto.");
+          return;
+        }
+
+        let newGroupName = data.group;
+        let counter = 1;
+        while (groups.includes(newGroupName)) {
+          newGroupName = `${data.group} (${counter})`;
+          counter++;
+        }
+
+        addGroup(newGroupName);
+        data.rolls.forEach((roll: any) => {
+          addRoll({ ...roll, group: newGroupName });
+        });
+      } catch (err) {
+        alert("Error al leer el archivo JSON.");
+      }
+    };
+    reader.readAsText(file);
+    
+    // reset input
+    event.target.value = '';
+  }
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle
@@ -91,9 +149,15 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
         }}
       >
         Tiradas Guardadas
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon />
-        </IconButton>
+        <Stack direction="row" gap={1}>
+          <Button startIcon={<UploadIcon />} size="small" variant="outlined" component="label">
+            Importar PJ
+            <input type="file" hidden accept=".json" onChange={handleImport} />
+          </Button>
+          <IconButton onClick={onClose} size="small">
+            <CloseIcon />
+          </IconButton>
+        </Stack>
       </DialogTitle>
       <DialogContent dividers>
         <Stack gap={2}>
@@ -192,6 +256,17 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                           }}
                         >
                           <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                      <Tooltip title="Exportar grupo">
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleExportGroup(group);
+                          }}
+                        >
+                          <DownloadIcon fontSize="small" />
                         </IconButton>
                       </Tooltip>
                       <Tooltip title="Eliminar grupo">

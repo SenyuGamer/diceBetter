@@ -13,6 +13,8 @@ import Typography from "@mui/material/Typography";
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import HiddenIcon from "@mui/icons-material/VisibilityOffRounded";
 import RollIcon from "@mui/icons-material/ArrowForwardRounded";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesomeRounded";
+import Switch from "@mui/material/Switch";
 
 import { RerollDiceIcon } from "../icons/RerollDiceIcon";
 
@@ -95,6 +97,9 @@ function DicePickedControls() {
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
   const advantage = useDiceControlsStore((state) => state.diceAdvantage);
   const setAdvantage = useDiceControlsStore((state) => state.setDiceAdvantage);
+  const blessActive = useDiceControlsStore((state) => state.blessActive);
+  const blessCount = useDiceControlsStore((state) => state.blessCount);
+  const setBlessActive = useDiceControlsStore((state) => state.setBlessActive);
 
   const resetDiceCounts = useDiceControlsStore(
     (state) => state.resetDiceCounts
@@ -104,7 +109,7 @@ function DicePickedControls() {
 
   function handleRoll() {
     if (hasDice && rollPressTime) {
-      const dice = getDiceToRoll(counts, advantage, diceById);
+      const dice = getDiceToRoll(counts, advantage, diceById, blessActive, blessCount);
       const activeTimeSeconds = (performance.now() - rollPressTime) / 1000;
       const speedMultiplier = Math.max(1, Math.min(10, activeTimeSeconds * 2));
       startRoll({ dice, bonus, hidden }, speedMultiplier);
@@ -262,6 +267,26 @@ function DicePickedControls() {
           >
             <CloseIcon />
           </IconButton>
+        </Tooltip>
+      </Stack>
+      <Stack
+        sx={{
+          position: "absolute",
+          bottom: 12,
+          left: "50%",
+          transform: "translateX(-50%)",
+        }}
+      >
+        <Tooltip title="Bless" disableInteractive>
+          <Stack direction="row" alignItems="center" gap={0.5}>
+            <AutoAwesomeIcon color={blessActive ? "warning" : "inherit"} fontSize="small" />
+            <Switch
+              size="small"
+              color="warning"
+              checked={blessActive}
+              onChange={(e) => setBlessActive(e.target.checked)}
+            />
+          </Stack>
         </Tooltip>
       </Stack>
       <Stack

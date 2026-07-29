@@ -5,6 +5,7 @@ import Box from "@mui/material/Box";
 
 import { PopoverTray } from "./PopoverTray";
 import { getPluginId } from "./getPluginId";
+import { useSimplify3D } from "./useSimplify3D";
 
 export function PopoverTrays() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -14,6 +15,7 @@ export function PopoverTrays() {
   }, []);
   useEffect(() => OBR.party.onChange(setPlayers), []);
 
+  const { simplify } = useSimplify3D();
   const [visibleTrays, setVisibleTrays] = useState<string[]>([]);
 
   useEffect(() => {
@@ -49,12 +51,13 @@ export function PopoverTrays() {
       OBR.popover.setHeight(getPluginId("popover"), 0);
       OBR.popover.setWidth(getPluginId("popover"), 0);
     } else {
-      // Height = Tray + Name + Bottom
-      OBR.popover.setHeight(getPluginId("popover"), 298);
-      // Width = Tray + Right
+      const trayHeight = simplify ? 48 : 298;
+      // Height = (Tray height + Margin 16) * number of trays
+      OBR.popover.setHeight(getPluginId("popover"), visibleTrays.length * trayHeight);
+      // Width = Tray 250 + Margin 16
       OBR.popover.setWidth(getPluginId("popover"), 266);
     }
-  }, [hidden]);
+  }, [hidden, visibleTrays.length, simplify]);
 
   return (
     <Box
@@ -66,14 +69,20 @@ export function PopoverTrays() {
       top="0"
       overflow="hidden"
     >
-      {players.map((player) => (
-        <PopoverTray
-          key={player.connectionId}
-          player={player}
-          onToggle={handleTrayToggle}
-          onOpen={handleTrayOpen}
-        />
-      ))}
+      {players.map((player) => {
+        const index = visibleTrays.indexOf(player.connectionId);
+        const trayHeight = simplify ? 48 : 298;
+        const bottomOffset = index !== -1 ? 16 + index * trayHeight : 16;
+        return (
+          <PopoverTray
+            key={player.connectionId}
+            player={player}
+            onToggle={handleTrayToggle}
+            onOpen={handleTrayOpen}
+            bottomOffset={bottomOffset}
+          />
+        );
+      })}
     </Box>
   );
 }

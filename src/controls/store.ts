@@ -19,6 +19,8 @@ interface DiceControlsState {
   diceHidden: boolean;
   diceRollPressTime: number | null;
   fairnessTesterOpen: boolean;
+  blessActive: boolean;
+  blessCount: number;
   changeDiceSet: (diceSet: DiceSet) => void;
   resetDiceCounts: () => void;
   setDiceCounts: (counts: DiceCounts, savedDiceById?: Record<string, Die>) => void;
@@ -30,6 +32,8 @@ interface DiceControlsState {
   toggleDiceHidden: () => void;
   setDiceRollPressTime: (time: number | null) => void;
   toggleFairnessTester: () => void;
+  setBlessActive: (active: boolean) => void;
+  setBlessCount: (count: number) => void;
 }
 
 const initialSet = diceSets[0];
@@ -47,6 +51,8 @@ export const useDiceControlsStore = create<DiceControlsState>()(
     diceHidden: false,
     diceRollPressTime: null,
     fairnessTesterOpen: false,
+    blessActive: false,
+    blessCount: 1,
     changeDiceSet(diceSet) {
       set((state) => {
         const counts: DiceCounts = {};
@@ -141,6 +147,16 @@ export const useDiceControlsStore = create<DiceControlsState>()(
         state.fairnessTesterOpen = !state.fairnessTesterOpen;
       });
     },
+    setBlessActive(active) {
+      set((state) => {
+        state.blessActive = active;
+      });
+    },
+    setBlessCount(count) {
+      set((state) => {
+        state.blessCount = count;
+      });
+    },
   }))
 );
 
@@ -164,15 +180,25 @@ function getDiceByIdFromSet(diceSet: DiceSet) {
 export function getDiceToRoll(
   counts: DiceCounts,
   advantage: Advantage,
-  diceById: Record<string, Die>
+  diceById: Record<string, Die>,
+  blessActive?: boolean,
+  blessCount?: number
 ) {
   const dice: (Die | Dice)[] = [];
   const countEntries = Object.entries(counts);
+  let d4DieStyle: any = null;
+  
   for (const [id, count] of countEntries) {
     const die = diceById[id];
     if (!die) {
       continue;
     }
+    
+    // Find a D4 style to use for bless
+    if (die.type === "D4") {
+      d4DieStyle = die.style;
+    }
+    
     const { style, type } = die;
     for (let i = 0; i < count; i++) {
       if (advantage === null) {
@@ -221,5 +247,30 @@ export function getDiceToRoll(
       }
     }
   }
+
+  // Handle Bless injections
+  if (blessActive && blessCount && blessCount > 0) {
+    // If we didn't find a d4 style in the selected dice, find one in the set or use a fallback
+    if (!d4DieStyle) {
+      const anyD4 = Object.values(diceById).find(d => d.type === "D4");
+      d4DieStyle = anyD4 ? anyD4.style : "GALAXY"; // fallback style if none found
+    }
+    
+    for (let i = 0; i < blessCount; i++) {
+      if (advantage === null) {
+        dice.push({ id: generateDiceId(), style: d4DieStyle, type: "D4" });
+      } else {
+        const combination = advantage === "ADVANTAGE" ? "HIGHEST" : "LOWEST";
+        dice.push({
+          dice: [
+            { id: generateDiceId(), style: d4DieStyle, type: "D4" },
+            { id: generateDiceId(), style: d4DieStyle, type: "D4" },
+          ],
+          combination,
+        });
+      }
+    }
+  }
+
   return dice;
 }

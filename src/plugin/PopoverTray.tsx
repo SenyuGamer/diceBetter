@@ -17,20 +17,24 @@ import { AudioListenerProvider } from "../audio/AudioListenerProvider";
 import { Tray } from "../tray/Tray";
 import { TraySuspense } from "../tray/TraySuspense";
 import { AnimatedPlayerCamera } from "./AnimatedPlayerCamera";
+import { useSimplify3D } from "./useSimplify3D";
 
 export function PopoverTray({
   player,
   onToggle,
   onOpen,
+  bottomOffset,
 }: {
   player: Player;
   onToggle: (connectionId: string, show: boolean) => void;
   onOpen: (connectionId: string) => void;
+  bottomOffset?: number;
 }) {
   const { diceRoll, finalValue, finishedRolling, finishedRollTransforms } =
     usePlayerDice(player);
 
   const theme = useTheme();
+  const { simplify } = useSimplify3D();
 
   const hidden = !diceRoll || diceRoll.hidden;
 
@@ -64,7 +68,7 @@ export function PopoverTray({
   }
 
   return (
-    <Box component="div" position="absolute" right={16} bottom={16}>
+    <Box component="div" position="absolute" right={16} bottom={bottomOffset ?? 16} sx={{ transition: 'bottom 0.3s' }}>
       <Slide
         in={shown}
         onExited={() => onToggle(player.connectionId, false)}
@@ -75,7 +79,7 @@ export function PopoverTray({
             elevation={8}
             sx={{
               width: "250px",
-              height: "282px",
+              height: simplify ? "32px" : "282px",
               borderRadius: 2,
               overflow: "hidden",
               backgroundColor:
@@ -84,22 +88,24 @@ export function PopoverTray({
                   : "rgba(255, 255, 255, 0.4)",
             }}
           >
-            <Box component="div" height="250px" width="250px">
-              <TraySuspense>
-                <Canvas frameloop="demand">
-                  <AudioListenerProvider volume={0.25}>
-                    <Environment files={environment} />
-                    <Tray />
-                    <PlayerDiceRoll player={player} />
-                    <AnimatedPlayerCamera
-                      rollTransforms={
-                        finishedRolling ? finishedRollTransforms : undefined
-                      }
-                    />
-                  </AudioListenerProvider>
-                </Canvas>
-              </TraySuspense>
-            </Box>
+            {!simplify && (
+              <Box component="div" height="250px" width="250px">
+                <TraySuspense>
+                  <Canvas frameloop="demand">
+                    <AudioListenerProvider volume={0.25}>
+                      <Environment files={environment} />
+                      <Tray />
+                      <PlayerDiceRoll player={player} />
+                      <AnimatedPlayerCamera
+                        rollTransforms={
+                          finishedRolling ? finishedRollTransforms : undefined
+                        }
+                      />
+                    </AudioListenerProvider>
+                  </Canvas>
+                </TraySuspense>
+              </Box>
+            )}
             <Typography
               variant="subtitle1"
               color="text.secondary"
