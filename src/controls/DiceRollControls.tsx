@@ -278,15 +278,12 @@ function DicePickedControls() {
         }}
       >
         <Tooltip title="Bless" disableInteractive>
-          <Stack direction="row" alignItems="center" gap={0.5}>
-            <AutoAwesomeIcon color={blessActive ? "warning" : "inherit"} fontSize="small" />
-            <Switch
-              size="small"
-              color="warning"
-              checked={blessActive}
-              onChange={(e) => setBlessActive(e.target.checked)}
-            />
-          </Stack>
+          <IconButton
+            onClick={() => setBlessActive(!blessActive)}
+            sx={{ color: blessActive ? "warning.main" : "inherit" }}
+          >
+            <AutoAwesomeIcon />
+          </IconButton>
         </Tooltip>
       </Stack>
       <Stack
