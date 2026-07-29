@@ -13,6 +13,7 @@ export interface CompendiumMonster {
   wis?: number;
   cha?: number;
   save?: Record<string, string>;
+  skill?: Record<string, string>;
 }
 
 export interface CompendiumItem {
@@ -114,20 +115,16 @@ export async function fetchHomebrewMonsters(): Promise<CompendiumMonster[]> {
     );
     const allMonsters: CompendiumMonster[] = [];
     
-    const chunkSize = 15;
-    for (let i = 0; i < monsterFiles.length; i += chunkSize) {
-      const chunk = monsterFiles.slice(i, i + chunkSize);
-      const promises = chunk.map(file => {
-        // Encode URI to handle spaces and semicolons correctly
-        const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
-        return fetch(url).then(res => res.json()).catch(() => ({}));
-      });
-      
-      const results = await Promise.all(promises);
-      for (const result of results) {
-        if (result.monster && Array.isArray(result.monster)) {
-          allMonsters.push(...result.monster);
-        }
+    const promises = monsterFiles.map(file => {
+      // Encode URI to handle spaces and semicolons correctly
+      const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
+      return fetch(url).then(res => res.json()).catch(() => ({}));
+    });
+    
+    const results = await Promise.all(promises);
+    for (const result of results) {
+      if (result.monster && Array.isArray(result.monster)) {
+        allMonsters.push(...result.monster);
       }
     }
     
@@ -153,19 +150,15 @@ export async function fetchHomebrewItems(): Promise<CompendiumItem[]> {
     );
     const allItems: CompendiumItem[] = [];
     
-    const chunkSize = 15;
-    for (let i = 0; i < itemFiles.length; i += chunkSize) {
-      const chunk = itemFiles.slice(i, i + chunkSize);
-      const promises = chunk.map(file => {
-        const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
-        return fetch(url).then(res => res.json()).catch(() => ({}));
-      });
-      
-      const results = await Promise.all(promises);
-      for (const result of results) {
-        if (result.item && Array.isArray(result.item)) {
-          allItems.push(...result.item);
-        }
+    const promises = itemFiles.map(file => {
+      const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
+      return fetch(url).then(res => res.json()).catch(() => ({}));
+    });
+    
+    const results = await Promise.all(promises);
+    for (const result of results) {
+      if (result.item && Array.isArray(result.item)) {
+        allItems.push(...result.item);
       }
     }
     

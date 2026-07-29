@@ -65,7 +65,7 @@ export function parseMonster(monster: CompendiumMonster, availableDice: Die[]): 
               counts: { [d20.id]: 1 },
               bonus,
               diceById: { [d20.id]: d20 },
-              category: "Acciones y Ataques",
+              category: "attack",
             });
             actionNames.add(atkName);
           }
@@ -80,7 +80,7 @@ export function parseMonster(monster: CompendiumMonster, availableDice: Die[]): 
         if (parsed) {
           const suffix = diceMatches.length > 1 ? ` (Daño ${dmgIdx++})` : ` (Daño)`;
           parsed.name = `${action.name}${suffix}`;
-          parsed.category = "Acciones y Ataques";
+          parsed.category = "damage";
           
           if (!actionNames.has(parsed.name)) {
             actions.push(parsed);
@@ -118,7 +118,7 @@ export function parseMonster(monster: CompendiumMonster, availableDice: Die[]): 
           counts: { [d20.id]: 1 },
           bonus: mod,
           diceById: { [d20.id]: d20 },
-          category: "Pruebas de Característica",
+          category: "check",
         });
 
         // Tirada de Salvación (Save)
@@ -137,8 +137,24 @@ export function parseMonster(monster: CompendiumMonster, availableDice: Die[]): 
           counts: { [d20.id]: 1 },
           bonus: saveBonus,
           diceById: { [d20.id]: d20 },
-          category: "Tiradas de Salvación",
+          category: "save",
         });
+      }
+    }
+
+    if (monster.skill) {
+      for (const [skillName, bonusStr] of Object.entries(monster.skill)) {
+        const parsedBonus = parseInt(bonusStr.replace("+", ""));
+        if (!isNaN(parsedBonus)) {
+          const name = skillName.charAt(0).toUpperCase() + skillName.slice(1);
+          actions.push({
+            name: name,
+            counts: { [d20.id]: 1 },
+            bonus: parsedBonus,
+            diceById: { [d20.id]: d20 },
+            category: "skill",
+          });
+        }
       }
     }
   }
@@ -153,7 +169,7 @@ export function parseItem(item: CompendiumItem, availableDice: Die[]): ParsedAct
     const parsed = parseDiceString(item.dmg1, availableDice);
     if (parsed) {
       parsed.name = `${item.name} (Daño)`;
-      parsed.category = "Armas y Daño";
+      parsed.category = "damage";
       actions.push(parsed);
     }
   }
@@ -162,7 +178,7 @@ export function parseItem(item: CompendiumItem, availableDice: Die[]): ParsedAct
     const parsed = parseDiceString(item.dmg2, availableDice);
     if (parsed) {
       parsed.name = `${item.name} (Versátil / 2M)`;
-      parsed.category = "Armas y Daño";
+      parsed.category = "damage";
       actions.push(parsed);
     }
   }

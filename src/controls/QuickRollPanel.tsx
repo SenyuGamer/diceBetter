@@ -88,11 +88,46 @@ function QuickRollGroup({
       </Typography>
 
       {/* Categorized rendering */}
-      {renderCategory("Ataques", rolls.filter(r => r.category === "attack"))}
-      {renderCategory("Daño", rolls.filter(r => r.category === "damage"))}
-      {renderCategory("Salvación", rolls.filter(r => r.category === "save"))}
-      {renderCategory("Habilidad", rolls.filter(r => r.category === "skill"))}
-      {renderCategory("Otros", rolls.filter(r => !r.category || r.category === "other"))}
+      {(() => {
+        const knownMapping: Record<string, string> = {
+          "attack": "Ataques",
+          "Acciones y Ataques": "Ataques",
+          "Ataques": "Ataques",
+          "damage": "Daño",
+          "Armas y Daño": "Daño",
+          "skill": "Habilidades",
+          "save": "Salvación",
+          "Tiradas de Salvación": "Salvación",
+          "check": "Atributos",
+          "Pruebas de Característica": "Atributos",
+          "other": "Otros",
+        };
+
+        const groupedRolls: Record<string, SavedRoll[]> = {};
+        for (const roll of rolls) {
+          let cat = roll.category || "Otros";
+          if (knownMapping[cat]) {
+            cat = knownMapping[cat];
+          }
+          if (!groupedRolls[cat]) {
+            groupedRolls[cat] = [];
+          }
+          groupedRolls[cat].push(roll);
+        }
+
+        const standardOrder = ["Ataques", "Daño", "Salvación", "Habilidades", "Atributos"];
+        const customCategories = Object.keys(groupedRolls)
+          .filter(c => !standardOrder.includes(c) && c !== "Otros")
+          .sort();
+
+        return (
+          <>
+            {standardOrder.map(cat => groupedRolls[cat] ? renderCategory(cat, groupedRolls[cat]) : null)}
+            {customCategories.map(cat => renderCategory(cat, groupedRolls[cat]))}
+            {groupedRolls["Otros"] ? renderCategory("Otros", groupedRolls["Otros"]) : null}
+          </>
+        );
+      })()}
 
       <Box
         component="div"
