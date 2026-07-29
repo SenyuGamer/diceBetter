@@ -26,9 +26,13 @@ export interface CompendiumItem {
 }
 
 const BASE_URL = "https://raw.githubusercontent.com/5etools-mirror-3/5etools-src/master/data";
+const HOMEBREW_BASE_URL = "https://raw.githubusercontent.com/TheGiddyLimit/homebrew/master";
 
 let bestiaryCache: CompendiumMonster[] | null = null;
 let itemsCache: CompendiumItem[] | null = null;
+
+let homebrewBestiaryCache: CompendiumMonster[] | null = null;
+let homebrewItemsCache: CompendiumItem[] | null = null;
 
 export async function fetchAllMonsters(): Promise<CompendiumMonster[]> {
   if (bestiaryCache) return bestiaryCache;
@@ -95,3 +99,71 @@ export async function fetchAllItems(): Promise<CompendiumItem[]> {
     return [];
   }
 }
+
+export async function fetchHomebrewMonsters(): Promise<CompendiumMonster[]> {
+  if (homebrewBestiaryCache) return homebrewBestiaryCache;
+
+  try {
+    const indexRes = await fetch(`${HOMEBREW_BASE_URL}/_generated/index-props.json`);
+    const indexData = await indexRes.json();
+    
+    const monsterFiles = Object.keys(indexData.monster || {});
+    const allMonsters: CompendiumMonster[] = [];
+    
+    const chunkSize = 15;
+    for (let i = 0; i < monsterFiles.length; i += chunkSize) {
+      const chunk = monsterFiles.slice(i, i + chunkSize);
+      const promises = chunk.map(file => 
+        fetch(`${HOMEBREW_BASE_URL}/${file}`).then(res => res.json()).catch(() => ({}))
+      );
+      
+      const results = await Promise.all(promises);
+      for (const result of results) {
+        if (result.monster && Array.isArray(result.monster)) {
+          allMonsters.push(...result.monster);
+        }
+      }
+    }
+    
+    homebrewBestiaryCache = allMonsters;
+    return allMonsters;
+  } catch (error) {
+    console.error("Failed to fetch homebrew monsters:", error);
+    return [];
+  }
+}
+
+export async function fetchHomebrewItems(): Promise<CompendiumItem[]> {
+  if (homebrewItemsCache) return homebrewItemsCache;
+
+  try {
+    const indexRes = await fetch(`${HOMEBREW_BASE_URL}/_generated/index-props.json`);
+    const indexData = await indexRes.json();
+    
+    const itemFiles = Object.keys(indexData.item || {});
+    const allItems: CompendiumItem[] = [];
+    
+    const chunkSize = 15;
+    for (let i = 0; i < itemFiles.length; i += chunkSize) {
+      const chunk = itemFiles.slice(i, i + chunkSize);
+      const promises = chunk.map(file => 
+        fetch(`${HOMEBREW_BASE_URL}/${file}`).then(res => res.json()).catch(() => ({}))
+      );
+      
+      const results = await Promise.all(promises);
+      for (const result of results) {
+        if (result.item && Array.isArray(result.item)) {
+          allItems.push(...result.item);
+        }
+      }
+    }
+    
+    const weapons = allItems.filter(i => i.dmg1 || i.dmg2 || i.weaponCategory);
+    homebrewItemsCache = weapons;
+    return weapons;
+  } catch (error) {
+    console.error("Failed to fetch homebrew items:", error);
+    return [];
+  }
+}
+

@@ -14,11 +14,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Tooltip from "@mui/material/Tooltip";
 import Snackbar from "@mui/material/Snackbar";
 import Alert from "@mui/material/Alert";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Switch from "@mui/material/Switch";
 
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import AddIcon from "@mui/icons-material/AddRounded";
 
-import { fetchAllMonsters, fetchAllItems, CompendiumMonster, CompendiumItem } from "../utils/compendiumFetcher";
+import { fetchAllMonsters, fetchAllItems, fetchHomebrewMonsters, fetchHomebrewItems, CompendiumMonster, CompendiumItem } from "../utils/compendiumFetcher";
 import { parseMonster, parseItem } from "../utils/compendiumParser";
 import { useSavedRollsStore } from "./savedRolls";
 import { useDiceControlsStore } from "./store";
@@ -34,6 +36,12 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
   
   const [monsters, setMonsters] = useState<CompendiumMonster[]>([]);
   const [items, setItems] = useState<CompendiumItem[]>([]);
+  
+  const [includeHomebrew, setIncludeHomebrew] = useState(false);
+  const [homebrewMonsters, setHomebrewMonsters] = useState<CompendiumMonster[]>([]);
+  const [homebrewItems, setHomebrewItems] = useState<CompendiumItem[]>([]);
+  const [loadingHomebrew, setLoadingHomebrew] = useState(false);
+  
   const [loading, setLoading] = useState(false);
   const [snackbar, setSnackbar] = useState<{ open: boolean; message: string; severity: "success" | "warning" }>({ open: false, message: "", severity: "success" });
 
@@ -61,21 +69,50 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
     }
   }, [open]);
 
+  useEffect(() => {
+    if (includeHomebrew && homebrewMonsters.length === 0 && homebrewItems.length === 0) {
+      let isMounted = true;
+      setLoadingHomebrew(true);
+      
+      Promise.all([fetchHomebrewMonsters(), fetchHomebrewItems()])
+        .then(([m, i]) => {
+          if (isMounted) {
+            setHomebrewMonsters(m);
+            setHomebrewItems(i);
+            setLoadingHomebrew(false);
+          }
+        })
+        .catch(() => {
+          if (isMounted) setLoadingHomebrew(false);
+        });
+        
+      return () => { isMounted = false; };
+    }
+  }, [includeHomebrew]);
+
+  const allMonstersToSearch = useMemo(() => {
+    return includeHomebrew ? [...monsters, ...homebrewMonsters] : monsters;
+  }, [monsters, homebrewMonsters, includeHomebrew]);
+
+  const allItemsToSearch = useMemo(() => {
+    return includeHomebrew ? [...items, ...homebrewItems] : items;
+  }, [items, homebrewItems, includeHomebrew]);
+
   const filteredMonsters = useMemo(() => {
     if (tab !== 0 || !query.trim()) return [];
     const q = query.toLowerCase();
-    return monsters
+    return allMonstersToSearch
       .filter((m) => m.name.toLowerCase().includes(q))
       .slice(0, 50); // limit to 50 for performance
-  }, [monsters, query, tab]);
+  }, [allMonstersToSearch, query, tab]);
 
   const filteredItems = useMemo(() => {
     if (tab !== 1 || !query.trim()) return [];
     const q = query.toLowerCase();
-    return items
+    return allItemsToSearch
       .filter((i) => i.name.toLowerCase().includes(q))
       .slice(0, 50);
-  }, [items, query, tab]);
+  }, [allItemsToSearch, query, tab]);
 
   function handleAddMonster(m: CompendiumMonster) {
     const actions = parseMonster(m, availableDice);
@@ -150,11 +187,27 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
             size="small"
           />
 
-          {loading ? (
+          <FormControlLabel
+            control={
+              <Switch
+                size="small"
+                checked={includeHomebrew}
+                onChange={(e) => setIncludeHomebrew(e.target.checked)}
+              />
+            }
+            label={
+              <Typography variant="body2" color="text.secondary">
+                Incluir Homebrew de TheGiddyLimit (experimental, ~60MB de descarga)
+              </Typography>
+            }
+            sx={{ ml: 0 }}
+          />
+
+          {loading || loadingHomebrew ? (
             <Stack alignItems="center" py={4}>
               <CircularProgress />
               <Typography variant="body2" color="text.secondary" mt={2}>
-                Descargando base de datos por primera vez...
+                {loadingHomebrew ? "Descargando base de datos Homebrew..." : "Descargando base de datos por primera vez..."}
               </Typography>
             </Stack>
           ) : !query.trim() ? (
