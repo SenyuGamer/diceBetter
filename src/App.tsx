@@ -16,7 +16,7 @@ export function App() {
       {/* Left Sidebar - Floating with glassmorphism */}
       <div style={{ 
         position: "absolute", top: 0, left: 0, height: "100%", zIndex: 10,
-        backgroundColor: "rgba(30, 34, 49, 0.4)",
+        backgroundColor: "rgba(30, 34, 49, 0.1)",
         backdropFilter: "blur(8px)",
         borderRight: "1px solid rgba(255, 255, 255, 0.1)"
       }}>
@@ -26,7 +26,7 @@ export function App() {
       {/* Right Quick Rolls - Floating with glassmorphism */}
       <div style={{ 
         position: "absolute", top: 0, right: 0, height: "100%", zIndex: 10,
-        backgroundColor: "rgba(30, 34, 49, 0.4)",
+        backgroundColor: "rgba(30, 34, 49, 0.1)",
         backdropFilter: "blur(8px)",
         borderLeft: "1px solid rgba(255, 255, 255, 0.1)"
       }}>
