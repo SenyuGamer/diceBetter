@@ -130,12 +130,12 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
         </Stack>
       </DialogTitle>
 
-      <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+      <div style={{ borderBottom: "1px solid rgba(255, 255, 255, 0.12)" }}>
         <Tabs value={tab} onChange={(_, v) => setTab(v)} variant="fullWidth">
           <Tab label="Monstruos" />
           <Tab label="Objetos / Armas" />
         </Tabs>
-      </Box>
+      </div>
 
       <DialogContent sx={{ minHeight: "400px" }}>
         <Stack gap={2}>

@@ -331,7 +331,7 @@ function SavedRollChip({
 
   if (isEditing) {
     return (
-      <Box p={1} sx={{ border: 1, borderColor: "divider", borderRadius: 1 }}>
+      <div style={{ padding: 8, border: "1px solid rgba(255,255,255,0.12)", borderRadius: 4 }}>
         <Stack gap={1}>
           <TextField
             size="small"
@@ -374,7 +374,7 @@ function SavedRollChip({
             </Button>
           </Stack>
         </Stack>
-      </Box>
+      </div>
     );
   }
 
@@ -395,20 +395,17 @@ function SavedRollChip({
       label={
         <Stack direction="row" alignItems="center" gap={1} flexWrap="wrap" pr={6}>
           <Tooltip title="Cargar Tirada Normal" disableInteractive>
-            <Box 
+            <div 
               onClick={() => onLoad(null)} 
-              sx={{ 
+              style={{ 
                 display: 'flex', 
                 alignItems: 'center', 
                 cursor: 'pointer', 
-                bgcolor: 'background.paper',
-                border: 1,
-                borderColor: 'divider',
-                borderRadius: 1,
-                px: 1,
-                py: 0.5,
+                backgroundColor: 'rgba(255, 255, 255, 0.04)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                borderRadius: '4px',
+                padding: '4px 8px',
                 flexGrow: 1,
-                '&:hover': { bgcolor: 'action.hover' } 
               }}
             >
               <Typography variant="body2" fontWeight="bold" mr={1}>
@@ -434,7 +431,7 @@ function SavedRollChip({
                   {roll.bonus}
                 </Typography>
               )}
-            </Box>
+            </div>
           </Tooltip>
 
           <Stack direction="row" alignItems="center" gap={0.5}>
@@ -447,7 +444,7 @@ function SavedRollChip({
                   color: "white", 
                   width: 24, height: 24,
                   "&:hover": { bgcolor: "success.main" }
-                }}
+                } as any}
               >
                 <ArrowUpwardIcon sx={{ fontSize: 16 }} />
               </IconButton>
@@ -462,7 +459,7 @@ function SavedRollChip({
                   color: "white", 
                   width: 24, height: 24,
                   "&:hover": { bgcolor: "error.main" }
-                }}
+                } as any}
               >
                 <ArrowDownwardIcon sx={{ fontSize: 16 }} />
               </IconButton>
@@ -548,13 +545,7 @@ function SaveCurrentRollForm({
   }
 
   return (
-    <Box
-      sx={{
-        p: 2,
-        borderRadius: 1,
-        bgcolor: "action.hover",
-      }}
-    >
+    <div style={{ padding: 16, borderRadius: 4, backgroundColor: "rgba(255,255,255,0.08)" }}>
       <Typography variant="subtitle2" gutterBottom>
         Guardar tirada actual
       </Typography>
@@ -629,6 +620,6 @@ function SaveCurrentRollForm({
           Guardar
         </Button>
       </Stack>
-    </Box>
+      </div>
   );
 }
