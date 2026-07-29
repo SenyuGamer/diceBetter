@@ -107,15 +107,21 @@ export async function fetchHomebrewMonsters(): Promise<CompendiumMonster[]> {
     const indexRes = await fetch(`${HOMEBREW_BASE_URL}/_generated/index-props.json`);
     const indexData = await indexRes.json();
     
-    const monsterFiles = Object.keys(indexData.monster || {});
+    // Only include files from specific folders to reduce payload size
+    const allowedPrefixes = ["creature/", "collection/"];
+    const monsterFiles = Object.keys(indexData.monster || {}).filter(file => 
+      allowedPrefixes.some(prefix => file.startsWith(prefix))
+    );
     const allMonsters: CompendiumMonster[] = [];
     
     const chunkSize = 15;
     for (let i = 0; i < monsterFiles.length; i += chunkSize) {
       const chunk = monsterFiles.slice(i, i + chunkSize);
-      const promises = chunk.map(file => 
-        fetch(`${HOMEBREW_BASE_URL}/${file}`).then(res => res.json()).catch(() => ({}))
-      );
+      const promises = chunk.map(file => {
+        // Encode URI to handle spaces and semicolons correctly
+        const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
+        return fetch(url).then(res => res.json()).catch(() => ({}));
+      });
       
       const results = await Promise.all(promises);
       for (const result of results) {
@@ -140,15 +146,20 @@ export async function fetchHomebrewItems(): Promise<CompendiumItem[]> {
     const indexRes = await fetch(`${HOMEBREW_BASE_URL}/_generated/index-props.json`);
     const indexData = await indexRes.json();
     
-    const itemFiles = Object.keys(indexData.item || {});
+    // Only include files from specific folders to reduce payload size
+    const allowedPrefixes = ["item/", "collection/"];
+    const itemFiles = Object.keys(indexData.item || {}).filter(file => 
+      allowedPrefixes.some(prefix => file.startsWith(prefix))
+    );
     const allItems: CompendiumItem[] = [];
     
     const chunkSize = 15;
     for (let i = 0; i < itemFiles.length; i += chunkSize) {
       const chunk = itemFiles.slice(i, i + chunkSize);
-      const promises = chunk.map(file => 
-        fetch(`${HOMEBREW_BASE_URL}/${file}`).then(res => res.json()).catch(() => ({}))
-      );
+      const promises = chunk.map(file => {
+        const url = `${HOMEBREW_BASE_URL}/${encodeURI(file).replace(/;/g, "%3B")}`;
+        return fetch(url).then(res => res.json()).catch(() => ({}));
+      });
       
       const results = await Promise.all(promises);
       for (const result of results) {

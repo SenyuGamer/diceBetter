@@ -70,33 +70,64 @@ function QuickRollGroup({
       <Typography
         variant="caption"
         sx={{
-          fontSize: "0.6rem",
+          fontSize: "0.65rem",
+          fontWeight: "bold",
           textAlign: "center",
           lineHeight: 1.1,
-          color: theme.palette.text.secondary,
+          color: theme.palette.text.primary,
           maxWidth: "56px",
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           px: 0.25,
+          mt: 0.5,
+          mb: 0.5,
         }}
       >
         {group}
       </Typography>
-      {rolls.map((roll) => (
-        <QuickRollItem key={roll.id} roll={roll} />
-      ))}
+
+      {/* Categorized rendering */}
+      {renderCategory("Ataques", rolls.filter(r => r.category === "attack"))}
+      {renderCategory("Daño", rolls.filter(r => r.category === "damage"))}
+      {renderCategory("Salvación", rolls.filter(r => r.category === "save"))}
+      {renderCategory("Habilidad", rolls.filter(r => r.category === "skill"))}
+      {renderCategory("Otros", rolls.filter(r => !r.category || r.category === "other"))}
+
       <Box
         component="div"
         sx={{
           width: "70%",
           height: "1px",
           bgcolor: alpha(theme.palette.divider, 0.3),
-          my: 0.25,
+          my: 0.5,
         }}
       />
     </Stack>
   );
+
+  function renderCategory(title: string, catRolls: SavedRoll[]) {
+    if (catRolls.length === 0) return null;
+    return (
+      <Stack alignItems="center" gap={0.5} width="100%">
+        <Typography 
+          variant="caption" 
+          sx={{ 
+            fontSize: "0.55rem", 
+            color: theme.palette.text.disabled, 
+            lineHeight: 1,
+            textTransform: "uppercase",
+            mt: 0.25
+          }}
+        >
+          {title}
+        </Typography>
+        {catRolls.map((roll) => (
+          <QuickRollItem key={roll.id} roll={roll} />
+        ))}
+      </Stack>
+    );
+  }
 }
 
 function QuickRollItem({ roll }: { roll: SavedRoll }) {
