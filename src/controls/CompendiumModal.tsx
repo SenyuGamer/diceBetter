@@ -93,6 +93,7 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
         bonus: a.bonus,
         advantage: null,
         diceById: a.diceById,
+        category: a.category,
       });
     });
     setSnackbar({ open: true, message: `¡${actions.length} tiradas agregadas a "${groupName}"!`, severity: "success" });
@@ -114,6 +115,7 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
         bonus: a.bonus,
         advantage: null,
         diceById: a.diceById,
+        category: a.category,
       });
     });
     setSnackbar({ open: true, message: `¡${actions.length} tiradas agregadas a "${groupName}"!`, severity: "success" });
