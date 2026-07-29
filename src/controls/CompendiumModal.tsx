@@ -37,7 +37,9 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
   const [monsters, setMonsters] = useState<CompendiumMonster[]>([]);
   const [items, setItems] = useState<CompendiumItem[]>([]);
   
-  const [includeHomebrew, setIncludeHomebrew] = useState(false);
+  const [includeHomebrew, setIncludeHomebrew] = useState(() => {
+    return localStorage.getItem("dice-include-homebrew") === "true";
+  });
   const [homebrewMonsters, setHomebrewMonsters] = useState<CompendiumMonster[]>([]);
   const [homebrewItems, setHomebrewItems] = useState<CompendiumItem[]>([]);
   const [loadingHomebrew, setLoadingHomebrew] = useState(false);
@@ -192,12 +194,15 @@ export function CompendiumModal({ open, onClose }: CompendiumModalProps) {
               <Switch
                 size="small"
                 checked={includeHomebrew}
-                onChange={(e) => setIncludeHomebrew(e.target.checked)}
+                onChange={(e) => {
+                  setIncludeHomebrew(e.target.checked);
+                  localStorage.setItem("dice-include-homebrew", String(e.target.checked));
+                }}
               />
             }
             label={
               <Typography variant="body2" color="text.secondary">
-                Incluir Homebrew de TheGiddyLimit (experimental, ~60MB de descarga)
+                Incluir Homebrew de TheGiddyLimit (~15MB de descarga)
               </Typography>
             }
             sx={{ ml: 0 }}
