@@ -25,6 +25,7 @@ import { getDiceToRoll, useDiceControlsStore } from "./store";
 import { DiceType } from "../types/DiceType";
 import { useDiceHistoryStore } from "./history";
 import { Die } from "../types/Die";
+import { getCombinedDiceValue } from "../helpers/getCombinedDiceValue";
 
 const jiggle = keyframes`
 0% { transform: translate(0, 0) rotate(0deg); }
@@ -112,7 +113,8 @@ function DicePickedControls() {
       const dice = getDiceToRoll(counts, advantage, diceById, blessActive, blessCount);
       const activeTimeSeconds = (performance.now() - rollPressTime) / 1000;
       const speedMultiplier = Math.max(1, Math.min(10, activeTimeSeconds * 2));
-      startRoll({ dice, bonus, hidden }, speedMultiplier);
+      const recentRollId = performance.now().toString();
+      startRoll({ dice, bonus, hidden, recentRollId }, speedMultiplier);
 
       const rolledDiceById: Record<string, Die> = {};
       for (const id of Object.keys(counts)) {
@@ -120,7 +122,7 @@ function DicePickedControls() {
           rolledDiceById[id] = diceById[id];
         }
       }
-      pushRecentRoll({ advantage, counts, bonus, diceById: rolledDiceById });
+      pushRecentRoll({ id: recentRollId, advantage, counts, bonus, diceById: rolledDiceById });
 
       handleReset();
     }
@@ -344,6 +346,19 @@ function FinishedRollControls() {
   }, [rollValues]);
 
   const [resultsExpanded, setResultsExpanded] = useState(false);
+  const updateRecentRollResult = useDiceHistoryStore((state) => state.updateRecentRollResult);
+
+  useEffect(() => {
+    if (roll?.recentRollId && rollValues) {
+      const allResolved = Object.values(rollValues).every(v => v !== null);
+      if (allResolved && Object.keys(rollValues).length > 0) {
+        const finalValue = getCombinedDiceValue(roll, finishedRollValues);
+        if (finalValue !== null) {
+          updateRecentRollResult(roll.recentRollId, finalValue);
+        }
+      }
+    }
+  }, [roll, rollValues, finishedRollValues, updateRecentRollResult]);
 
   return (
     <>

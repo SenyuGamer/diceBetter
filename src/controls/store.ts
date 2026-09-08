@@ -84,11 +84,16 @@ export const useDiceControlsStore = create<DiceControlsState>()(
         const newCounts = { ...state.defaultDiceCounts };
         
         if (savedDiceById) {
-          // Map counts by die type (so it works across different dice sets)
+          // Map counts by die type and restore their saved colors
           for (const currentDie of state.diceSet.dice) {
             const savedDieId = Object.keys(counts).find(id => savedDiceById[id]?.type === currentDie.type);
             if (savedDieId) {
               newCounts[currentDie.id] = counts[savedDieId];
+              // Restore the color/style of the saved die
+              state.diceById[currentDie.id] = {
+                ...state.diceById[currentDie.id],
+                style: savedDiceById[savedDieId].style
+              };
             }
           }
         } else {

@@ -13,6 +13,7 @@ export interface SavedRoll {
   advantage: Advantage;
   diceById: Record<string, Die>;
   category?: string;
+  isDamage?: boolean;
 }
 
 interface SavedRollsState {

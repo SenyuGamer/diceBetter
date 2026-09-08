@@ -174,6 +174,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
   const setDiceCounts = useDiceControlsStore((state) => state.setDiceCounts);
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
   const setAdvantage = useDiceControlsStore((state) => state.setDiceAdvantage);
+  const setBlessActive = useDiceControlsStore((state) => state.setBlessActive);
   const clearRoll = useDiceRollStore((state) => state.clearRoll);
 
   function handleRoll(advantage: Advantage) {
@@ -182,6 +183,9 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
     setDiceCounts(roll.counts, roll.diceById);
     setBonus(roll.bonus);
     setAdvantage(advantage);
+    if (roll.isDamage) {
+      setBlessActive(false);
+    }
     setExpanded(false);
   }
 

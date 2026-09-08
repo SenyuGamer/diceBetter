@@ -16,6 +16,8 @@ import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
 import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
 
 import CloseIcon from "@mui/icons-material/CloseRounded";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMoreRounded";
@@ -58,6 +60,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
   const setDiceCounts = useDiceControlsStore((state) => state.setDiceCounts);
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
   const setAdvantage = useDiceControlsStore((state) => state.setDiceAdvantage);
+  const setBlessActive = useDiceControlsStore((state) => state.setBlessActive);
   const clearRoll = useDiceRollStore((state) => state.clearRoll);
 
   function handleLoadSaved(roll: SavedRoll, overrideAdvantage: Advantage = roll.advantage) {
@@ -65,6 +68,9 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
     setDiceCounts(roll.counts, roll.diceById);
     setBonus(roll.bonus);
     setAdvantage(overrideAdvantage);
+    if (roll.isDamage) {
+      setBlessActive(false);
+    }
     onClose();
   }
 
@@ -367,6 +373,7 @@ function SavedRollChip({
   const [editName, setEditName] = useState(roll.name);
   const [editGroup, setEditGroup] = useState(roll.group);
   const [editCategory, setEditCategory] = useState(roll.category || "");
+  const [editIsDamage, setEditIsDamage] = useState(!!roll.isDamage);
 
   const currentCounts = useDiceControlsStore((state) => state.diceCounts);
   const currentBonus = useDiceControlsStore((state) => state.diceBonus);
@@ -384,6 +391,7 @@ function SavedRollChip({
         name: editName.trim(),
         group: editGroup.trim(),
         category: editCategory.trim() || undefined,
+        isDamage: editIsDamage,
       });
       setIsEditing(false);
     }
@@ -395,6 +403,7 @@ function SavedRollChip({
         name: editName.trim(),
         group: editGroup.trim(),
         category: editCategory.trim() || undefined,
+        isDamage: editIsDamage,
         counts: currentCounts,
         bonus: currentBonus,
         advantage: currentAdvantage,
@@ -434,6 +443,16 @@ function SavedRollChip({
             renderInput={(params) => (
               <TextField {...params} label="Categoría (Opcional)" size="small" placeholder="Ej. Acciones, Habilidades..." />
             )}
+          />
+          <FormControlLabel
+            control={
+              <Switch
+                checked={editIsDamage}
+                onChange={(e) => setEditIsDamage(e.target.checked)}
+                size="small"
+              />
+            }
+            label={<Typography variant="body2">Ignorar Bless (Tirada de daño)</Typography>}
           />
           <Stack direction="row" gap={1} justifyContent="flex-end">
             <Tooltip title="Actualizar dados con los seleccionados actualmente">
@@ -602,6 +621,7 @@ function SaveCurrentRollForm({
   const [name, setName] = useState("");
   const [group, setGroup] = useState("");
   const [category, setCategory] = useState("");
+  const [isDamage, setIsDamage] = useState(false);
 
   function handleSave() {
     if (!name.trim() || !group.trim()) return;
@@ -609,6 +629,7 @@ function SaveCurrentRollForm({
       name: name.trim(),
       group: group.trim(),
       category: category.trim() || undefined,
+      isDamage,
       counts: { ...counts },
       bonus,
       advantage,
@@ -617,6 +638,7 @@ function SaveCurrentRollForm({
     setName("");
     setGroup("");
     setCategory("");
+    setIsDamage(false);
   }
 
   return (
@@ -700,6 +722,17 @@ function SaveCurrentRollForm({
             />
           )}
           disabled={!hasDice}
+        />
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isDamage}
+              onChange={(e) => setIsDamage(e.target.checked)}
+              size="small"
+              disabled={!hasDice}
+            />
+          }
+          label={<Typography variant="body2">Ignorar Bless (Tirada de daño)</Typography>}
         />
         <Button
           variant="contained"

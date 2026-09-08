@@ -144,6 +144,13 @@ function RecentRollChip({
           {recentRoll.advantage !== null && (
             <span>{recentRoll.advantage === "ADVANTAGE" ? "Ven" : "Des"}</span>
           )}
+          {recentRoll.result !== undefined && (
+            <Stack direction="row" alignItems="center" ml={1}>
+              <Typography variant="body2" fontWeight="bold">
+                = {recentRoll.result}
+              </Typography>
+            </Stack>
+          )}
         </Stack>
       }
       variant="filled"

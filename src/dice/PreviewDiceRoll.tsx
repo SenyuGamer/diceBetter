@@ -23,10 +23,12 @@ export function PreviewDiceRoll() {
   const defaultDiceCounts = useDiceControlsStore(
     (state) => state.defaultDiceCounts
   );
+  const blessActive = useDiceControlsStore((state) => state.blessActive);
+  const blessCount = useDiceControlsStore((state) => state.blessCount);
 
   const diceRoll = useMemo<DiceRoll>(() => {
-    return { dice: getDiceToRoll(counts, advantage, diceById) };
-  }, [counts, advantage, diceById]);
+    return { dice: getDiceToRoll(counts, advantage, diceById, blessActive, blessCount) };
+  }, [counts, advantage, diceById, blessActive, blessCount]);
 
   const dice = useMemo(() => getDieFromDice(diceRoll), [diceRoll]);
 
