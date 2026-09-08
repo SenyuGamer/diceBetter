@@ -174,7 +174,7 @@ export function Sidebar() {
               </IconButton>
             </Tooltip>
             <FairnessTesterButton />
-            <Tooltip title="Adiciones" placement="right" disableInteractive>
+            <Tooltip title="Novedades y Cambios (Changelog)" placement="right" disableInteractive>
               <IconButton
                 id="additions-button"
                 onClick={() => setAdditionsOpen(true)}

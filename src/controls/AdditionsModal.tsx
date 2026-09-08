@@ -13,6 +13,14 @@ import ReplayIcon from "@mui/icons-material/ReplayRounded";
 import MenuBookIcon from "@mui/icons-material/MenuBookRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
 
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesomeRounded";
+import HistoryIcon from "@mui/icons-material/HistoryRounded";
+import VolumeUpIcon from "@mui/icons-material/VolumeUpRounded";
+import FileDownloadIcon from "@mui/icons-material/FileDownloadRounded";
+import SpeedIcon from "@mui/icons-material/SpeedRounded";
+import PaletteIcon from "@mui/icons-material/PaletteRounded";
+import BlockIcon from "@mui/icons-material/BlockRounded";
+
 interface AdditionsModalProps {
   open: boolean;
   onClose: () => void;
@@ -20,34 +28,70 @@ interface AdditionsModalProps {
 
 const additions = [
   {
-    icon: <MouseIcon />,
-    title: "Restar dados con click derecho",
+    icon: <HistoryIcon color="primary" />,
+    title: "Resultados en el Historial",
     description:
-      "Haz click derecho sobre un dado en la barra lateral para restar uno. Click izquierdo sigue sumando como siempre.",
+      "El historial ahora guarda y muestra el resultado numérico total (= X) obtenido por la física 3D en cada tirada, junto a la opción de volver a tirar (↻).",
   },
   {
-    icon: <MenuBookIcon />,
-    title: "Compendio Automático (5 herramientas del bandido)",
+    icon: <AutoAwesomeIcon color="warning" />,
+    title: "Bendición (Bless) con Previsualización 3D",
     description:
-      "Usa el ícono de libro (📖) para buscar monstruos y objetos. La extensión calculará automáticamente sus tiradas de ataque, daño, pruebas y salvaciones, guardándolas organizadas en su propio grupo.",
+      "Botón y contador de Bless en la barra de modificadores. Los dados d4 extra aparecen en la bandeja física 3D antes de tirar y se duplican correctamente si tiras con Ventaja o Desventaja.",
   },
   {
-    icon: <BookmarkIcon />,
-    title: "Cargar Tiradas Guardadas",
+    icon: <BlockIcon color="error" />,
+    title: "Acción de Daño (Ignorar Bless)",
     description:
-      "Al seleccionar una tirada guardada (normal, con Ventaja o Desventaja), los dados se cargarán en tu bandeja y limpiarán la mesa. Así puedes añadir dados extra (ej. Bendición) o modificar el bonificador antes de lanzar.",
+      "Al guardar o editar tiradas, puedes marcarlas con el switch 'Ignorar Bless (Tirada de daño)'. Al cargar una tirada de daño, Bless se desactivará automáticamente para no sumarse al daño.",
   },
   {
-    icon: <EditIcon />,
-    title: "Categorías y Edición",
+    icon: <PaletteIcon color="secondary" />,
+    title: "Preservación de Colores y Estilos",
     description:
-      "Haz clic en el lápiz (✏️) al lado de una tirada guardada para cambiarle el nombre, moverla de personaje, o asignarle una Categoría personalizada (ej. Hechizos). Las tiradas se agruparán por su categoría automáticamente.",
+      "Al guardar y cargar tiradas personalizadas, se conservan exactamente los mismos materiales, colores y estilos de dados seleccionados.",
   },
   {
-    icon: <ReplayIcon />,
-    title: "Volver a tirar desde el historial",
+    icon: <FileDownloadIcon color="success" />,
+    title: "Exportar e Importar Personajes (.json)",
     description:
-      "Cada entrada del historial ahora tiene un botón de repetir (↻) para volver a tirar rápidamente.",
+      "En el modal de tiradas guardadas, ahora puedes exportar grupos enteros de tiradas a archivos .json y compartirlos o importarlos en cualquier momento.",
+  },
+  {
+    icon: <MenuBookIcon color="info" />,
+    title: "Compendio y Homebrew (TheGiddyLimit)",
+    description:
+      "Búsqueda automática de criaturas, armas, habilidades y salvaciones oficiales y colecciones Homebrew en formato 5etools, guardándolas listas para usar.",
+  },
+  {
+    icon: <VolumeUpIcon color="warning" />,
+    title: "Sonidos de Crítico (Nat 20) y Pifia (Nat 1)",
+    description:
+      "Efectos de audio sintetizados: fanfarria ascendente al sacar un 20 natural en d20, y sonido descendente al sacar una pifia (1).",
+  },
+  {
+    icon: <SpeedIcon color="action" />,
+    title: "Modo Rendimiento (Simplificar 3D)",
+    description:
+      "Opción para ocultar las bandejas 3D flotantes de las tiradas de otros jugadores y mostrar solo una notificación de texto con el desglose del resultado.",
+  },
+  {
+    icon: <EditIcon color="action" />,
+    title: "Categorías y Edición Dinámica",
+    description:
+      "Edita nombres, reasigna personajes o añade categorías (Ataques, Daño, Salvación, Habilidades, etc.) visibles también en el panel lateral de acceso rápido.",
+  },
+  {
+    icon: <BookmarkIcon color="action" />,
+    title: "Cargar Tiradas en la Bandeja",
+    description:
+      "Al pulsar una tirada guardada o de acceso rápido, los dados se cargan en la bandeja para que puedas revisar bonificadores o sumar dados antes de lanzar.",
+  },
+  {
+    icon: <MouseIcon color="action" />,
+    title: "Restar dados con clic derecho",
+    description:
+      "Haz clic derecho sobre un dado en la barra lateral para restar unidades. Clic izquierdo sigue sumando.",
   },
 ];
 
@@ -61,7 +105,7 @@ export function AdditionsModal({ open, onClose }: AdditionsModalProps) {
           justifyContent: "space-between",
         }}
       >
-        Adiciones
+        Novedades y Cambios (Changelog)
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
