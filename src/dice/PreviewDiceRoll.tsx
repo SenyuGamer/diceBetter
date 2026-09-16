@@ -34,11 +34,8 @@ export function PreviewDiceRoll() {
 
   const [diceThrower] = useState(() => new DiceThrower());
   const isDefault = useMemo(
-    () =>
-      Object.entries(defaultDiceCounts).every(
-        ([type, count]) => counts[type as DiceType] === count
-      ),
-    [counts, defaultDiceCounts]
+    () => !Object.values(counts).some((count) => count > 0),
+    [counts]
   );
   useEffect(() => {
     if (isDefault) {

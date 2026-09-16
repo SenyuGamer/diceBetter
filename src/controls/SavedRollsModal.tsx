@@ -34,7 +34,7 @@ import DownloadIcon from "@mui/icons-material/DownloadRounded";
 import UploadIcon from "@mui/icons-material/UploadRounded";
 
 import { SavedRoll, useSavedRollsStore } from "./savedRolls";
-import { useDiceControlsStore, Advantage } from "./store";
+import { useDiceControlsStore, Advantage, DiceCounts } from "./store";
 import { useDiceRollStore } from "../dice/store";
 import { DicePreview } from "../previews/DicePreview";
 
@@ -399,15 +399,26 @@ function SavedRollChip({
 
   function handleOverwriteDice() {
     if (editName.trim() && editGroup.trim()) {
+      const activeCounts: DiceCounts = {};
+      const activeDiceById: Record<string, any> = {};
+      for (const [id, count] of Object.entries(currentCounts)) {
+        if (count > 0) {
+          activeCounts[id] = count;
+          const die = currentDiceById?.[id] || roll.diceById[id];
+          if (die) {
+            activeDiceById[id] = die;
+          }
+        }
+      }
       onEdit({
         name: editName.trim(),
         group: editGroup.trim(),
         category: editCategory.trim() || undefined,
         isDamage: editIsDamage,
-        counts: currentCounts,
+        counts: activeCounts,
         bonus: currentBonus,
         advantage: currentAdvantage,
-        diceById: currentDiceById || roll.diceById,
+        diceById: activeDiceById,
       });
       setIsEditing(false);
     }
@@ -610,12 +621,10 @@ function SaveCurrentRollForm({
 
   const hasDice = useMemo(
     () =>
-      !Object.entries(defaultDiceCounts).every(
-        ([type, count]) => counts[type] === count
-      ) ||
+      Object.values(counts).some((count) => count > 0) ||
       bonus !== 0 ||
       advantage !== null,
-    [counts, defaultDiceCounts, bonus, advantage]
+    [counts, bonus, advantage]
   );
 
   const [name, setName] = useState("");
@@ -625,15 +634,23 @@ function SaveCurrentRollForm({
 
   function handleSave() {
     if (!name.trim() || !group.trim()) return;
+    const activeCounts: DiceCounts = {};
+    const activeDiceById: Record<string, any> = {};
+    for (const [id, count] of Object.entries(counts)) {
+      if (count > 0 && diceById[id]) {
+        activeCounts[id] = count;
+        activeDiceById[id] = diceById[id];
+      }
+    }
     addRoll({
       name: name.trim(),
       group: group.trim(),
       category: category.trim() || undefined,
       isDamage,
-      counts: { ...counts },
+      counts: activeCounts,
       bonus,
       advantage,
-      diceById: { ...diceById },
+      diceById: activeDiceById,
     });
     setName("");
     setGroup("");

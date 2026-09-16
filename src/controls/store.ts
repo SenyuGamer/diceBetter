@@ -77,32 +77,57 @@ export const useDiceControlsStore = create<DiceControlsState>()(
     resetDiceCounts() {
       set((state) => {
         state.diceCounts = { ...state.defaultDiceCounts };
+        state.diceById = getDiceByIdFromSet(state.diceSet);
       });
     },
     setDiceCounts(counts, savedDiceById) {
       set((state) => {
         const newCounts = { ...state.defaultDiceCounts };
-        
-        if (savedDiceById) {
-          // Map counts by die type and restore their saved colors
-          for (const currentDie of state.diceSet.dice) {
-            const savedDieId = Object.keys(counts).find(id => savedDiceById[id]?.type === currentDie.type);
-            if (savedDieId) {
-              newCounts[currentDie.id] = counts[savedDieId];
-              // Restore the color/style of the saved die
-              state.diceById[currentDie.id] = {
-                ...state.diceById[currentDie.id],
-                style: savedDiceById[savedDieId].style
-              };
+        state.diceById = getDiceByIdFromSet(state.diceSet);
+
+        if (!savedDiceById) {
+          for (const [id, count] of Object.entries(counts)) {
+            if (id in newCounts) {
+              newCounts[id] = count;
             }
           }
-        } else {
-          // Direct ID mapping
-          for (const [id, count] of Object.entries(counts)) {
-            newCounts[id] = count;
+          state.diceCounts = newCounts;
+          return;
+        }
+
+        const activeSavedEntries = Object.entries(counts).filter(([_, count]) => count > 0);
+        const usedCurrentDieIds = new Set<string>();
+
+        for (const [savedId, count] of activeSavedEntries) {
+          const savedDie = savedDiceById[savedId];
+          if (!savedDie) continue;
+
+          // 1. Try exact match by both type and style
+          let matchedDie = state.diceSet.dice.find(
+            (d) => d.type === savedDie.type && d.style === savedDie.style && !usedCurrentDieIds.has(d.id)
+          );
+
+          // 2. Fallback to match by type only
+          if (!matchedDie) {
+            matchedDie = state.diceSet.dice.find(
+              (d) => d.type === savedDie.type && !usedCurrentDieIds.has(d.id)
+            );
+          }
+
+          if (matchedDie) {
+            usedCurrentDieIds.add(matchedDie.id);
+            newCounts[matchedDie.id] = count;
+            state.diceById[matchedDie.id] = {
+              ...matchedDie,
+              style: savedDie.style,
+            };
+          } else {
+            // Direct injection if set has no remaining slots for this die type
+            newCounts[savedId] = count;
+            state.diceById[savedId] = savedDie;
           }
         }
-        
+
         state.diceCounts = newCounts;
       });
     },

@@ -21,7 +21,7 @@ import { RerollDiceIcon } from "../icons/RerollDiceIcon";
 import { GradientOverlay } from "./GradientOverlay";
 import { useDiceRollStore } from "../dice/store";
 import { DiceResults } from "./DiceResults";
-import { getDiceToRoll, useDiceControlsStore } from "./store";
+import { getDiceToRoll, useDiceControlsStore, DiceCounts } from "./store";
 import { DiceType } from "../types/DiceType";
 import { useDiceHistoryStore } from "./history";
 import { Die } from "../types/Die";
@@ -46,12 +46,10 @@ export function DiceRollControls() {
   // Is currently the default dice state (all counts 0 and advantage/bonus defaults)
   const isDefault = useMemo(
     () =>
-      Object.entries(defaultDiceCounts).every(
-        ([type, count]) => counts[type as DiceType] === count
-      ) &&
+      !Object.values(counts).some((count) => count > 0) &&
       advantage === null &&
       bonus === 0,
-    [counts, defaultDiceCounts, advantage, bonus]
+    [counts, advantage, bonus]
   );
 
   const rollValues = useDiceRollStore((state) => state.rollValues);
@@ -116,13 +114,15 @@ function DicePickedControls() {
       const recentRollId = performance.now().toString();
       startRoll({ dice, bonus, hidden, recentRollId }, speedMultiplier);
 
+      const activeCounts: DiceCounts = {};
       const rolledDiceById: Record<string, Die> = {};
-      for (const id of Object.keys(counts)) {
-        if (!(id in rolledDiceById)) {
+      for (const [id, count] of Object.entries(counts)) {
+        if (count > 0 && diceById[id]) {
+          activeCounts[id] = count;
           rolledDiceById[id] = diceById[id];
         }
       }
-      pushRecentRoll({ id: recentRollId, advantage, counts, bonus, diceById: rolledDiceById });
+      pushRecentRoll({ id: recentRollId, advantage, counts: activeCounts, bonus, diceById: rolledDiceById });
 
       handleReset();
     }
@@ -159,11 +159,8 @@ function DicePickedControls() {
   }, [rollPressTime]);
 
   const hasDice = useMemo(
-    () =>
-      !Object.entries(defaultDiceCounts).every(
-        ([type, count]) => counts[type as DiceType] === count
-      ),
-    [counts, defaultDiceCounts]
+    () => Object.values(counts).some((count) => count > 0),
+    [counts]
   );
 
   const theme = useTheme();
