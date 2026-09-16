@@ -278,8 +278,8 @@ export function getDiceToRoll(
     }
   }
 
-  // Handle Bless injections
-  if (blessActive && blessCount && blessCount > 0) {
+  // Handle Bless injections (only if base dice are loaded/selected)
+  if (dice.length > 0 && blessActive && blessCount && blessCount > 0) {
     // If we didn't find a d4 style in the selected dice, find one in the set or use a fallback
     if (!d4DieStyle) {
       const anyD4 = Object.values(diceById).find(d => d.type === "D4");
