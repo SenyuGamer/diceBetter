@@ -1,4 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { getDieFromDice } from "../helpers/getDieFromDice";
 import {
   ContactShadows,
   Environment,
@@ -36,6 +37,15 @@ export function PlayerTray({
   player?: Player; // Make player optional to allow for preloading of the tray
 }) {
   const allowOrbit = useDebugStore((state) => state.allowOrbit);
+  const { diceRoll } = usePlayerDice(player);
+  
+  const trayScale = useMemo(() => {
+    if (!diceRoll) return 1.0;
+    const count = getDieFromDice(diceRoll).length;
+    if (count > 20) return 2.0;
+    if (count > 10) return 1.5;
+    return 1.0;
+  }, [diceRoll]);
 
   return (
     <Box component="div" position="relative" display="flex">
@@ -53,19 +63,19 @@ export function PlayerTray({
               <Environment files={environment} />
               <ContactShadows
                 resolution={256}
-                scale={[1, 2]}
+                scale={[1 * trayScale, 2 * trayScale]}
                 position={[0, 0, 0]}
                 blur={0.5}
                 opacity={0.5}
                 far={1}
                 color="#222222"
               />
-              <Tray />
-              <PlayerDiceRoll player={player} />
+              <Tray scale={trayScale} />
+              <PlayerDiceRoll player={player} trayScale={trayScale} />
               <PerspectiveCamera
                 makeDefault
                 fov={28}
-                position={[0, 4.3, 0]}
+                position={[0, 4.3 * trayScale, 0]}
                 rotation={[-Math.PI / 2, 0, 0]}
               />
               {allowOrbit && <OrbitControls />}

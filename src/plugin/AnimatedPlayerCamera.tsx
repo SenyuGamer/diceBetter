@@ -7,8 +7,10 @@ import { useThree } from "@react-three/fiber";
 
 export function AnimatedPlayerCamera({
   rollTransforms,
+  trayScale = 1,
 }: {
   rollTransforms: Record<string, DiceTransform> | undefined;
+  trayScale?: number;
 }) {
   const { invalidate } = useThree();
 
@@ -18,17 +20,19 @@ export function AnimatedPlayerCamera({
       if (transforms.length > 0) {
         const bounds = getBoundingBox(transforms);
         const size = Math.max(bounds.width, bounds.height);
-        const x = Math.min(0.8, Math.max(-0.8, bounds.center.x));
-        const y = lerp(1, 3, Math.max(Math.min(size, 1), 0));
-        const z = Math.min(0.8, Math.max(-0.8, bounds.center.y));
+        // Normalize size so that even large trays scale nicely
+        const normalizedSize = size / trayScale;
+        const x = Math.min(0.8 * trayScale, Math.max(-0.8 * trayScale, bounds.center.x));
+        const y = lerp(1 * trayScale, 3 * trayScale, Math.max(Math.min(normalizedSize, 1), 0));
+        const z = Math.min(0.8 * trayScale, Math.max(-0.8 * trayScale, bounds.center.y));
         return [x, y, z];
       } else {
-        return [0, 3, 0];
+        return [0, 3 * trayScale, 0];
       }
     } else {
-      return [0, 3, 0];
+      return [0, 3 * trayScale, 0];
     }
-  }, [rollTransforms]);
+  }, [rollTransforms, trayScale]);
 
   const { position } = useSpring({
     position: cameraPosition,

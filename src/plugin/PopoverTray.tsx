@@ -1,7 +1,8 @@
 import { Environment } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import { Player } from "@owlbear-rodeo/sdk";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
+import { getDieFromDice } from "../helpers/getDieFromDice";
 
 import Box from "@mui/material/Box";
 import Slide from "@mui/material/Slide";
@@ -53,6 +54,14 @@ export function PopoverTray({
     }
   }, [finishedRolling]);
 
+  const trayScale = useMemo(() => {
+    if (!diceRoll) return 1.0;
+    const count = getDieFromDice(diceRoll).length;
+    if (count > 20) return 2.0;
+    if (count > 10) return 1.5;
+    return 1.0;
+  }, [diceRoll]);
+
   const shown = !hidden && !timedOut;
   useEffect(() => {
     if (shown) {
@@ -94,12 +103,13 @@ export function PopoverTray({
                   <Canvas frameloop="demand">
                     <AudioListenerProvider volume={0.25}>
                       <Environment files={environment} />
-                      <Tray />
-                      <PlayerDiceRoll player={player} />
+                      <Tray scale={trayScale} />
+                      <PlayerDiceRoll player={player} trayScale={trayScale} />
                       <AnimatedPlayerCamera
                         rollTransforms={
                           finishedRolling ? finishedRollTransforms : undefined
                         }
+                        trayScale={trayScale}
                       />
                     </AudioListenerProvider>
                   </Canvas>
