@@ -19,10 +19,11 @@ export function TrayMesh({
   children,
   scale = 1,
   ...props
-}: JSX.IntrinsicElements["group"] & { scale?: number }) {
+}: JSX.IntrinsicElements["group"] & { scale?: number | [number, number, number] | THREE.Vector3 }) {
   const { nodes } = useGLTF(glb) as unknown as GLTFResult;
+  const s = typeof scale === 'number' ? scale : (Array.isArray(scale) ? scale[0] : 1);
   return (
-    <group {...props} scale={0.1 * scale} dispose={null}>
+    <group {...props} scale={0.1 * s} dispose={null}>
       {/* Align mesh so that the tray bottom is at [0, 0, 0] */}
       <mesh geometry={nodes.Cube.geometry} position={[0, -0.33, 0]}>
         {children}

@@ -20,19 +20,17 @@ export function AnimatedPlayerCamera({
       if (transforms.length > 0) {
         const bounds = getBoundingBox(transforms);
         const size = Math.max(bounds.width, bounds.height);
-        // Normalize size so that even large trays scale nicely
-        const normalizedSize = size / trayScale;
-        const x = Math.min(0.8 * trayScale, Math.max(-0.8 * trayScale, bounds.center.x));
-        const y = lerp(1 * trayScale, 3 * trayScale, Math.max(Math.min(normalizedSize, 1), 0));
-        const z = Math.min(0.8 * trayScale, Math.max(-0.8 * trayScale, bounds.center.y));
+        const x = Math.min(0.8, Math.max(-0.8, bounds.center.x));
+        const y = lerp(1, 3, Math.max(Math.min(size, 1), 0));
+        const z = Math.min(0.8, Math.max(-0.8, bounds.center.y));
         return [x, y, z];
       } else {
-        return [0, 3 * trayScale, 0];
+        return [0, 3, 0];
       }
     } else {
-      return [0, 3 * trayScale, 0];
+      return [0, 3, 0];
     }
-  }, [rollTransforms, trayScale]);
+  }, [rollTransforms]);
 
   const { position } = useSpring({
     position: cameraPosition,
