@@ -21,14 +21,16 @@ export function AnimatedPlayerCamera({
         const bounds = getBoundingBox(transforms);
         const size = Math.max(bounds.width, bounds.height);
         const x = Math.min(0.8, Math.max(-0.8, bounds.center.x));
-        const y = lerp(1, 3, Math.max(Math.min(size, 1), 0));
+        // The camera has an fov of 28, so width at distance y is roughly y * 0.5
+        // We set y to be proportional to the size of the dice spread so it always frames them.
+        const y = Math.max(2.0, size * 2.2);
         const z = Math.min(0.8, Math.max(-0.8, bounds.center.y));
         return [x, y, z];
       } else {
-        return [0, 3, 0];
+        return [0, 2.5, 0];
       }
     } else {
-      return [0, 3, 0];
+      return [0, 2.5, 0];
     }
   }, [rollTransforms]);
 

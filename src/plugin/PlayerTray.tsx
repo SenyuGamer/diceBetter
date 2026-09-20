@@ -75,7 +75,7 @@ export function PlayerTray({
               <PerspectiveCamera
                 makeDefault
                 fov={28}
-                position={[0, 4.3, 0]}
+                position={[0, 4.3 * trayScale, 0]}
                 rotation={[-Math.PI / 2, 0, 0]}
               />
               {allowOrbit && <OrbitControls />}
