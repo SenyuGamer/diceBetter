@@ -16,7 +16,7 @@ import { getNextBuffer } from "../audio/getAudioBuffer";
 import { random } from "../helpers/random";
 import { WeightClass } from "../types/WeightClass";
 
-export function PreviewDiceRoll() {
+export function PreviewDiceRoll({ trayScale = 1 }: { trayScale?: number }) {
   const counts = useDiceControlsStore((state) => state.diceCounts);
   const advantage = useDiceControlsStore((state) => state.diceAdvantage);
   const diceById = useDiceControlsStore((state) => state.diceById);
@@ -114,7 +114,7 @@ export function PreviewDiceRoll() {
   return (
     <group ref={groupRef} position={[0, -0.8, 0]}>
       {dice.map((die, index) => {
-        const dieThrow = diceThrower.getDiceThrow(index);
+        const dieThrow = diceThrower.getDiceThrow(index, trayScale);
         const p = dieThrow.position;
         const r = dieThrow.rotation;
         return (

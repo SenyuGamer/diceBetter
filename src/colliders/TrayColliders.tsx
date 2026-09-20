@@ -9,7 +9,13 @@ const ROOF_Y = WALL_THICKNESS + 1.5;
 const WALL_X = WALL_THICKNESS + 0.46; // Move the wall in a bit to account for the wood thickness
 const WALL_Z = WALL_THICKNESS + 0.96;
 
-export function TrayColliders(props: JSX.IntrinsicElements["group"]) {
+export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["group"] & { scale?: number }) {
+  const s = typeof scale === 'number' ? scale : 1;
+  const floorY = -WALL_THICKNESS + 0.005 * s;
+  const roofY = WALL_THICKNESS + 1.5 * s;
+  const wallX = WALL_THICKNESS + 0.46 * s;
+  const wallZ = WALL_THICKNESS + 0.96 * s;
+
   return (
     <group {...props}>
       {/* Floor of the tray */}
@@ -22,7 +28,7 @@ export function TrayColliders(props: JSX.IntrinsicElements["group"]) {
       >
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, FLOOR_Y, 0]}
+          position={[0, floorY, 0]}
         />
       </RigidBody>
       {/* Walls of the tray */}
@@ -37,31 +43,31 @@ export function TrayColliders(props: JSX.IntrinsicElements["group"]) {
         {/* Bottom wall */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, FLOOR_Y, WALL_Z]}
+          position={[0, floorY, wallZ]}
           rotation={[Math.PI / 2, 0, 0]}
         />
         {/* Top wall */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, FLOOR_Y, -WALL_Z]}
+          position={[0, floorY, -wallZ]}
           rotation={[Math.PI / 2, 0, 0]}
         />
         {/* Right wall */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[WALL_X, FLOOR_Y, 0]}
+          position={[wallX, floorY, 0]}
           rotation={[0, 0, Math.PI / 2]}
         />
         {/* Left wall */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[-WALL_X, FLOOR_Y, 0]}
+          position={[-wallX, floorY, 0]}
           rotation={[0, 0, Math.PI / 2]}
         />
         {/* Roof */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, ROOF_Y, 0]}
+          position={[0, roofY, 0]}
         />
       </RigidBody>
     </group>

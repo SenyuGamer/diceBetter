@@ -17,6 +17,7 @@ export function DiceRoll({
   finishedTransforms,
   transformsRef,
   Dice,
+  trayScale = 1,
 }: {
   roll: DiceRollType;
   rollThrows: Record<string, DiceThrow>;
@@ -33,6 +34,7 @@ export function DiceRoll({
   > | null>;
   /** Override to provide a custom Dice component  */
   Dice: React.FC<JSX.IntrinsicElements["group"] & { die: Die }>;
+  trayScale?: number;
 }) {
   const allowPhysicsDebug = useDebugStore((state) => state.allowPhysicsDebug);
 
@@ -92,7 +94,7 @@ export function DiceRoll({
         updateLoop="independent"
         paused={paused}
       >
-        <TrayColliders />
+        <TrayColliders scale={trayScale} />
         {dice?.map((die) => {
           const dieThrow = rollThrows[die.id];
           // Use a fixed transform if we have it

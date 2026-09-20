@@ -15,11 +15,11 @@ const MAX_LAUNCH_VELOCITY = 2;
 const MIN_ANGULAR_VELOCITY = 2;
 const MAX_ANGULAR_VELOCITY = 6;
 
-export function randomPosition(): DiceVector3 {
+export function randomPosition(scale: number = 1): DiceVector3 {
   return {
-    x: random(MIN_X, MAX_X),
+    x: random(MIN_X * scale, MAX_X * scale),
     y: random(MIN_Y, MAX_Y),
-    z: random(MIN_Z, MAX_Z),
+    z: random(MIN_Z * scale, MAX_Z * scale),
   };
 }
 
@@ -99,8 +99,8 @@ export function randomAngularVelocity(): DiceVector3 {
   };
 }
 
-export function getRandomDiceThrow(speedMultiplier?: number): DiceThrow {
-  const position = randomPosition();
+export function getRandomDiceThrow(speedMultiplier?: number, scale: number = 1): DiceThrow {
+  const position = randomPosition(scale);
   const rotation = randomRotation();
   const linearVelocity = randomLinearVelocity(position, speedMultiplier);
   const angularVelocity = randomAngularVelocity();
@@ -131,16 +131,16 @@ export class DiceThrower {
     return true;
   }
 
-  getDiceThrow(index: number): DiceThrow {
+  getDiceThrow(index: number, scale: number = 1): DiceThrow {
     if (this.history.length > index) {
       return this.history[index];
     }
-    let position = randomPosition();
+    let position = randomPosition(scale);
     for (let i = 0; i < 50; i++) {
       if (this.isPositionValid(position)) {
         break;
       }
-      position = randomPosition();
+      position = randomPosition(scale);
     }
     const rotation = randomRotation();
     const linearVelocity = randomLinearVelocity(position);

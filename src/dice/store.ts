@@ -48,10 +48,11 @@ export const useDiceRollStore = create<DiceRollState>()(
         state.rollThrows = {};
         // Set all values to null
         const dice = getDieFromDice(roll);
+        const trayScale = dice.length > 20 ? 2.0 : dice.length > 10 ? 1.5 : 1.0;
         for (const die of dice) {
           state.rollValues[die.id] = null;
           state.rollTransforms[die.id] = null;
-          state.rollThrows[die.id] = getRandomDiceThrow(speedMultiplier);
+          state.rollThrows[die.id] = getRandomDiceThrow(speedMultiplier, trayScale);
         }
       }),
     clearRoll: () =>
@@ -107,7 +108,9 @@ function rerollDraft(
         if (manualThrow) {
           rollThrows[id] = manualThrow;
         } else {
-          rollThrows[id] = getRandomDiceThrow();
+          const allDice = getDieFromDice(diceRoll as DiceRoll);
+          const trayScale = allDice.length > 20 ? 2.0 : allDice.length > 10 ? 1.5 : 1.0;
+          rollThrows[id] = getRandomDiceThrow(undefined, trayScale);
         }
       }
     } else if (isDice(dieOrDice)) {

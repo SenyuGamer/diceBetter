@@ -5,7 +5,7 @@ import { InteractiveDice } from "./InteractiveDice";
 import { useDiceRollStore } from "./store";
 
 /** Dice roll based off of the values from the dice roll store */
-export function InteractiveDiceRoll() {
+export function InteractiveDiceRoll({ trayScale }: { trayScale?: number }) {
   const roll = useDiceRollStore((state) => state.roll);
   const rollThrows = useDiceRollStore((state) => state.rollThrows);
   const finishDieRoll = useDiceRollStore((state) => state.finishDieRoll);
@@ -41,6 +41,7 @@ export function InteractiveDiceRoll() {
       onRollFinished={finishDieRoll}
       Dice={InteractiveDice}
       transformsRef={transformsRef}
+      trayScale={trayScale}
     />
   );
 }
