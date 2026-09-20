@@ -26,17 +26,30 @@ export function PreviewDiceRoll() {
   const blessActive = useDiceControlsStore((state) => state.blessActive);
   const blessCount = useDiceControlsStore((state) => state.blessCount);
 
-  const diceRoll = useMemo<DiceRoll>(() => {
-    return { dice: getDiceToRoll(counts, advantage, diceById, blessActive, blessCount) };
-  }, [counts, advantage, diceById, blessActive, blessCount]);
-
-  const dice = useMemo(() => getDieFromDice(diceRoll), [diceRoll]);
-
-  const [diceThrower] = useState(() => new DiceThrower());
-  const isDefault = useMemo(
-    () => !Object.values(counts).some((count) => count > 0),
+  const hasDice = useMemo(
+    () =>
+      Object.values(counts || {}).some(
+        (count) => typeof count === "number" && count > 0
+      ),
     [counts]
   );
+
+  const diceRoll = useMemo<DiceRoll>(() => {
+    if (!hasDice) {
+      return { dice: [] };
+    }
+    return {
+      dice: getDiceToRoll(counts, advantage, diceById, blessActive, blessCount),
+    };
+  }, [hasDice, counts, advantage, diceById, blessActive, blessCount]);
+
+  const dice = useMemo(
+    () => (hasDice ? getDieFromDice(diceRoll) : []),
+    [hasDice, diceRoll]
+  );
+
+  const [diceThrower] = useState(() => new DiceThrower());
+  const isDefault = !hasDice;
   useEffect(() => {
     if (isDefault) {
       diceThrower.clearHistory();
@@ -93,6 +106,10 @@ export function PreviewDiceRoll() {
       };
     }
   }, [rollPressTime, listener, diceWeight]);
+
+  if (!hasDice || dice.length === 0) {
+    return null;
+  }
 
   return (
     <group ref={groupRef} position={[0, -0.8, 0]}>

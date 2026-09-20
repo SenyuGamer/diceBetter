@@ -230,7 +230,8 @@ export function getDiceToRoll(
     }
     
     const { style, type } = die;
-    for (let i = 0; i < count; i++) {
+    const numericCount = typeof count === "number" ? count : parseInt(count as any, 10) || 0;
+    for (let i = 0; i < numericCount; i++) {
       if (advantage === null) {
         if (type === "D100") {
           // Push a d100 and d10 when rolling a d100

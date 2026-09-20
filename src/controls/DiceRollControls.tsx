@@ -268,23 +268,25 @@ function DicePickedControls() {
           </IconButton>
         </Tooltip>
       </Stack>
-      <Stack
-        sx={{
-          position: "absolute",
-          bottom: 12,
-          left: "50%",
-          transform: "translateX(-50%)",
-        }}
-      >
-        <Tooltip title="Bless" disableInteractive>
-          <IconButton
-            onClick={() => setBlessActive(!blessActive)}
-            sx={{ color: blessActive ? "warning.main" : "inherit" }}
-          >
-            <AutoAwesomeIcon />
-          </IconButton>
-        </Tooltip>
-      </Stack>
+      {hasDice && (
+        <Stack
+          sx={{
+            position: "absolute",
+            bottom: 12,
+            left: "50%",
+            transform: "translateX(-50%)",
+          }}
+        >
+          <Tooltip title="Bless" disableInteractive>
+            <IconButton
+              onClick={() => setBlessActive(!blessActive)}
+              sx={{ color: blessActive ? "warning.main" : "inherit" }}
+            >
+              <AutoAwesomeIcon />
+            </IconButton>
+          </Tooltip>
+        </Stack>
+      )}
       <Stack
         sx={{
           position: "absolute",

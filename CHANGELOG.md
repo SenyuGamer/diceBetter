@@ -2,6 +2,13 @@
 
 Todas las novedades y cambios notables de este proyecto están documentados en este archivo.
 
+## [2.1.1] - 2026-09-21
+
+### Corregido
+- **Ocultar d4 flotante de Bless sin dados seleccionados**:
+  - Los dados d4 flotantes de Bless ahora se ocultan estrictamente en la bandeja 3D de previsualización si no hay dados base seleccionados o cargados, evitando estorbar en la bandeja vacía.
+  - El botón de Bless en los controles rápidos del tray solo se muestra cuando hay dados seleccionados.
+
 ---
 
 ## [2.1.0] - 2026-09-08
