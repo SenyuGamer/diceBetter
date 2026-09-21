@@ -163,8 +163,8 @@ function scrapeCharacter() {
 function downloadJSON(data) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href",     dataStr);
-    downloadAnchorNode.setAttribute("download", `${data.name.replace(/\s+/g, '_')}.json`);
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `${data.group.replace(/\s+/g, '_')}.json`);
     document.body.appendChild(downloadAnchorNode); // requerido para Firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
