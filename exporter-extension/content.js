@@ -101,6 +101,56 @@ function scrapeCharacter() {
         }
     });
 
+    // 2.5 Extraer Tiradas de Salvación (Saving Throws) del propio personaje
+    const saves = document.querySelectorAll(".ddbc-saving-throws-summary__ability, .ct-saving-throws-summary__ability");
+    saves.forEach(save => {
+        const nameEl = save.querySelector(".ddbc-saving-throws-summary__ability-name, .ct-saving-throws-summary__ability-name");
+        const modEl = save.querySelector(".ddbc-saving-throws-summary__ability-modifier, .ct-saving-throws-summary__ability-modifier");
+        
+        if (nameEl && modEl) {
+            const saveName = nameEl.innerText.trim();
+            const modText = modEl.innerText.trim();
+            const match = modText.match(/([+-]\s*\d+)/);
+            if (match) {
+                const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
+                rolls.push({
+                    name: saveName + " (Salvación)",
+                    category: "Tiradas de Salvación",
+                    counts: { "d20": 1 },
+                    bonus: bonus,
+                    advantage: null,
+                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    isDamage: false
+                });
+            }
+        }
+    });
+
+    // 2.6 Extraer Habilidades (Skills)
+    const skills = document.querySelectorAll(".ddbc-skills__item, .ct-skills__item");
+    skills.forEach(skill => {
+        const nameEl = skill.querySelector(".ddbc-skills__col--skill, .ct-skills__col--skill");
+        const modEl = skill.querySelector(".ddbc-skills__col--modifier, .ct-skills__col--modifier");
+        
+        if (nameEl && modEl) {
+            const skillName = nameEl.innerText.trim();
+            const modText = modEl.innerText.trim();
+            const match = modText.match(/([+-]\s*\d+)/);
+            if (match) {
+                const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
+                rolls.push({
+                    name: skillName,
+                    category: "Habilidades",
+                    counts: { "d20": 1 },
+                    bonus: bonus,
+                    advantage: null,
+                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    isDamage: false
+                });
+            }
+        }
+    });
+
     // 3. Devolver JSON estructurado para BetterDice
     return {
         type: "better-dice-mod-pj",
