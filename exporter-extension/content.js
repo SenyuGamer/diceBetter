@@ -1,0 +1,121 @@
+// content.js - BetterDice Exporter
+
+// Crear el botón flotante
+const btn = document.createElement("button");
+btn.className = "betterdice-export-btn";
+btn.innerText = "Exportar a BetterDice";
+document.body.appendChild(btn);
+
+btn.addEventListener("click", () => {
+    try {
+        const characterData = scrapeCharacter();
+        downloadJSON(characterData);
+        btn.innerText = "¡Exportado con éxito!";
+        setTimeout(() => btn.innerText = "Exportar a BetterDice", 3000);
+    } catch (err) {
+        console.error(err);
+        btn.innerText = "Error (Ver Consola)";
+        setTimeout(() => btn.innerText = "Exportar a BetterDice", 3000);
+    }
+});
+
+function scrapeCharacter() {
+    // 1. Obtener Nombre del Personaje y Avatar
+    const nameNode = document.querySelector(".ddbc-character-name");
+    const charName = nameNode ? nameNode.innerText.trim() : "Personaje Desconocido";
+
+    const avatarNode = document.querySelector(".ddbc-character-avatar__portrait");
+    let avatarUrl = "";
+    if (avatarNode) {
+        const bgImage = window.getComputedStyle(avatarNode).backgroundImage;
+        if (bgImage && bgImage !== "none") {
+            avatarUrl = bgImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
+        }
+    }
+
+    const rolls = [];
+
+    // 2. Extraer Ataques (Armas y Hechizos en la pestaña "Actions")
+    // D&D Beyond usa las clases .ddbc-combat-attack o .ct-combat-attack
+    const attackRows = document.querySelectorAll(".ddbc-combat-attack, .ct-combat-attack");
+    
+    attackRows.forEach(row => {
+        // Nombre del arma/hechizo
+        const nameEl = row.querySelector(".ddbc-combat-attack__name, .ct-combat-attack__name");
+        if (!nameEl) return;
+        const attackName = nameEl.innerText.trim().replace(/\n/g, ' ');
+
+        // Ataque (To Hit)
+        const toHitEl = row.querySelector(".ddbc-combat-attack__tohit, .ct-combat-attack__tohit");
+        if (toHitEl) {
+            const hitText = toHitEl.innerText.trim();
+            const match = hitText.match(/([+-]\s*\d+)/);
+            if (match) {
+                const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
+                rolls.push({
+                    name: attackName + " (Ataque)",
+                    category: "Ataques",
+                    counts: { "d20": 1 },
+                    bonus: bonus,
+                    advantage: null,
+                    diceById: {
+                        "d20": { id: "d20", style: "Standard", type: "D20" }
+                    },
+                    isDamage: false
+                });
+            }
+        }
+
+        // Daño (Damage)
+        const damageEl = row.querySelector(".ddbc-combat-attack__damage, .ct-combat-attack__damage");
+        if (damageEl) {
+            // Ejemplo: "1d8 + 5 Slashing"
+            const damageText = damageEl.innerText.trim();
+            const damageRegex = /(\d+)d(\d+)\s*(?:([+-])\s*(\d+))?/;
+            const match = damageText.match(damageRegex);
+            if (match) {
+                const qty = parseInt(match[1], 10);
+                const faces = parseInt(match[2], 10);
+                const sign = match[3] === '-' ? -1 : 1;
+                const flat = match[4] ? parseInt(match[4], 10) : 0;
+                const bonus = sign * flat;
+                
+                const typeName = `D${faces}`;
+                const dieId = `d${faces}`;
+                
+                const counts = {};
+                counts[dieId] = qty;
+                const diceById = {};
+                diceById[dieId] = { id: dieId, style: "Standard", type: typeName };
+
+                rolls.push({
+                    name: attackName + " (Daño)",
+                    category: "Daño",
+                    counts: counts,
+                    bonus: bonus,
+                    advantage: null,
+                    diceById: diceById,
+                    isDamage: true
+                });
+            }
+        }
+    });
+
+    // 3. Devolver JSON estructurado para BetterDice
+    return {
+        type: "better-dice-mod-pj",
+        version: 1,
+        group: charName,
+        rolls: rolls
+    };
+}
+
+function downloadJSON(data) {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href",     dataStr);
+    downloadAnchorNode.setAttribute("download", `${data.name.replace(/\s+/g, '_')}.json`);
+    document.body.appendChild(downloadAnchorNode); // requerido para Firefox
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+}
