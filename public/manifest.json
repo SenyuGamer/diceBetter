@@ -1,12 +1,12 @@
 {
-  "name": "BetterDice Mod",
+  "name": "BetterDice Mod [Experimental]",
   "version": "2.1.6",
   "manifest_version": 1,
   "author": "SenyuDev",
   "icon": "/logo.png",
   "description": "BetterDice Mod con el Compendio de 5 herramientas del bandido y tiradas avanzadas.",
   "action": {
-    "title": "BetterDice",
+    "title": "BetterDice [Exp]",
     "icon": "/icon.svg",
     "popover": "/",
     "height": 700,

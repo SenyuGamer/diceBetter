@@ -2,12 +2,12 @@
 import { InteractiveTray } from "./tray/InteractiveTray";
 import { Sidebar } from "./controls/Sidebar";
 import { QuickRollPanel } from "./controls/QuickRollPanel";
-
-
+import { Beyond20Listener } from "./plugin/Beyond20Listener";
 
 export function App() {
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
+      <Beyond20Listener />
       {/* 3D Tray spans the entire screen in the background */}
       <div style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 0 }}>
         <InteractiveTray />
