@@ -1,0 +1,21 @@
+.betterdice-export-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #e53935;
+    color: white;
+    font-family: Roboto, Helvetica, sans-serif;
+    font-weight: bold;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    z-index: 99999;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+    border: 2px solid white;
+    transition: transform 0.2s, background-color 0.2s;
+}
+
+.betterdice-export-btn:hover {
+    background-color: #d32f2f;
+    transform: translateY(-2px);
+}
