@@ -58,7 +58,7 @@ function scrapeCharacter() {
                     bonus: bonus,
                     advantage: null,
                     diceById: {
-                        "d20": { id: "d20", style: "Standard", type: "D20" }
+                        "d20": { id: "d20", style: "GALAXY", type: "D20" }
                     },
                     isDamage: false
                 });
@@ -84,7 +84,7 @@ function scrapeCharacter() {
                 const counts = {};
                 counts[dieId] = qty;
                 const diceById = {};
-                diceById[dieId] = { id: dieId, style: "Standard", type: typeName };
+                diceById[dieId] = { id: dieId, style: "GALAXY", type: typeName };
 
                 rolls.push({
                     name: attackName + " (Daño)",
@@ -117,7 +117,7 @@ function scrapeCharacter() {
                     counts: { "d20": 1 },
                     bonus: bonus,
                     advantage: null,
-                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
             }
@@ -142,7 +142,7 @@ function scrapeCharacter() {
                     counts: { "d20": 1 },
                     bonus: bonus,
                     advantage: null,
-                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
             }
