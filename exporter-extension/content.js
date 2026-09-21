@@ -21,14 +21,14 @@ btn.addEventListener("click", () => {
 
 function scrapeCharacter() {
     // 1. Obtener Nombre del Personaje y Avatar
-    const nameNode = document.querySelector(".ddbc-character-name");
-    const charName = nameNode ? nameNode.innerText.trim() : "Personaje Desconocido";
+    const nameNode = document.querySelector(".ddbc-character-name, .ct-character-name");
+    const charName = (nameNode && nameNode.textContent) ? nameNode.textContent.trim() : "Personaje_Desconocido";
 
-    const avatarNode = document.querySelector(".ddbc-character-avatar__portrait");
+    const avatarNode = document.querySelector(".ddbc-character-avatar__portrait, .ct-character-avatar__portrait");
     let avatarUrl = "";
     if (avatarNode) {
         const bgImage = window.getComputedStyle(avatarNode).backgroundImage;
-        if (bgImage && bgImage !== "none") {
+        if (bgImage && typeof bgImage === 'string' && bgImage !== "none") {
             avatarUrl = bgImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '');
         }
     }
@@ -36,21 +36,20 @@ function scrapeCharacter() {
     const rolls = [];
 
     // 2. Extraer Ataques (Armas y Hechizos en la pestaña "Actions")
-    // D&D Beyond usa las clases .ddbc-combat-attack o .ct-combat-attack
     const attackRows = document.querySelectorAll(".ddbc-combat-attack, .ct-combat-attack");
     
     attackRows.forEach(row => {
-        // Nombre del arma/hechizo
         const nameEl = row.querySelector(".ddbc-combat-attack__name, .ct-combat-attack__name");
         if (!nameEl) return;
-        const attackName = nameEl.innerText.trim().replace(/\n/g, ' ');
+        const rawName = (nameEl.textContent || "").trim();
+        const attackName = rawName.replace(/\n/g, ' ');
 
         // Ataque (To Hit)
         const toHitEl = row.querySelector(".ddbc-combat-attack__tohit, .ct-combat-attack__tohit");
         if (toHitEl) {
-            const hitText = toHitEl.innerText.trim();
+            const hitText = (toHitEl.textContent || "").trim();
             const match = hitText.match(/([+-]\s*\d+)/);
-            if (match) {
+            if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
                 rolls.push({
                     name: attackName + " (Ataque)",
@@ -69,11 +68,10 @@ function scrapeCharacter() {
         // Daño (Damage)
         const damageEl = row.querySelector(".ddbc-combat-attack__damage, .ct-combat-attack__damage");
         if (damageEl) {
-            // Ejemplo: "1d8 + 5 Slashing"
-            const damageText = damageEl.innerText.trim();
+            const damageText = (damageEl.textContent || "").trim();
             const damageRegex = /(\d+)d(\d+)\s*(?:([+-])\s*(\d+))?/;
             const match = damageText.match(damageRegex);
-            if (match) {
+            if (match && match[1] && match[2]) {
                 const qty = parseInt(match[1], 10);
                 const faces = parseInt(match[2], 10);
                 const sign = match[3] === '-' ? -1 : 1;
@@ -108,10 +106,10 @@ function scrapeCharacter() {
         const modEl = save.querySelector(".ddbc-saving-throws-summary__ability-modifier, .ct-saving-throws-summary__ability-modifier");
         
         if (nameEl && modEl) {
-            const saveName = nameEl.innerText.trim();
-            const modText = modEl.innerText.trim();
+            const saveName = (nameEl.textContent || "").trim();
+            const modText = (modEl.textContent || "").trim();
             const match = modText.match(/([+-]\s*\d+)/);
-            if (match) {
+            if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
                 rolls.push({
                     name: saveName + " (Salvación)",
@@ -133,10 +131,10 @@ function scrapeCharacter() {
         const modEl = skill.querySelector(".ddbc-skills__col--modifier, .ct-skills__col--modifier");
         
         if (nameEl && modEl) {
-            const skillName = nameEl.innerText.trim();
-            const modText = modEl.innerText.trim();
+            const skillName = (nameEl.textContent || "").trim();
+            const modText = (modEl.textContent || "").trim();
             const match = modText.match(/([+-]\s*\d+)/);
-            if (match) {
+            if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
                 rolls.push({
                     name: skillName,
@@ -164,7 +162,8 @@ function downloadJSON(data) {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `${data.group.replace(/\s+/g, '_')}.json`);
+    const safeName = (data.group || "Personaje").replace(/\s+/g, '_');
+    downloadAnchorNode.setAttribute("download", `${safeName}.json`);
     document.body.appendChild(downloadAnchorNode); // requerido para Firefox
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
