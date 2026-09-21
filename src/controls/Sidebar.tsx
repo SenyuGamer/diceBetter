@@ -26,6 +26,8 @@ import { DiceHidden } from "./DiceHidden";
 import { DiceExtras } from "./DiceExtras";
 import { BlessButton } from "./BlessButton";
 import { DiceHistory } from "./DiceHistory";
+import { GlobalHistory } from "./GlobalHistory";
+import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
 import { CompendiumModal } from "./CompendiumModal";
@@ -157,20 +159,13 @@ export function Sidebar() {
         >
           <Stack gap={1} alignItems="center" pb={1}>
             <DiceHistory />
+            <GlobalHistory />
             <Tooltip title="Tiradas Guardadas" placement="right" disableInteractive>
               <IconButton
                 id="saved-rolls-button"
                 onClick={() => setSavedRollsOpen(true)}
               >
                 <BookmarkIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Compendio (5 herramientas del bandido)" placement="right" disableInteractive>
-              <IconButton
-                id="compendium-button"
-                onClick={() => setCompendiumOpen(true)}
-              >
-                <MenuBookIcon />
               </IconButton>
             </Tooltip>
             <FairnessTesterButton />

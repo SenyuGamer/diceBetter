@@ -7,7 +7,7 @@ import Chip from "@mui/material/Chip";
 import Box from "@mui/material/Box";
 import Tooltip from "@mui/material/Tooltip";
 
-import HistoryIcon from "@mui/icons-material/SavedSearchRounded";
+import HistoryIcon from "@mui/icons-material/History";
 import NoHistoryIcon from "@mui/icons-material/ManageSearchRounded";
 import ReplayIcon from "@mui/icons-material/ReplayRounded";
 import DeleteIcon from "@mui/icons-material/DeleteRounded";

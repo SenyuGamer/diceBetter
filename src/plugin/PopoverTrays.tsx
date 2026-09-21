@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import Box from "@mui/material/Box";
 
+import { GlobalHistorySync } from "./GlobalHistorySync";
 import { PopoverTray } from "./PopoverTray";
 import { getPluginId } from "./getPluginId";
 import { useSimplify3D } from "./useSimplify3D";
@@ -69,6 +70,7 @@ export function PopoverTrays() {
       top="0"
       overflow="hidden"
     >
+      <GlobalHistorySync />
       {players.map((player) => {
         const index = visibleTrays.indexOf(player.connectionId);
         const trayHeight = simplify ? 48 : 298;
