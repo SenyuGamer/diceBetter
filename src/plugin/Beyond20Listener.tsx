@@ -12,8 +12,13 @@ export function Beyond20Listener() {
       // Allow receiving testing messages from our own window or from Beyond20
       if (event.data?.type === "Beyond20_Roll") {
         console.log("Beyond20_Roll Event Received:", event.data);
-        const request = event.data.data;
+        let request = event.data.data;
         if (!request) return;
+
+        // Si viene de un RenderedRoll (owl20 o nuestro bridge), la tirada real está dentro de .request
+        if (request.action === "rendered-roll" && request.request) {
+            request = request.request;
+        }
 
         // Parse advantage
         let advantage: Advantage = null;

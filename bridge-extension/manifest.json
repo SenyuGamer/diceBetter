@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "BetterDice Bridge para Beyond20",
+  "version": "1.0",
+  "description": "Puente para conectar las tiradas de Beyond20 con la extensión BetterDice Mod en Owlbear Rodeo.",
+  "author": "SenyuDev",
+  "content_scripts": [
+    {
+      "matches": ["*://www.owlbear.rodeo/*", "*://owlbear.rodeo/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
