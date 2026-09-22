@@ -4,6 +4,7 @@ import { useDiceControlsStore, Advantage } from "../controls/store";
 import { getDiceToRoll } from "../controls/store";
 import { parseDiceString } from "../utils/compendiumParser";
 import { DiceRoll } from "../types/DiceRoll";
+import { useDiceHistoryStore } from "../controls/history";
 
 
 export function Beyond20Listener() {
@@ -86,12 +87,14 @@ export function Beyond20Listener() {
         }
 
         // Generate the DiceRoll payload
+        const controlsState = useDiceControlsStore.getState();
+        
         const dice = getDiceToRoll(
           allCounts,
           advantage,
           allDiceById,
-          isDamage ? false : undefined, // Ignore bless for damage
-          0
+          isDamage ? false : controlsState.blessActive,
+          isDamage ? 0 : controlsState.blessCount
         );
 
         const roll: DiceRoll = {
@@ -102,11 +105,19 @@ export function Beyond20Listener() {
         };
 
         if (dice.length > 0) {
-          // Optional: Send this via OBR.broadcast instead of rolling directly
-          // For now, let's just trigger the local roll directly to test it out!
           useDiceRollStore.getState().startRoll(roll);
+          
+          // Añadir al historial local del jugador (DiceHistory)
+          useDiceHistoryStore.getState().pushRecentRoll({
+            id: roll.recentRollId,
+            advantage: advantage,
+            counts: allCounts,
+            bonus: totalBonus,
+            diceById: allDiceById
+          });
+
         } else {
-          console.warn("Beyond20 event did not contain valid dice to roll:", request);
+          console.warn("BeyondOwl event did not contain valid dice to roll:", request);
         }
       }
     };

@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "BeyondOwl",
+  "version": "1.0.0",
+  "description": "Lanza dados de D&D Beyond en Owlbear Rodeo",
+  "permissions": ["tabs", "storage"],
+  "host_permissions": [
+    "*://*.dndbeyond.com/*",
+    "https://www.owlbear.rodeo/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.dndbeyond.com/*characters/*", "*://*.dndbeyond.com/characters/*"],
+      "js": [
+        "src/dndbeyond/scraper.js",
+        "src/dndbeyond/buttons.js",
+        "src/dndbeyond/widget.js"
+      ],
+      "css": ["beyondowl.css"],
+      "run_at": "document_end"
+    },
+    {
+      "matches": ["https://www.owlbear.rodeo/*"],
+      "js": ["src/owlbear/bridge.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
