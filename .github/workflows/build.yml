@@ -1,0 +1,48 @@
+name: Build and Package
+
+on:
+  push:
+    branches: [ "main", "experimental" ]
+  pull_request:
+    branches: [ "main", "experimental" ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build BetterDice (Owlbear Rodeo Plugin)
+      run: npm run build
+
+    - name: Upload BetterDice Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: BetterDice-Build
+        path: dist/
+        retention-days: 7
+
+    - name: Package BeyondOwl Extension
+      run: |
+        cd BeyondOwl
+        zip -r ../BeyondOwl-Extension.zip *
+        cd ..
+
+    - name: Upload BeyondOwl Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: BeyondOwl-Extension
+        path: BeyondOwl-Extension.zip
+        retention-days: 7
