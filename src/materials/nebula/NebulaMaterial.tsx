@@ -24,7 +24,7 @@ export function NebulaMaterial({
         emissiveIntensity={0.2}
         roughness={0.5}
         metalness={0.1}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -44,7 +44,7 @@ export function NebulaMaterial({
       iridescenceThicknessRange={[100, 400]}
       clearcoat={0.2}
       clearcoatRoughness={0.4}
-      {...props}
+      {...(props as any)}
     />
   );
 }

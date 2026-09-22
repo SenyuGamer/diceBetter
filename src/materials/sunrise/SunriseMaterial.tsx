@@ -22,7 +22,7 @@ export function SunriseMaterial({
         color={new THREE.Color("#ff8800")} // Orange tint
         roughness={0.5}
         metalness={0.1}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -37,7 +37,7 @@ export function SunriseMaterial({
       normalMap={normalMap}
       clearcoat={0.2}
       clearcoatRoughness={0.4}
-      {...props}
+      {...(props as any)}
     />
   );
 }

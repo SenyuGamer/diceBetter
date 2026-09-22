@@ -50,7 +50,7 @@ export function DicePicker() {
                 handleDiceCountIncrease(id);
                 clearRollIfNeeded();
               }}
-              onContextMenu={(e) => {
+              onContextMenu={(e: any) => {
                 e.preventDefault();
                 if (count > 0) {
                   handleDiceCountDecrease(id);

@@ -27,7 +27,7 @@ export function GlassMaterial({
         metalnessMap={maskMap}
         roughness={1.0}
         metalness={0.5}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -49,7 +49,7 @@ export function GlassMaterial({
       envMapIntensity={1.0}
       attenuationColor={new THREE.Color("#bbffff")}
       attenuationDistance={0.5}
-      {...props}
+      {...(props as any)}
     />
   );
 }

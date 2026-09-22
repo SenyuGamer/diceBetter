@@ -240,7 +240,7 @@ export function FairnessTester() {
                 <Slider
                   aria-labelledby="rolls-label"
                   value={numberRolls}
-                  onChange={(_, v) => !Array.isArray(v) && setNumberRolls(v)}
+                  onChange={(_: any, v: any) => !Array.isArray(v) && setNumberRolls(v)}
                   min={0}
                   max={2000}
                   defaultValue={500}

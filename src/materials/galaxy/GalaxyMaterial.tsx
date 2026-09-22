@@ -22,7 +22,7 @@ export function GalaxyMaterial({
         color={new THREE.Color("#d8b4fe")} // Brighter purple
         roughness={0.5}
         metalness={0.1}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -40,7 +40,7 @@ export function GalaxyMaterial({
       iridescence={0.5}
       iridescenceIOR={2.0}
       iridescenceThicknessRange={[200, 600]}
-      {...props}
+      {...(props as any)}
     />
   );
 }

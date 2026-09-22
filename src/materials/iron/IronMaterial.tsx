@@ -22,7 +22,7 @@ export function IronMaterial({
         color={new THREE.Color("#ffffff")} // Silver/Iron
         roughness={0.6}
         metalness={0.8}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -39,7 +39,7 @@ export function IronMaterial({
       roughness={0.5}
       clearcoat={0.1}
       clearcoatRoughness={0.5}
-      {...props}
+      {...(props as any)}
     />
   );
 }

@@ -22,7 +22,7 @@ export function GemstoneMaterial({
         color={new THREE.Color("#00ff66")} // Emerald tint
         roughness={0.5}
         metalness={0.1}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -41,7 +41,7 @@ export function GemstoneMaterial({
       clearcoatRoughness={0.2}
       iridescence={0.1}
       iridescenceIOR={1.5}
-      {...props}
+      {...(props as any)}
     />
   );
 }

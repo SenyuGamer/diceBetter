@@ -259,7 +259,7 @@ function DicePickedControls() {
       >
         <Tooltip title="Clear" disableInteractive>
           <IconButton
-            onClick={(e) => {
+            onClick={(e: any) => {
               e.stopPropagation();
               handleReset();
             }}

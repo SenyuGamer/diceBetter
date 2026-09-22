@@ -24,7 +24,8 @@ export function DiceRoll({
   onRollFinished?: (
     id: string,
     number: number,
-    transform: DiceTransform
+    transform: DiceTransform,
+    isCocked: boolean
   ) => void;
   finishedTransforms?: Record<string, DiceTransform>;
   /** An updated ref of the current dice transforms */

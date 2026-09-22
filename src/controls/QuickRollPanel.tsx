@@ -339,7 +339,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
             {/* Advantage - top */}
             <Tooltip title="Ventaja" placement="left" disableInteractive>
               <IconButton
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.stopPropagation();
                   handleRoll("ADVANTAGE");
                 }}
@@ -367,7 +367,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
             {/* Disadvantage - bottom */}
             <Tooltip title="Desventaja" placement="left" disableInteractive>
               <IconButton
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.stopPropagation();
                   handleRoll("DISADVANTAGE");
                 }}

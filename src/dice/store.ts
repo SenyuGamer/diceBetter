@@ -131,7 +131,8 @@ function rerollDraft(
         manualThrows,
         rollValues,
         rollTransforms,
-        rollThrows
+        rollThrows,
+        rollCocked
       );
     }
   }

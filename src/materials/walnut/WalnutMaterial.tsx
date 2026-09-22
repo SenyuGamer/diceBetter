@@ -20,7 +20,7 @@ export function WalnutMaterial({
         map={albedoMap}
         roughness={0.7}
         metalness={0}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -34,7 +34,7 @@ export function WalnutMaterial({
       normalMap={normalMap}
       roughness={1.0}
       metalness={0.0}
-      {...props}
+      {...(props as any)}
     />
   );
 }

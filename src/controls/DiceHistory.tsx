@@ -161,7 +161,7 @@ function RecentRollChip({
             <ReplayIcon
               fontSize="small"
               sx={{ cursor: "pointer", opacity: 0.7, "&:hover": { opacity: 1 } }}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e.stopPropagation();
                 onRoll();
               }}
@@ -171,7 +171,7 @@ function RecentRollChip({
             <DeleteIcon
               fontSize="small"
               sx={{ cursor: "pointer" }}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e.stopPropagation();
                 onDelete();
               }}

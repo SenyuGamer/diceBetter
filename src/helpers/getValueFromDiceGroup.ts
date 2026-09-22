@@ -8,8 +8,7 @@ let highestDot = -1;
 let dot = -1;
 let highestNumber = 0;
 
-/** Get the number facing up on a 3D dice group */
-export function getValueFromDiceGroup(parent: THREE.Group): number {
+export function getValueFromDiceGroup(parent: THREE.Group): { value: number; isCocked: boolean } {
   // Reset the order variables
   highestDot = -1;
   highestNumber = 0;

@@ -37,7 +37,7 @@ export function PlasmaMaterial({
         emissiveMap={maskMap}
         roughness={0.5}
         metalness={0.5}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -56,7 +56,7 @@ export function PlasmaMaterial({
       clearcoatRoughness={0.0}
       iridescence={1.0}
       iridescenceIOR={1.5}
-      {...props}
+      {...(props as any)}
     />
   );
 }

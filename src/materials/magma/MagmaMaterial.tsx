@@ -36,7 +36,7 @@ export function MagmaMaterial({
         emissiveIntensity={1.0}
         roughness={0.6}
         metalness={0.2}
-        {...props}
+        {...(props as any)}
       />
     );
   }
@@ -53,7 +53,7 @@ export function MagmaMaterial({
       normalScale={new THREE.Vector2(1.5, 1.5)}
       clearcoat={1.0}
       clearcoatRoughness={0.1}
-      {...props}
+      {...(props as any)}
     />
   );
 }

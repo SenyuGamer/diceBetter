@@ -98,7 +98,7 @@ export function GlobalHistorySync() {
                   let history = (meta[HISTORY_KEY] || []) as GlobalRoll[];
                   const existingIndex = history.findIndex(r => r.id === roll.recentRollId);
                   if (existingIndex !== -1) {
-                     history[existingIndex].result = finalValue;
+                     history[existingIndex].result = finalValue as number;
                      OBR.room.setMetadata({ [HISTORY_KEY]: history });
                   }
                });
