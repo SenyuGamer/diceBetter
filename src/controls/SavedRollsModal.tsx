@@ -126,7 +126,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
     if (!file) return;
 
     const reader = new FileReader();
-    reader.onload = (e) => {
+    reader.onload = (e: any) => {
       try {
         const content = e.target?.result as string;
         const data = JSON.parse(content);
@@ -214,24 +214,24 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                     alignItems="center"
                     gap={1}
                     flexGrow={1}
-                    onClick={(e) => e.stopPropagation()}
+                    onClick={(e: any) => e.stopPropagation()}
                   >
                     {editingGroup === group ? (
                       <Stack direction="row" alignItems="center" gap={0.5}>
                         <TextField
                           value={editGroupValue}
-                          onChange={(e) => setEditGroupValue(e.target.value)}
+                          onChange={(e: any) => setEditGroupValue(e.target.value)}
                           size="small"
                           variant="standard"
                           autoFocus
-                          onKeyDown={(e) => {
+                          onKeyDown={(e: any) => {
                             if (e.key === "Enter") handleConfirmRename();
                           }}
-                          onClick={(e) => e.stopPropagation()}
+                          onClick={(e: any) => e.stopPropagation()}
                         />
                         <IconButton
                           size="small"
-                          onClick={(e) => {
+                          onClick={(e: any) => {
                             e.stopPropagation();
                             handleConfirmRename();
                           }}
@@ -248,8 +248,8 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                           type="color"
                           title="Cambiar color del personaje"
                           value={groupColors?.[group] || stringToColor(group)}
-                          onChange={(e) => setGroupColor(group, e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
+                          onChange={(e: any) => setGroupColor(group, e.target.value)}
+                          onClick={(e: any) => e.stopPropagation()}
                           style={{
                             width: "24px",
                             height: "24px",
@@ -267,11 +267,11 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                     )}
                   </Stack>
                   {editingGroup !== group && (
-                    <Stack direction="row" gap={0.5} mr={1}>
+                    <Stack direction="row" gap={0.5} mr={1} alignItems="center">
                       <Tooltip title={favoriteGroups.includes(group) ? "Quitar de acceso rápido" : "Acceso rápido"}>
                         <IconButton
                           size="small"
-                          onClick={(e) => {
+                          onClick={(e: any) => {
                             e.stopPropagation();
                             toggleFavoriteGroup(group);
                           }}
@@ -291,7 +291,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                       <Tooltip title="Renombrar grupo">
                         <IconButton
                           size="small"
-                          onClick={(e) => {
+                          onClick={(e: any) => {
                             e.stopPropagation();
                             handleStartRename(group);
                           }}
@@ -302,7 +302,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                       <Tooltip title="Exportar grupo">
                         <IconButton
                           size="small"
-                          onClick={(e) => {
+                          onClick={(e: any) => {
                             e.stopPropagation();
                             handleExportGroup(group);
                           }}
@@ -313,7 +313,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                       <Tooltip title="Eliminar grupo">
                         <IconButton
                           size="small"
-                          onClick={(e) => {
+                          onClick={(e: any) => {
                             e.stopPropagation();
                             removeGroup(group);
                           }}
@@ -467,15 +467,15 @@ function SavedRollChip({
             size="small"
             label="Nombre de la tirada"
             value={editName}
-            onChange={(e) => setEditName(e.target.value)}
+            onChange={(e: any) => setEditName(e.target.value)}
             fullWidth
           />
           <Autocomplete
             freeSolo
             options={groups}
             value={editGroup}
-            onChange={(_, newValue) => setEditGroup(newValue || "")}
-            onInputChange={(_, newValue) => setEditGroup(newValue)}
+            onChange={(_: any, newValue) => setEditGroup(newValue || "")}
+            onInputChange={(_: any, newValue) => setEditGroup(newValue)}
             renderInput={(params) => (
               <TextField {...params} label="Grupo (Personaje / Monstruo)" size="small" />
             )}
@@ -484,8 +484,8 @@ function SavedRollChip({
             freeSolo
             options={["Acciones y Ataques", "Pruebas de Característica", "Tiradas de Salvación", "Armas y Daño"]}
             value={editCategory}
-            onChange={(_, newValue) => setEditCategory(newValue || "")}
-            onInputChange={(_, newValue) => setEditCategory(newValue)}
+            onChange={(_: any, newValue) => setEditCategory(newValue || "")}
+            onInputChange={(_: any, newValue) => setEditCategory(newValue)}
             renderInput={(params) => (
               <TextField {...params} label="Categoría (Opcional)" size="small" placeholder="Ej. Acciones, Habilidades..." />
             )}
@@ -494,7 +494,7 @@ function SavedRollChip({
             control={
               <Switch
                 checked={editIsDamage}
-                onChange={(e) => setEditIsDamage(e.target.checked)}
+                onChange={(e: any) => setEditIsDamage(e.target.checked)}
                 size="small"
               />
             }
@@ -614,7 +614,7 @@ function SavedRollChip({
             <EditIcon
               fontSize="small"
               sx={{ cursor: "pointer", opacity: 0.7, "&:hover": { opacity: 1 } }}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e.stopPropagation();
                 setIsEditing(true);
               }}
@@ -624,7 +624,7 @@ function SavedRollChip({
             <DeleteIcon
               fontSize="small"
               sx={{ cursor: "pointer" }}
-              onClick={(e) => {
+              onClick={(e: any) => {
                 e.stopPropagation();
                 onDelete();
               }}
@@ -739,7 +739,7 @@ function SaveCurrentRollForm({
           label="Nombre de la tirada"
           placeholder="Ej: Ataque espada"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e: any) => setName(e.target.value)}
           size="small"
           fullWidth
           disabled={!hasDice}
@@ -763,8 +763,8 @@ function SaveCurrentRollForm({
           freeSolo
           options={["Acciones y Ataques", "Pruebas de Característica", "Tiradas de Salvación", "Armas y Daño"]}
           value={category}
-          onChange={(_, newValue) => setCategory(newValue || "")}
-          onInputChange={(_, newValue) => setCategory(newValue)}
+          onChange={(_: any, newValue) => setCategory(newValue || "")}
+          onInputChange={(_: any, newValue) => setCategory(newValue)}
           renderInput={(params) => (
             <TextField 
               {...params} 
@@ -779,7 +779,7 @@ function SaveCurrentRollForm({
           control={
             <Switch
               checked={isDamage}
-              onChange={(e) => setIsDamage(e.target.checked)}
+              onChange={(e: any) => setIsDamage(e.target.checked)}
               size="small"
               disabled={!hasDice}
             />

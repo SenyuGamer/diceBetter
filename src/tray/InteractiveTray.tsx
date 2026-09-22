@@ -22,6 +22,7 @@ import { FairnessTester } from "../tests/FairnessTester";
 import { getDiceToRoll, useDiceControlsStore } from "../controls/store";
 import { useDiceRollStore } from "../dice/store";
 import { getDieFromDice } from "../helpers/getDieFromDice";
+import { CockedMarkers } from "../dice/CockedMarkers";
 
 function useTrayScale() {
   const counts = useDiceControlsStore((state) => state.diceCounts);
@@ -43,9 +44,9 @@ function useTrayScale() {
 
   const currentCount = Math.max(previewDiceCount, activeDiceCount);
   
-  if (currentCount > 20) return 2.0;
-  if (currentCount > 10) return 1.5;
-  return 1.0;
+  if (currentCount > 20) return 1.6;
+  if (currentCount > 10) return 1.2;
+  return 0.8;
 }
 
 /** Dice tray that controls the dice roll store */
@@ -76,7 +77,7 @@ export function InteractiveTray() {
             <Environment files={environment} />
             <ContactShadows
               resolution={256}
-              scale={[1 * trayScale, 2 * trayScale]}
+              scale={[2.2 * trayScale, 2.2 * trayScale]}
               position={[0, 0, 0]}
               blur={0.5}
               opacity={0.5}
@@ -86,10 +87,11 @@ export function InteractiveTray() {
             <Tray scale={trayScale} />
             <PreviewDiceRoll trayScale={trayScale} />
             <InteractiveDiceRoll trayScale={trayScale} />
+            <CockedMarkers />
             <PerspectiveCamera
               makeDefault
-              fov={28}
-              position={[0, 4.3 * trayScale, 0]}
+              fov={15}
+              position={[0, 8.5 * trayScale, 0]}
               rotation={[-Math.PI / 2, 0, 0]}
             />
 

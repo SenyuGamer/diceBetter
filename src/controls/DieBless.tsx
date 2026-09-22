@@ -51,7 +51,7 @@ export function DieBless({
             <Switch
               size="small"
               checked={active}
-              onChange={(e) => onActiveChange(e.target.checked)}
+              onChange={(e: any) => onActiveChange(e.target.checked)}
               color="warning"
             />
             <Input
@@ -63,14 +63,14 @@ export function DieBless({
                 },
               }}
               value={countString}
-              onChange={(e) => {
+              onChange={(e: any) => {
                 setCountString(e.target.value);
                 const newCount = parseInt(e.target.value);
                 if (!isNaN(newCount)) {
                   onCountChange(newCount);
                 }
               }}
-              onBlur={(e) => {
+              onBlur={(e: any) => {
                 const currentCount = parseInt(e.target.value);
                 if (isNaN(currentCount) || currentCount < 1) {
                   onCountChange(1);

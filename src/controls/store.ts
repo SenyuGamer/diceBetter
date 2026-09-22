@@ -1,5 +1,6 @@
 import create from "zustand";
 import { immer } from "zustand/middleware/immer";
+import { persist } from "zustand/middleware";
 import { diceSets } from "../sets/diceSets";
 import { Dice } from "../types/Dice";
 import { DiceSet } from "../types/DiceSet";
@@ -34,6 +35,8 @@ interface DiceControlsState {
   toggleFairnessTester: () => void;
   setBlessActive: (active: boolean) => void;
   setBlessCount: (count: number) => void;
+  simplify3D: boolean;
+  toggleSimplify3D: () => void;
 }
 
 const initialSet = diceSets[0];
@@ -41,20 +44,21 @@ const initialDiceCounts = getDiceCountsFromSet(initialSet);
 const initialDiceById = getDiceByIdFromSet(initialSet);
 
 export const useDiceControlsStore = create<DiceControlsState>()(
-  immer((set) => ({
-    diceSet: initialSet,
-    diceById: initialDiceById,
-    defaultDiceCounts: initialDiceCounts,
-    diceCounts: initialDiceCounts,
-    diceBonus: 0,
-    diceAdvantage: null,
-    diceHidden: false,
-    diceRollPressTime: null,
-    fairnessTesterOpen: false,
-    blessActive: false,
-    blessCount: 1,
-    changeDiceSet(diceSet) {
-      set((state) => {
+  persist(
+    immer((set) => ({
+      diceSet: initialSet,
+      diceById: initialDiceById,
+      defaultDiceCounts: initialDiceCounts,
+      diceCounts: initialDiceCounts,
+      diceBonus: 0,
+      diceAdvantage: null,
+      diceHidden: false,
+      diceRollPressTime: null,
+      fairnessTesterOpen: false,
+      blessActive: false,
+      blessCount: 1,
+      changeDiceSet(diceSet) {
+        set((state) => {
         const counts: DiceCounts = {};
         const prevCounts = state.diceCounts;
         const prevDice = state.diceSet.dice;
@@ -187,7 +191,20 @@ export const useDiceControlsStore = create<DiceControlsState>()(
         state.blessCount = count;
       });
     },
-  }))
+      simplify3D: false,
+      toggleSimplify3D() {
+        set((state) => {
+          state.simplify3D = !state.simplify3D;
+        });
+      },
+    })),
+    {
+      name: "dice-controls-storage",
+      partialize: (state) => ({ 
+        simplify3D: state.simplify3D 
+      }),
+    }
+  )
 );
 
 function getDiceCountsFromSet(diceSet: DiceSet) {

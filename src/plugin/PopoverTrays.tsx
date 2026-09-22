@@ -5,7 +5,6 @@ import { Beyond20Listener } from "./Beyond20Listener";
 import { GlobalHistorySync } from "./GlobalHistorySync";
 import { PopoverTray } from "./PopoverTray";
 import { getPluginId } from "./getPluginId";
-import { useSimplify3D } from "./useSimplify3D";
 
 export function PopoverTrays() {
   const [players, setPlayers] = useState<Player[]>([]);
@@ -15,7 +14,6 @@ export function PopoverTrays() {
   }, []);
   useEffect(() => OBR.party.onChange(setPlayers), []);
 
-  const { simplify } = useSimplify3D();
   const [visibleTrays, setVisibleTrays] = useState<string[]>([]);
 
   useEffect(() => {
@@ -51,13 +49,13 @@ export function PopoverTrays() {
       OBR.popover.setHeight(getPluginId("popover"), 0);
       OBR.popover.setWidth(getPluginId("popover"), 0);
     } else {
-      const trayHeight = simplify ? 48 : 298;
+      const trayHeight = 298;
       // Height = (Tray height + Margin 16) * number of trays
       OBR.popover.setHeight(getPluginId("popover"), visibleTrays.length * trayHeight);
       // Width = Tray 250 + Margin 16
       OBR.popover.setWidth(getPluginId("popover"), 266);
     }
-  }, [hidden, visibleTrays.length, simplify]);
+  }, [hidden, visibleTrays.length]);
 
   return (
     <Box
@@ -73,7 +71,7 @@ export function PopoverTrays() {
       <GlobalHistorySync />
       {players.map((player) => {
         const index = visibleTrays.indexOf(player.connectionId);
-        const trayHeight = simplify ? 48 : 298;
+        const trayHeight = 298;
         const bottomOffset = index !== -1 ? 16 + index * trayHeight : 16;
         return (
           <PopoverTray

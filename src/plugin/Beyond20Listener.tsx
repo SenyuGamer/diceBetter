@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDiceRollStore } from "../dice/store";
 import { useDiceControlsStore, Advantage } from "../controls/store";
 import { getDiceToRoll } from "../controls/store";
-import { parseDiceString } from "../utils/compendiumParser";
+import { parseDiceString } from "../utils/diceStringParser";
 import { DiceRoll } from "../types/DiceRoll";
 import { useDiceHistoryStore } from "../controls/history";
 

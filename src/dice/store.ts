@@ -27,11 +27,15 @@ interface DiceRollState {
    * A mapping from the die ID to its initial roll throw state.
    */
   rollThrows: Record<string, DiceThrow>;
+  /**
+   * A mapping from the die ID to a boolean indicating if it is cocked.
+   */
+  rollCocked: Record<string, boolean>;
   startRoll: (roll: DiceRoll, speedMultiplier?: number) => void;
   clearRoll: (ids?: string) => void;
   /** Reroll select ids of dice or reroll all dice by passing `undefined` */
   reroll: (ids?: string[], manualThrows?: Record<string, DiceThrow>) => void;
-  finishDieRoll: (id: string, number: number, transform: DiceTransform) => void;
+  finishDieRoll: (id: string, number: number, transform: DiceTransform, isCocked: boolean) => void;
 }
 
 export const useDiceRollStore = create<DiceRollState>()(
@@ -40,15 +44,17 @@ export const useDiceRollStore = create<DiceRollState>()(
     rollValues: {},
     rollTransforms: {},
     rollThrows: {},
+    rollCocked: {},
     startRoll: (roll, speedMultiplier?: number) =>
       set((state) => {
         state.roll = roll;
         state.rollValues = {};
         state.rollTransforms = {};
         state.rollThrows = {};
+        state.rollCocked = {};
         // Set all values to null
         const dice = getDieFromDice(roll);
-        const trayScale = dice.length > 20 ? 2.0 : dice.length > 10 ? 1.5 : 1.0;
+        const trayScale = dice.length > 20 ? 1.6 : dice.length > 10 ? 1.2 : 0.8;
         for (const die of dice) {
           state.rollValues[die.id] = null;
           state.rollTransforms[die.id] = null;
@@ -61,6 +67,7 @@ export const useDiceRollStore = create<DiceRollState>()(
         state.rollValues = {};
         state.rollTransforms = {};
         state.rollThrows = {};
+        state.rollCocked = {};
       }),
     reroll: (ids, manualThrows) => {
       set((state) => {
@@ -71,15 +78,17 @@ export const useDiceRollStore = create<DiceRollState>()(
             manualThrows,
             state.rollValues,
             state.rollTransforms,
-            state.rollThrows
+            state.rollThrows,
+            state.rollCocked
           );
         }
       });
     },
-    finishDieRoll: (id, number, transform) => {
+    finishDieRoll: (id, number, transform, isCocked) => {
       set((state) => {
         state.rollValues[id] = number;
         state.rollTransforms[id] = transform;
+        state.rollCocked[id] = isCocked;
       });
     },
   }))
@@ -92,7 +101,8 @@ function rerollDraft(
   manualThrows: Record<string, DiceThrow> | undefined,
   rollValues: WritableDraft<Record<string, number | null>>,
   rollTransforms: WritableDraft<Record<string, DiceTransform | null>>,
-  rollThrows: WritableDraft<Record<string, DiceThrow>>
+  rollThrows: WritableDraft<Record<string, DiceThrow>>,
+  rollCocked: WritableDraft<Record<string, boolean>>
 ) {
   for (let dieOrDice of diceRoll.dice) {
     if (isDie(dieOrDice)) {
@@ -100,6 +110,7 @@ function rerollDraft(
         delete rollValues[dieOrDice.id];
         delete rollTransforms[dieOrDice.id];
         delete rollThrows[dieOrDice.id];
+        delete rollCocked[dieOrDice.id];
         const manualThrow = manualThrows?.[dieOrDice.id];
         const id = generateDiceId();
         dieOrDice.id = id;
@@ -120,7 +131,8 @@ function rerollDraft(
         manualThrows,
         rollValues,
         rollTransforms,
-        rollThrows
+        rollThrows,
+        rollCocked
       );
     }
   }

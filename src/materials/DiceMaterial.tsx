@@ -7,26 +7,38 @@ import { NebulaMaterial } from "./nebula/NebulaMaterial";
 import { SunriseMaterial } from "./sunrise/SunriseMaterial";
 import { SunsetMaterial } from "./sunset/SunsetMaterial";
 import { WalnutMaterial } from "./walnut/WalnutMaterial";
+import { MagmaMaterial } from "./magma/MagmaMaterial";
+import { PlasmaMaterial } from "./plasma/PlasmaMaterial";
+import { useDiceControlsStore } from "../controls/store";
 
 export function DiceMaterial({ diceStyle }: { diceStyle: DiceStyle }) {
+  const simplify = useDiceControlsStore((state) => state.simplify3D);
+
+  const envInt = 0.4; // Disminuye el brillo y reflejo
+
   switch (diceStyle) {
     case "GALAXY":
-      return <GalaxyMaterial />;
+      return <GalaxyMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "GEMSTONE":
-      return <GemstoneMaterial />;
+      return <GemstoneMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "GLASS":
-      return <GlassMaterial />;
+      return <GlassMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "IRON":
-      return <IronMaterial />;
+      return <IronMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "NEBULA":
-      return <NebulaMaterial />;
+      return <NebulaMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "SUNRISE":
-      return <SunriseMaterial />;
+      return <SunriseMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "SUNSET":
-      return <SunsetMaterial />;
+      return <SunsetMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "WALNUT":
-      return <WalnutMaterial />;
+      return <WalnutMaterial simplify={simplify} envMapIntensity={envInt} />;
+    case "MAGMA":
+      return <MagmaMaterial simplify={simplify} envMapIntensity={envInt} />;
+    case "PLASMA":
+      return <PlasmaMaterial simplify={simplify} envMapIntensity={envInt} />;
     default:
-      return <GalaxyMaterial />;
+      return <GalaxyMaterial simplify={simplify} envMapIntensity={envInt} />;
   }
 }
+

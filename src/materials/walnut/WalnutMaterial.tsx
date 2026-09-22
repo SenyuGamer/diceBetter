@@ -5,22 +5,36 @@ import orm from "./orm.jpg";
 import normal from "./normal.jpg";
 import { gltfTexture } from "../../helpers/gltfTexture";
 
-export function WalnutMaterial(
-  props: JSX.IntrinsicElements["meshStandardMaterial"]
-) {
+export function WalnutMaterial({
+  simplify,
+  ...props
+}: JSX.IntrinsicElements["meshPhysicalMaterial"] & { simplify?: boolean }) {
   const [albedoMap, ormMap, normalMap] = useTexture(
     [albedo, orm, normal],
     (textures) => gltfTexture(textures, ["SRGB", "LINEAR", "LINEAR"])
   );
 
+  if (simplify) {
+    return (
+      <meshStandardMaterial
+        map={albedoMap}
+        roughness={0.7}
+        metalness={0}
+        {...(props as any)}
+      />
+    );
+  }
+
   return (
-    <meshStandardMaterial
+    <meshPhysicalMaterial
       map={albedoMap}
       aoMap={ormMap}
       roughnessMap={ormMap}
       metalnessMap={ormMap}
       normalMap={normalMap}
-      {...props}
+      roughness={1.0}
+      metalness={0.0}
+      {...(props as any)}
     />
   );
 }

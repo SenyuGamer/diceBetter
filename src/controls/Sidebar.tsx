@@ -30,15 +30,14 @@ import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
-import { CompendiumModal } from "./CompendiumModal";
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
 
 import { PluginGate } from "../plugin/PluginGate";
 import { DiceRollSync } from "../plugin/DiceRollSync";
+import { GlobalHistorySync } from "../plugin/GlobalHistorySync";
 import { PartyTrays } from "../plugin/PartyTrays";
 import { ResizeObserver as PluginResizeObserver } from "../plugin/ResizeObserver";
-import { useSimplify3D } from "../plugin/useSimplify3D";
 
 /** A small collapsible section header that fits in the 60px sidebar */
 function SidebarSection({
@@ -93,9 +92,9 @@ export function Sidebar() {
 
   const [additionsOpen, setAdditionsOpen] = useState(false);
   const [savedRollsOpen, setSavedRollsOpen] = useState(false);
-  const [compendiumOpen, setCompendiumOpen] = useState(false);
 
-  const { simplify, toggleSimplify } = useSimplify3D();
+  const simplify = useDiceControlsStore(state => state.simplify3D);
+  const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
 
   return (
     <SimpleBar
@@ -138,8 +137,15 @@ export function Sidebar() {
             {/* 1. Bonus + Ventaja */}
             <DiceExtras />
             {/* 2. Toggle Rendimiento */}
-            <Tooltip title="Modo Rendimiento (sin 3D)" placement="right" disableInteractive>
-              <IconButton onClick={toggleSimplify} sx={{ color: simplify ? "primary.main" : "inherit" }}>
+            <Tooltip title="Modo Rendimiento (3D Simplificado)" placement="right" disableInteractive>
+              <IconButton 
+                onClick={toggleSimplify} 
+                sx={
+                  simplify 
+                    ? { bgcolor: "primary.main", color: "white", "&:hover": { bgcolor: "primary.dark" } }
+                    : undefined
+                }
+              >
                 <SpeedIcon />
               </IconButton>
             </Tooltip>
@@ -183,6 +189,7 @@ export function Sidebar() {
         <PluginGate>
           <Divider flexItem sx={{ mx: 1 }} />
           <DiceRollSync />
+          <GlobalHistorySync readOnly={true} />
           <PartyTrays />
           <PluginResizeObserver />
         </PluginGate>
@@ -196,10 +203,6 @@ export function Sidebar() {
       <SavedRollsModal
         open={savedRollsOpen}
         onClose={() => setSavedRollsOpen(false)}
-      />
-      <CompendiumModal
-        open={compendiumOpen}
-        onClose={() => setCompendiumOpen(false)}
       />
     </SimpleBar>
   );

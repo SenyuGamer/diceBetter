@@ -10,8 +10,23 @@ import * as nebulaPreviews from "../previews/nebula";
 import * as sunrisePreviews from "../previews/sunrise";
 import * as sunsetPreviews from "../previews/sunset";
 import * as walnutPreviews from "../previews/walnut";
+import * as magmaPreviews from "../previews/magma";
+import * as plasmaPreviews from "../previews/plasma";
 
 import allPreview from "../previews/all.png";
+
+const baseColors: Record<DiceStyle, string> = {
+  GALAXY: "#130526",
+  GEMSTONE: "#222222",
+  GLASS: "#222222",
+  IRON: "#252525",
+  NEBULA: "#21162d",
+  SUNRISE: "#3c2130",
+  SUNSET: "#2a1533",
+  WALNUT: "#251711",
+  MAGMA: "#220000",
+  PLASMA: "#001133",
+};
 
 const standardPreviews: Record<DiceStyle, string> = {
   GALAXY: galaxyPreviews.D20,
@@ -22,6 +37,8 @@ const standardPreviews: Record<DiceStyle, string> = {
   SUNRISE: sunrisePreviews.D20,
   SUNSET: sunsetPreviews.D20,
   WALNUT: walnutPreviews.D20,
+  MAGMA: magmaPreviews.D20,
+  PLASMA: plasmaPreviews.D20,
 };
 
 function createStandardSet(style: DiceStyle): DiceSet {
@@ -51,6 +68,8 @@ const standardSets = [
   createStandardSet("SUNRISE"),
   createStandardSet("SUNSET"),
   createStandardSet("WALNUT"),
+  createStandardSet("MAGMA"),
+  createStandardSet("PLASMA"),
 ];
 
 const allSet: DiceSet = {

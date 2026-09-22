@@ -19,7 +19,7 @@ export function TrayMaterial(
       roughnessMap={ormMap}
       metalnessMap={ormMap}
       normalMap={normalMap}
-      {...props}
+      {...(props as any)}
     />
   );
 }

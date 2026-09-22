@@ -1,10 +1,5 @@
-import { TrayMesh } from "../meshes/TrayMesh";
-import { TrayMaterial } from "../materials/tray/TrayMaterial";
+import { HexagonalTray } from "./HexagonalTray";
 
 export function Tray(props: JSX.IntrinsicElements["group"] & { scale?: number }) {
-  return (
-    <TrayMesh {...props}>
-      <TrayMaterial />
-    </TrayMesh>
-  );
+  return <HexagonalTray {...props} />;
 }

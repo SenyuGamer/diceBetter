@@ -46,14 +46,14 @@ export function DieBonus({
               },
             }}
             value={bonusString}
-            onChange={(e) => {
+            onChange={(e: any) => {
               setBonusString(e.target.value);
               const newBonus = parseInt(e.target.value);
               if (!isNaN(newBonus)) {
                 onChange(newBonus);
               }
             }}
-            onBlur={(e) => {
+            onBlur={(e: any) => {
               const currentBonus = parseInt(e.target.value);
               if (isNaN(currentBonus)) {
                 onChange(0);

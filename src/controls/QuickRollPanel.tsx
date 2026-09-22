@@ -154,7 +154,7 @@ function QuickRollGroup({
   function renderCategory(title: string, catRolls: SavedRoll[]) {
     if (catRolls.length === 0) return null;
     return (
-      <Stack alignItems="center" width="100%">
+      <Stack key={title} alignItems="center" width="100%">
         <Typography 
           variant="caption" 
           sx={{ 
@@ -214,15 +214,14 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
 
   const die = primaryDie ? roll.diceById[primaryDie.id] : null;
 
-  let boxBorder = `1px solid ${alpha(theme.palette.divider, 0.1)}`;
-  let boxBgColor = alpha(theme.palette.background.paper, 0.4);
+  let boxBorder = `2px solid #000000`;
+  let boxBgColor = `#ffffff`;
+  let boxTextColor = `#000000`;
 
   if (roll.advantage === "ADVANTAGE") {
-    boxBorder = `1px solid ${alpha(theme.palette.success.main, 0.5)}`;
-    boxBgColor = alpha(theme.palette.success.main, 0.1);
+    boxBgColor = alpha(theme.palette.success.light, 0.8);
   } else if (roll.advantage === "DISADVANTAGE") {
-    boxBorder = `1px solid ${alpha(theme.palette.error.main, 0.5)}`;
-    boxBgColor = alpha(theme.palette.error.main, 0.1);
+    boxBgColor = alpha(theme.palette.error.light, 0.8);
   }
 
   return (
@@ -237,23 +236,29 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
           width: "90%",
           bgcolor: boxBgColor,
           border: boxBorder,
-          borderRadius: 1,
+          borderRadius: "8px",
           p: 0.5,
-          my: 0.25,
-          boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, 0.2)}`,
+          my: 0.5,
+          boxShadow: "2px 2px 0px rgba(0,0,0,1)",
+          transition: "transform 0.1s ease-in-out",
+          "&:hover": {
+            transform: "translateY(-2px)",
+            boxShadow: "2px 4px 0px rgba(0,0,0,1)",
+          },
         }}
       >
         {/* Roll name label */}
         <Typography
           variant="caption"
           sx={{
-            fontSize: "0.55rem",
+            fontSize: "0.6rem",
+            fontWeight: "bold",
             lineHeight: 1.1,
             maxWidth: "100%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
-            color: theme.palette.text.secondary,
+            color: boxTextColor,
             mb: 0.5,
             textAlign: "center",
           }}
@@ -282,20 +287,18 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
               height: "36px",
               borderRadius: "50%",
               zIndex: 2,
+              border: "none",
+              boxShadow: "none",
+              bgcolor: "transparent",
               transition: theme.transitions.create([
                 "background-color",
                 "transform",
                 "box-shadow",
               ]),
-              bgcolor: expanded
-                ? alpha(theme.palette.primary.main, 0.2)
-                : "transparent",
-              boxShadow: expanded
-                ? `0 0 0 2px ${alpha(theme.palette.primary.main, 0.4)}`
-                : "none",
               "&:hover": {
-                bgcolor: alpha(theme.palette.primary.main, 0.25),
+                bgcolor: "transparent",
                 transform: "scale(1.1)",
+                boxShadow: "none",
               },
             }}
           >
@@ -336,7 +339,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
             {/* Advantage - top */}
             <Tooltip title="Ventaja" placement="left" disableInteractive>
               <IconButton
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.stopPropagation();
                   handleRoll("ADVANTAGE");
                 }}
@@ -364,7 +367,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
             {/* Disadvantage - bottom */}
             <Tooltip title="Desventaja" placement="left" disableInteractive>
               <IconButton
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.stopPropagation();
                   handleRoll("DISADVANTAGE");
                 }}
