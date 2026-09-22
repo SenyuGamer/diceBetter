@@ -45,7 +45,10 @@ jobs:
     - name: Package BeyondOwl for Firefox (.xpi)
       run: |
         cd BeyondOwl
+        jq 'del(.background.service_worker)' manifest.json > manifest.firefox.json
+        mv manifest.firefox.json manifest.json
         zip -r ../BeyondOwl-Firefox.xpi *
+        git restore manifest.json
         cd ..
 
     - name: Upload Artifacts
