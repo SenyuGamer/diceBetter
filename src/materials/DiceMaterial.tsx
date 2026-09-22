@@ -27,6 +27,6 @@ export function DiceMaterial({ diceStyle }: { diceStyle: DiceStyle }) {
     case "WALNUT":
       return <WalnutMaterial />;
     default:
-      throw Error(`Dice style ${diceStyle} error: not implemented`);
+      return <GalaxyMaterial />;
   }
 }

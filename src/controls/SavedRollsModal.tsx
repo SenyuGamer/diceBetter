@@ -133,6 +133,14 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
 
         addGroup(newGroupName);
         data.rolls.forEach((roll: any) => {
+          // Sanitize dice styles to avoid crashing other players via metadata
+          if (roll.diceById) {
+            for (const key in roll.diceById) {
+              if (roll.diceById[key].style === "Standard" || !roll.diceById[key].style) {
+                roll.diceById[key].style = "GALAXY";
+              }
+            }
+          }
           addRoll({ ...roll, group: newGroupName });
         });
       } catch (err) {
