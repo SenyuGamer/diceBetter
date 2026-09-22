@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -65,23 +65,38 @@ function QuickRollGroup({
 }) {
   const theme = useTheme();
 
+  // Simple string to color hash function for the group background
+  const stringToColor = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return "#" + "00000".substring(0, 6 - c.length) + c;
+  };
+  const bgColor = stringToColor(group);
+
   return (
-    <Stack alignItems="center" gap={0.5} width="100%">
+    <Stack alignItems="center" width="100%" sx={{ mb: 2 }}>
       <Typography
         variant="caption"
         sx={{
           fontSize: "0.65rem",
           fontWeight: "bold",
           textAlign: "center",
-          lineHeight: 1.1,
-          color: theme.palette.text.primary,
-          maxWidth: "56px",
+          lineHeight: 1.2,
+          color: theme.palette.getContrastText(bgColor),
+          bgcolor: bgColor,
+          borderRadius: 1,
+          width: "100%",
+          px: 0.5,
+          py: 0.5,
+          mt: 1,
+          mb: 0.5,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          px: 0.25,
-          mt: 0.5,
-          mb: 0.5,
+          boxShadow: `0 2px 4px ${alpha(bgColor, 0.4)}`,
         }}
       >
         {group}
@@ -129,22 +144,13 @@ function QuickRollGroup({
         );
       })()}
 
-      <Box
-        component="div"
-        sx={{
-          width: "70%",
-          height: "1px",
-          bgcolor: alpha(theme.palette.divider, 0.3),
-          my: 0.5,
-        }}
-      />
     </Stack>
   );
 
   function renderCategory(title: string, catRolls: SavedRoll[]) {
     if (catRolls.length === 0) return null;
     return (
-      <Stack alignItems="center" gap={0.5} width="100%">
+      <Stack alignItems="center" width="100%">
         <Typography 
           variant="caption" 
           sx={{ 
@@ -152,14 +158,21 @@ function QuickRollGroup({
             color: theme.palette.text.disabled, 
             lineHeight: 1,
             textTransform: "uppercase",
-            mt: 0.25
+            mt: 1,
+            mb: 0.5,
           }}
         >
           {title}
         </Typography>
-        {catRolls.map((roll) => (
-          <QuickRollItem key={roll.id} roll={roll} />
+        {catRolls.map((roll, i) => (
+          <React.Fragment key={roll.id}>
+            <QuickRollItem roll={roll} />
+            {i < catRolls.length - 1 && (
+              <Box sx={{ width: "40%", height: "1px", bgcolor: alpha(theme.palette.divider, 0.15), my: 0.5 }} />
+            )}
+          </React.Fragment>
         ))}
+        <Box sx={{ width: "85%", height: "2px", bgcolor: alpha(theme.palette.divider, 0.4), mt: 1, borderRadius: 1 }} />
       </Stack>
     );
   }
