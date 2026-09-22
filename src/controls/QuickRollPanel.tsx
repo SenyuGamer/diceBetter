@@ -64,6 +64,7 @@ function QuickRollGroup({
   rolls: SavedRoll[];
 }) {
   const theme = useTheme();
+  const groupColors = useSavedRollsStore((state) => state.groupColors);
 
   // Simple string to color hash function for the group background
   const stringToColor = (str: string) => {
@@ -74,7 +75,7 @@ function QuickRollGroup({
     const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
     return "#" + "00000".substring(0, 6 - c.length) + c;
   };
-  const bgColor = stringToColor(group);
+  const bgColor = groupColors?.[group] || stringToColor(group);
 
   return (
     <Stack alignItems="center" width="100%" sx={{ mb: 2 }}>

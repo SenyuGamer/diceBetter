@@ -19,6 +19,7 @@ export interface SavedRoll {
 interface SavedRollsState {
   groups: string[];
   favoriteGroups: string[];
+  groupColors: Record<string, string>;
   savedRolls: SavedRoll[];
   addRoll: (roll: Omit<SavedRoll, "id">) => void;
   removeRoll: (id: string) => void;
@@ -26,6 +27,7 @@ interface SavedRollsState {
   removeGroup: (name: string) => void;
   renameGroup: (oldName: string, newName: string) => void;
   toggleFavoriteGroup: (name: string) => void;
+  setGroupColor: (name: string, color: string) => void;
   editRoll: (id: string, updates: Partial<Omit<SavedRoll, "id">>) => void;
 }
 
@@ -38,7 +40,14 @@ export const useSavedRollsStore = create<SavedRollsState>()(
     immer((set) => ({
       groups: [],
       favoriteGroups: [],
+      groupColors: {},
       savedRolls: [],
+      setGroupColor(name, color) {
+        set((state) => {
+          if (!state.groupColors) state.groupColors = {};
+          state.groupColors[name] = color;
+        });
+      },
       addRoll(roll) {
         set((state) => {
           // Auto-create group if it doesn't exist
