@@ -168,11 +168,11 @@ function QuickRollGroup({
           <React.Fragment key={roll.id}>
             <QuickRollItem roll={roll} />
             {i < catRolls.length - 1 && (
-              <Box sx={{ width: "40%", height: "1px", bgcolor: alpha(theme.palette.divider, 0.15), my: 0.5 }} />
+              <div style={{ width: "40%", height: "1px", backgroundColor: alpha(theme.palette.divider, 0.15), marginTop: "4px", marginBottom: "4px" }} />
             )}
           </React.Fragment>
         ))}
-        <Box sx={{ width: "85%", height: "2px", bgcolor: alpha(theme.palette.divider, 0.4), mt: 1, borderRadius: 1 }} />
+        <div style={{ width: "85%", height: "2px", backgroundColor: alpha(theme.palette.divider, 0.4), marginTop: "8px", borderRadius: "4px" }} />
       </Stack>
     );
   }
