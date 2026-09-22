@@ -214,6 +214,17 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
 
   const die = primaryDie ? roll.diceById[primaryDie.id] : null;
 
+  let boxBorder = `1px solid ${alpha(theme.palette.divider, 0.1)}`;
+  let boxBgColor = alpha(theme.palette.background.paper, 0.4);
+
+  if (roll.advantage === "ADVANTAGE") {
+    boxBorder = `1px solid ${alpha(theme.palette.success.main, 0.5)}`;
+    boxBgColor = alpha(theme.palette.success.main, 0.1);
+  } else if (roll.advantage === "DISADVANTAGE") {
+    boxBorder = `1px solid ${alpha(theme.palette.error.main, 0.5)}`;
+    boxBgColor = alpha(theme.palette.error.main, 0.1);
+  }
+
   return (
     <ClickAwayListener onClickAway={() => setExpanded(false)}>
       <Box
@@ -224,8 +235,8 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
           flexDirection: "column",
           alignItems: "center",
           width: "90%",
-          bgcolor: alpha(theme.palette.background.paper, 0.4),
-          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          bgcolor: boxBgColor,
+          border: boxBorder,
           borderRadius: 1,
           p: 0.5,
           my: 0.25,
