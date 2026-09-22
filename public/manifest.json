@@ -1,12 +1,12 @@
 {
-  "name": "BetterDice Mod [Experimental]",
+  "name": "BetterDice",
   "version": "2.1.6",
   "manifest_version": 1,
   "author": "SenyuDev",
   "icon": "/logo.png",
-  "description": "BetterDice Mod con el Compendio de 5 herramientas del bandido y tiradas avanzadas.",
+  "description": "BetterDice con integración BeyondOwl, historial global y físicas 3D.",
   "action": {
-    "title": "BetterDice [Exp]",
+    "title": "BetterDice",
     "icon": "/icon.svg",
     "popover": "/",
     "height": 700,
