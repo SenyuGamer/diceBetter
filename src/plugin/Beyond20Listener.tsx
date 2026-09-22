@@ -10,7 +10,7 @@ export function Beyond20Listener() {
   useEffect(() => {
     const handleMessage = (event: MessageEvent) => {
       // Allow receiving testing messages from our own window or from Beyond20
-      if (event.data?.type === "Beyond20_Roll") {
+      if (event.data?.type === "Beyond20_Roll" || event.data?.type === "BeyondOwl_Roll") {
         console.log("Beyond20_Roll Event Received:", event.data);
         let request = event.data.data;
         if (!request) return;
@@ -97,6 +97,8 @@ export function Beyond20Listener() {
         const roll: DiceRoll = {
           dice,
           bonus: totalBonus,
+          recentRollId: crypto.randomUUID(),
+          hidden: request.whisper === 1 || request.whisper === "YES",
         };
 
         if (dice.length > 0) {
