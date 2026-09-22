@@ -38,7 +38,6 @@ import { PluginGate } from "../plugin/PluginGate";
 import { DiceRollSync } from "../plugin/DiceRollSync";
 import { PartyTrays } from "../plugin/PartyTrays";
 import { ResizeObserver as PluginResizeObserver } from "../plugin/ResizeObserver";
-import { useSimplify3D } from "../plugin/useSimplify3D";
 
 /** A small collapsible section header that fits in the 60px sidebar */
 function SidebarSection({
@@ -95,7 +94,8 @@ export function Sidebar() {
   const [savedRollsOpen, setSavedRollsOpen] = useState(false);
   const [compendiumOpen, setCompendiumOpen] = useState(false);
 
-  const { simplify, toggleSimplify } = useSimplify3D();
+  const simplify = useDiceControlsStore(state => state.simplify3D);
+  const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
 
   return (
     <SimpleBar
@@ -138,7 +138,7 @@ export function Sidebar() {
             {/* 1. Bonus + Ventaja */}
             <DiceExtras />
             {/* 2. Toggle Rendimiento */}
-            <Tooltip title="Modo Rendimiento (sin 3D)" placement="right" disableInteractive>
+            <Tooltip title="Modo Rendimiento (3D Simplificado)" placement="right" disableInteractive>
               <IconButton onClick={toggleSimplify} sx={{ color: simplify ? "primary.main" : "inherit" }}>
                 <SpeedIcon />
               </IconButton>

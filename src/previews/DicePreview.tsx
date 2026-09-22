@@ -21,6 +21,8 @@ const previews: Record<DiceStyle, Record<DiceType, string>> = {
   SUNRISE: sunrisePreviews,
   SUNSET: sunsetPreviews,
   WALNUT: walnutPreviews,
+  MAGMA: galaxyPreviews,
+  PLASMA: galaxyPreviews,
 };
 
 interface PreviewImageProps {

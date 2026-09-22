@@ -154,7 +154,7 @@ function QuickRollGroup({
   function renderCategory(title: string, catRolls: SavedRoll[]) {
     if (catRolls.length === 0) return null;
     return (
-      <Stack alignItems="center" width="100%">
+      <Stack key={title} alignItems="center" width="100%">
         <Typography 
           variant="caption" 
           sx={{ 

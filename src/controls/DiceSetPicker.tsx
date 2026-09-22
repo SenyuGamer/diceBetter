@@ -3,6 +3,7 @@ import { useState } from "react";
 import IconButton from "@mui/material/IconButton";
 import Stack from "@mui/material/Stack";
 import Menu from "@mui/material/Menu";
+import Tooltip from "@mui/material/Tooltip";
 import { styled } from "@mui/material/styles";
 
 import { diceSets } from "../sets/diceSets";
@@ -63,23 +64,24 @@ export function DiceSetPicker() {
       >
         <Stack gap={1} alignItems="center" p="2px">
           {diceSets.map((set) => (
-            <IconButton
-              key={set.id}
-              aria-label={set.name}
-              onClick={() => {
-                changeDiceSet(set);
-                handleClose();
-              }}
-              sx={{
-                padding: "2px",
-                backgroundColor:
-                  diceSet.id === set.id
-                    ? "rgba(255, 255, 255, 0.16) !important"
-                    : undefined,
-              }}
-            >
-              <PreviewImage src={set.previewImage} />
-            </IconButton>
+            <Tooltip key={set.id} title={set.name} placement="right">
+              <IconButton
+                aria-label={set.name}
+                onClick={() => {
+                  changeDiceSet(set);
+                  handleClose();
+                }}
+                sx={{
+                  padding: "2px",
+                  backgroundColor:
+                    diceSet.id === set.id
+                      ? "rgba(255, 255, 255, 0.16) !important"
+                      : undefined,
+                }}
+              >
+                <PreviewImage src={set.previewImage} />
+              </IconButton>
+            </Tooltip>
           ))}
         </Stack>
       </Menu>

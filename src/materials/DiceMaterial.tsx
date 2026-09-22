@@ -7,26 +7,36 @@ import { NebulaMaterial } from "./nebula/NebulaMaterial";
 import { SunriseMaterial } from "./sunrise/SunriseMaterial";
 import { SunsetMaterial } from "./sunset/SunsetMaterial";
 import { WalnutMaterial } from "./walnut/WalnutMaterial";
+import { MagmaMaterial } from "./magma/MagmaMaterial";
+import { PlasmaMaterial } from "./plasma/PlasmaMaterial";
+import { useDiceControlsStore } from "../controls/store";
 
 export function DiceMaterial({ diceStyle }: { diceStyle: DiceStyle }) {
+  const simplify = useDiceControlsStore((state) => state.simplify3D);
+
   switch (diceStyle) {
     case "GALAXY":
-      return <GalaxyMaterial />;
+      return <GalaxyMaterial simplify={simplify} />;
     case "GEMSTONE":
-      return <GemstoneMaterial />;
+      return <GemstoneMaterial simplify={simplify} />;
     case "GLASS":
-      return <GlassMaterial />;
+      return <GlassMaterial simplify={simplify} />;
     case "IRON":
-      return <IronMaterial />;
+      return <IronMaterial simplify={simplify} />;
     case "NEBULA":
-      return <NebulaMaterial />;
+      return <NebulaMaterial simplify={simplify} />;
     case "SUNRISE":
-      return <SunriseMaterial />;
+      return <SunriseMaterial simplify={simplify} />;
     case "SUNSET":
-      return <SunsetMaterial />;
+      return <SunsetMaterial simplify={simplify} />;
     case "WALNUT":
-      return <WalnutMaterial />;
+      return <WalnutMaterial simplify={simplify} />;
+    case "MAGMA":
+      return <MagmaMaterial simplify={simplify} />;
+    case "PLASMA":
+      return <PlasmaMaterial simplify={simplify} />;
     default:
-      return <GalaxyMaterial />;
+      return <GalaxyMaterial simplify={simplify} />;
   }
 }
+

@@ -1,10 +1,13 @@
-
+import { useState } from "react";
 import { InteractiveTray } from "./tray/InteractiveTray";
 import { Sidebar } from "./controls/Sidebar";
 import { QuickRollPanel } from "./controls/QuickRollPanel";
 import { Beyond20Listener } from "./plugin/Beyond20Listener";
+import { PhotoStudio } from "./debug/PhotoStudio";
 
 export function App() {
+  const [showStudio, setShowStudio] = useState(false);
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden" }}>
       <Beyond20Listener />
@@ -32,6 +35,17 @@ export function App() {
       }}>
         <QuickRollPanel />
       </div>
+
+      {import.meta.env.DEV && (
+        <button
+          onClick={() => setShowStudio(true)}
+          style={{ position: "absolute", bottom: 10, left: "50%", transform: "translateX(-50%)", zIndex: 999 }}
+        >
+          📷 Photo Studio
+        </button>
+      )}
+
+      {showStudio && <PhotoStudio onClose={() => setShowStudio(false)} />}
     </div>
   );
 }
