@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import React, { useState, useRef } from "react";
 
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
@@ -63,32 +63,52 @@ function QuickRollGroup({
   group: string;
   rolls: SavedRoll[];
 }) {
+  const [expanded, setExpanded] = useState(true);
   const theme = useTheme();
+  const groupColors = useSavedRollsStore((state) => state.groupColors);
+
+  // Simple string to color hash function for the group background
+  const stringToColor = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return "#" + "00000".substring(0, 6 - c.length) + c;
+  };
+  const bgColor = groupColors?.[group] || stringToColor(group);
 
   return (
-    <Stack alignItems="center" gap={0.5} width="100%">
+    <Stack alignItems="center" width="100%" sx={{ mb: 2 }}>
       <Typography
         variant="caption"
+        onClick={() => setExpanded(!expanded)}
         sx={{
           fontSize: "0.65rem",
           fontWeight: "bold",
           textAlign: "center",
-          lineHeight: 1.1,
-          color: theme.palette.text.primary,
-          maxWidth: "56px",
+          lineHeight: 1.2,
+          color: theme.palette.getContrastText(bgColor),
+          bgcolor: bgColor,
+          borderRadius: 1,
+          width: "100%",
+          px: 0.5,
+          py: 0.5,
+          mt: 1,
+          mb: 0.5,
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          px: 0.25,
-          mt: 0.5,
-          mb: 0.5,
+          boxShadow: `0 2px 4px ${alpha(bgColor, 0.4)}`,
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
         {group}
       </Typography>
 
       {/* Categorized rendering */}
-      {(() => {
+      {expanded && (() => {
         const knownMapping: Record<string, string> = {
           "attack": "Ataques",
           "Acciones y Ataques": "Ataques",
@@ -128,23 +148,13 @@ function QuickRollGroup({
           </>
         );
       })()}
-
-      <Box
-        component="div"
-        sx={{
-          width: "70%",
-          height: "1px",
-          bgcolor: alpha(theme.palette.divider, 0.3),
-          my: 0.5,
-        }}
-      />
     </Stack>
   );
 
   function renderCategory(title: string, catRolls: SavedRoll[]) {
     if (catRolls.length === 0) return null;
     return (
-      <Stack alignItems="center" gap={0.5} width="100%">
+      <Stack alignItems="center" width="100%">
         <Typography 
           variant="caption" 
           sx={{ 
@@ -152,7 +162,8 @@ function QuickRollGroup({
             color: theme.palette.text.disabled, 
             lineHeight: 1,
             textTransform: "uppercase",
-            mt: 0.25
+            mt: 1,
+            mb: 0.5,
           }}
         >
           {title}
@@ -160,6 +171,7 @@ function QuickRollGroup({
         {catRolls.map((roll) => (
           <QuickRollItem key={roll.id} roll={roll} />
         ))}
+        <div style={{ width: "85%", height: "2px", backgroundColor: alpha(theme.palette.divider, 0.4), marginTop: "8px", borderRadius: "4px" }} />
       </Stack>
     );
   }
@@ -202,6 +214,17 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
 
   const die = primaryDie ? roll.diceById[primaryDie.id] : null;
 
+  let boxBorder = `1px solid ${alpha(theme.palette.divider, 0.1)}`;
+  let boxBgColor = alpha(theme.palette.background.paper, 0.4);
+
+  if (roll.advantage === "ADVANTAGE") {
+    boxBorder = `1px solid ${alpha(theme.palette.success.main, 0.5)}`;
+    boxBgColor = alpha(theme.palette.success.main, 0.1);
+  } else if (roll.advantage === "DISADVANTAGE") {
+    boxBorder = `1px solid ${alpha(theme.palette.error.main, 0.5)}`;
+    boxBgColor = alpha(theme.palette.error.main, 0.1);
+  }
+
   return (
     <ClickAwayListener onClickAway={() => setExpanded(false)}>
       <Box
@@ -211,21 +234,28 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "100%",
+          width: "90%",
+          bgcolor: boxBgColor,
+          border: boxBorder,
+          borderRadius: 1,
+          p: 0.5,
+          my: 0.25,
+          boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, 0.2)}`,
         }}
       >
         {/* Roll name label */}
         <Typography
           variant="caption"
           sx={{
-            fontSize: "0.6rem",
-            lineHeight: 1,
-            maxWidth: "56px",
+            fontSize: "0.55rem",
+            lineHeight: 1.1,
+            maxWidth: "100%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             color: theme.palette.text.secondary,
-            mb: 0.25,
+            mb: 0.5,
+            textAlign: "center",
           }}
         >
           {roll.name}
@@ -247,9 +277,9 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
               }
             }}
             sx={{
-              p: 0.25,
-              width: "44px",
-              height: "44px",
+              p: 0,
+              width: "36px",
+              height: "36px",
               borderRadius: "50%",
               zIndex: 2,
               transition: theme.transitions.create([

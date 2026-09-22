@@ -1,9 +1,8 @@
 import OBR, { Player } from "@owlbear-rodeo/sdk";
 import { useEffect, useState } from "react";
-
 import Box from "@mui/material/Box";
-
 import { Beyond20Listener } from "./Beyond20Listener";
+import { GlobalHistorySync } from "./GlobalHistorySync";
 import { PopoverTray } from "./PopoverTray";
 import { getPluginId } from "./getPluginId";
 import { useSimplify3D } from "./useSimplify3D";
@@ -71,6 +70,7 @@ export function PopoverTrays() {
       overflow="hidden"
     >
       <Beyond20Listener />
+      <GlobalHistorySync />
       {players.map((player) => {
         const index = visibleTrays.indexOf(player.connectionId);
         const trayHeight = simplify ? 48 : 298;

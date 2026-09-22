@@ -58,7 +58,7 @@ function scrapeCharacter() {
                     bonus: bonus,
                     advantage: null,
                     diceById: {
-                        "d20": { id: "d20", style: "Standard", type: "D20" }
+                        "d20": { id: "d20", style: "GALAXY", type: "D20" }
                     },
                     isDamage: false
                 });
@@ -68,34 +68,44 @@ function scrapeCharacter() {
         // Daño (Damage)
         const damageEl = row.querySelector(".ddbc-combat-attack__damage, .ct-combat-attack__damage");
         if (damageEl) {
-            const damageText = (damageEl.textContent || "").trim();
-            const damageRegex = /(\d+)d(\d+)\s*(?:([+-])\s*(\d+))?/;
-            const match = damageText.match(damageRegex);
-            if (match && match[1] && match[2]) {
-                const qty = parseInt(match[1], 10);
-                const faces = parseInt(match[2], 10);
-                const sign = match[3] === '-' ? -1 : 1;
-                const flat = match[4] ? parseInt(match[4], 10) : 0;
-                const bonus = sign * flat;
-                
-                const typeName = `D${faces}`;
-                const dieId = `d${faces}`;
-                
-                const counts = {};
-                counts[dieId] = qty;
-                const diceById = {};
-                diceById[dieId] = { id: dieId, style: "Standard", type: typeName };
+            // Fix versatile weapons: 1d8+5 and 1d10+5 getting concatenated into 1d8+51d10+5
+            // by replacing HTML tags with spaces before extracting text
+            let htmlRaw = damageEl.innerHTML || "";
+            let spacedText = htmlRaw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+            
+            const damageRegex = /(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?/g;
+            const matches = Array.from(spacedText.matchAll(damageRegex));
+            
+            matches.forEach((match, index) => {
+                if (match && match[1] && match[2]) {
+                    const qty = parseInt(match[1], 10);
+                    const faces = parseInt(match[2], 10);
+                    const sign = match[3] === '-' ? -1 : 1;
+                    const flat = match[4] ? parseInt(match[4], 10) : 0;
+                    const bonus = sign * flat;
+                    
+                    const typeName = `D${faces}`;
+                    const dieId = `d${faces}`;
+                    
+                    const counts = {};
+                    counts[dieId] = qty;
+                    const diceById = {};
+                    diceById[dieId] = { id: dieId, style: "GALAXY", type: typeName };
 
-                rolls.push({
-                    name: attackName + " (Daño)",
-                    category: "Daño",
-                    counts: counts,
-                    bonus: bonus,
-                    advantage: null,
-                    diceById: diceById,
-                    isDamage: true
-                });
-            }
+                    // Si hay un segundo daño, probablemente sea el daño versátil
+                    const suffix = index > 0 ? " (Versátil)" : " (Daño)";
+                    
+                    rolls.push({
+                        name: attackName + suffix,
+                        category: "Daño",
+                        counts: counts,
+                        bonus: bonus,
+                        advantage: null,
+                        diceById: diceById,
+                        isDamage: true
+                    });
+                }
+            });
         }
     });
 
@@ -108,6 +118,14 @@ function scrapeCharacter() {
         if (nameEl && modEl) {
             const saveName = (nameEl.textContent || "").trim();
             const modText = (modEl.textContent || "").trim();
+            const htmlString = save.innerHTML.toLowerCase();
+            let finalAdvantage = null;
+            if (htmlString.includes("disadvantage-icon") || htmlString.includes("disadvantage-indicator")) {
+                finalAdvantage = "DISADVANTAGE";
+            } else if (htmlString.includes("advantage-icon") || htmlString.includes("advantage-indicator")) {
+                finalAdvantage = "ADVANTAGE";
+            }
+
             const match = modText.match(/([+-]\s*\d+)/);
             if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
@@ -116,15 +134,14 @@ function scrapeCharacter() {
                     category: "Tiradas de Salvación",
                     counts: { "d20": 1 },
                     bonus: bonus,
-                    advantage: null,
-                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    advantage: finalAdvantage,
+                    diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
             }
         }
     });
 
-    // 2.6 Extraer Habilidades (Skills)
     const skills = document.querySelectorAll(".ddbc-skills__item, .ct-skills__item");
     skills.forEach(skill => {
         const nameEl = skill.querySelector(".ddbc-skills__col--skill, .ct-skills__col--skill");
@@ -133,6 +150,26 @@ function scrapeCharacter() {
         if (nameEl && modEl) {
             const skillName = (nameEl.textContent || "").trim();
             const modText = (modEl.textContent || "").trim();
+            
+            const advIcon = skill.querySelector(".ddbc-advantage-icon, .ddbc-advantage-indicator, .ct-advantage-icon, .ct-advantage-indicator, [class*='advantage']");
+            const disIcon = skill.querySelector(".ddbc-disadvantage-icon, .ddbc-disadvantage-indicator, .ct-disadvantage-icon, .ct-disadvantage-indicator, [class*='disadvantage']");
+            
+            // Be careful not to match 'disadvantage' if we're just matching 'advantage' loosely
+            let advantage = null;
+            if (disIcon && !disIcon.className.includes("advantage-icon")) {
+                // strict check for disadvantage
+                advantage = "DISADVANTAGE";
+            } else if (advIcon && !advIcon.className.includes("disadvantage")) {
+                advantage = "ADVANTAGE";
+            }
+            // simpler robust check:
+            let finalAdvantage = null;
+            const htmlString = skill.innerHTML.toLowerCase();
+            if (htmlString.includes("disadvantage-icon") || htmlString.includes("disadvantage-indicator")) {
+                finalAdvantage = "DISADVANTAGE";
+            } else if (htmlString.includes("advantage-icon") || htmlString.includes("advantage-indicator")) {
+                finalAdvantage = "ADVANTAGE";
+            }
             const match = modText.match(/([+-]\s*\d+)/);
             if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
@@ -141,8 +178,8 @@ function scrapeCharacter() {
                     category: "Habilidades",
                     counts: { "d20": 1 },
                     bonus: bonus,
-                    advantage: null,
-                    diceById: { "d20": { id: "d20", style: "Standard", type: "D20" } },
+                    advantage: finalAdvantage,
+                    diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
             }

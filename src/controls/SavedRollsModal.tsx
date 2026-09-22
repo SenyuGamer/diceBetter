@@ -56,6 +56,17 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
   const editRoll = useSavedRollsStore((state) => state.editRoll);
   const addGroup = useSavedRollsStore((state) => state.addGroup);
   const addRoll = useSavedRollsStore((state) => state.addRoll);
+  const groupColors = useSavedRollsStore((state) => state.groupColors);
+  const setGroupColor = useSavedRollsStore((state) => state.setGroupColor);
+
+  const stringToColor = (str: string) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const c = (hash & 0x00FFFFFF).toString(16).toUpperCase();
+    return "#" + "00000".substring(0, 6 - c.length) + c;
+  };
 
   const setDiceCounts = useDiceControlsStore((state) => state.setDiceCounts);
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
@@ -133,6 +144,14 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
 
         addGroup(newGroupName);
         data.rolls.forEach((roll: any) => {
+          // Sanitize dice styles to avoid crashing other players via metadata
+          if (roll.diceById) {
+            for (const key in roll.diceById) {
+              if (roll.diceById[key].style === "Standard" || !roll.diceById[key].style) {
+                roll.diceById[key].style = "GALAXY";
+              }
+            }
+          }
           addRoll({ ...roll, group: newGroupName });
         });
       } catch (err) {
@@ -225,6 +244,22 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                         <Typography variant="subtitle1" fontWeight="bold">
                           {group}
                         </Typography>
+                        <input
+                          type="color"
+                          title="Cambiar color del personaje"
+                          value={groupColors?.[group] || stringToColor(group)}
+                          onChange={(e) => setGroupColor(group, e.target.value)}
+                          onClick={(e) => e.stopPropagation()}
+                          style={{
+                            width: "24px",
+                            height: "24px",
+                            border: "none",
+                            borderRadius: "50%",
+                            cursor: "pointer",
+                            background: "transparent",
+                            padding: 0,
+                          }}
+                        />
                         <Typography variant="caption" color="text.secondary">
                           ({groupRolls.length})
                         </Typography>

@@ -41,10 +41,11 @@ type DiePreviewProps = {
 };
 
 export function DicePreview({ diceType, diceStyle, size }: DiePreviewProps) {
+  const safeStyle = previews[diceStyle] ? diceStyle : "GALAXY";
   return (
     <PreviewImage
-      src={previews[diceStyle][diceType]}
-      alt={`${diceStyle} ${diceType} preview`}
+      src={previews[safeStyle][diceType]}
+      alt={`${safeStyle} ${diceType} preview`}
       size={size}
     />
   );
