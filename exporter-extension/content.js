@@ -73,33 +73,39 @@ function scrapeCharacter() {
             let htmlRaw = damageEl.innerHTML || "";
             let spacedText = htmlRaw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
             
-            const damageRegex = /(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?/;
-            const match = spacedText.match(damageRegex);
-            if (match && match[1] && match[2]) {
-                const qty = parseInt(match[1], 10);
-                const faces = parseInt(match[2], 10);
-                const sign = match[3] === '-' ? -1 : 1;
-                const flat = match[4] ? parseInt(match[4], 10) : 0;
-                const bonus = sign * flat;
-                
-                const typeName = `D${faces}`;
-                const dieId = `d${faces}`;
-                
-                const counts = {};
-                counts[dieId] = qty;
-                const diceById = {};
-                diceById[dieId] = { id: dieId, style: "GALAXY", type: typeName };
+            const damageRegex = /(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?/g;
+            const matches = Array.from(spacedText.matchAll(damageRegex));
+            
+            matches.forEach((match, index) => {
+                if (match && match[1] && match[2]) {
+                    const qty = parseInt(match[1], 10);
+                    const faces = parseInt(match[2], 10);
+                    const sign = match[3] === '-' ? -1 : 1;
+                    const flat = match[4] ? parseInt(match[4], 10) : 0;
+                    const bonus = sign * flat;
+                    
+                    const typeName = `D${faces}`;
+                    const dieId = `d${faces}`;
+                    
+                    const counts = {};
+                    counts[dieId] = qty;
+                    const diceById = {};
+                    diceById[dieId] = { id: dieId, style: "GALAXY", type: typeName };
 
-                rolls.push({
-                    name: attackName + " (Daño)",
-                    category: "Daño",
-                    counts: counts,
-                    bonus: bonus,
-                    advantage: null,
-                    diceById: diceById,
-                    isDamage: true
-                });
-            }
+                    // Si hay un segundo daño, probablemente sea el daño versátil
+                    const suffix = index > 0 ? " (Versátil)" : " (Daño)";
+                    
+                    rolls.push({
+                        name: attackName + suffix,
+                        category: "Daño",
+                        counts: counts,
+                        bonus: bonus,
+                        advantage: null,
+                        diceById: diceById,
+                        isDamage: true
+                    });
+                }
+            });
         }
     });
 

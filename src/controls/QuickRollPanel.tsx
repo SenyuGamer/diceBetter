@@ -63,6 +63,7 @@ function QuickRollGroup({
   group: string;
   rolls: SavedRoll[];
 }) {
+  const [expanded, setExpanded] = useState(true);
   const theme = useTheme();
   const groupColors = useSavedRollsStore((state) => state.groupColors);
 
@@ -81,6 +82,7 @@ function QuickRollGroup({
     <Stack alignItems="center" width="100%" sx={{ mb: 2 }}>
       <Typography
         variant="caption"
+        onClick={() => setExpanded(!expanded)}
         sx={{
           fontSize: "0.65rem",
           fontWeight: "bold",
@@ -98,13 +100,15 @@ function QuickRollGroup({
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           boxShadow: `0 2px 4px ${alpha(bgColor, 0.4)}`,
+          cursor: "pointer",
+          userSelect: "none",
         }}
       >
         {group}
       </Typography>
 
       {/* Categorized rendering */}
-      {(() => {
+      {expanded && (() => {
         const knownMapping: Record<string, string> = {
           "attack": "Ataques",
           "Acciones y Ataques": "Ataques",
@@ -144,7 +148,6 @@ function QuickRollGroup({
           </>
         );
       })()}
-
     </Stack>
   );
 
