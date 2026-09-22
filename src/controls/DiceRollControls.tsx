@@ -280,7 +280,11 @@ function DicePickedControls() {
           <Tooltip title="Bless" disableInteractive>
             <IconButton
               onClick={() => setBlessActive(!blessActive)}
-              sx={{ color: blessActive ? "warning.main" : "inherit" }}
+              sx={
+                blessActive 
+                  ? { bgcolor: "warning.main", color: "white", "&:hover": { bgcolor: "warning.dark" } }
+                  : undefined
+              }
             >
               <AutoAwesomeIcon />
             </IconButton>

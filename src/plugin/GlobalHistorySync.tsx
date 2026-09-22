@@ -9,7 +9,7 @@ import { getDieFromDice } from "../helpers/getDieFromDice";
 
 const HISTORY_KEY = getPluginId("global_history");
 
-export function GlobalHistorySync() {
+export function GlobalHistorySync({ readOnly = false }: { readOnly?: boolean }) {
   const pushGlobalRoll = useGlobalHistoryStore((state) => state.pushGlobalRoll);
   const updateGlobalRollResult = useGlobalHistoryStore((state) => state.updateGlobalRollResult);
   
@@ -77,9 +77,9 @@ export function GlobalHistorySync() {
             pushGlobalRoll(newRoll);
 
             // Persist to room metadata ONLY if we are the one who rolled this!
-            if (player.id === OBR.player.id) {
+            if (!readOnly && player.id === OBR.player.id) {
                OBR.room.getMetadata().then((meta) => {
-                  let history = (meta[HISTORY_KEY] || []) as GlobalRoll[];
+                  let history = [...((meta[HISTORY_KEY] || []) as GlobalRoll[])];
                   history.push(newRoll);
                   if (history.length > 15) history = history.slice(history.length - 15);
                   OBR.room.setMetadata({ [HISTORY_KEY]: history });
@@ -93,12 +93,12 @@ export function GlobalHistorySync() {
              updateGlobalRollResult(roll.recentRollId, finalValue);
 
              // Update room metadata ONLY if we are the one who rolled this!
-             if (player.id === OBR.player.id) {
+             if (!readOnly && player.id === OBR.player.id) {
                OBR.room.getMetadata().then((meta) => {
-                  let history = (meta[HISTORY_KEY] || []) as GlobalRoll[];
+                  let history = [...((meta[HISTORY_KEY] || []) as GlobalRoll[])];
                   const existingIndex = history.findIndex(r => r.id === roll.recentRollId);
                   if (existingIndex !== -1) {
-                     history[existingIndex].result = finalValue as number;
+                     history[existingIndex] = { ...history[existingIndex], result: finalValue as number };
                      OBR.room.setMetadata({ [HISTORY_KEY]: history });
                   }
                });
