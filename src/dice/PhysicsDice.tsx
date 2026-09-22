@@ -104,7 +104,7 @@ export function PhysicsDice({
           ignorePhysics ||
           (speed < MIN_ROLL_FINISHED_SPEED && validPosition)
         ) {
-          const { value, isCocked } = getValueFromDiceGroup(group);
+          const { value, isCocked } = getValueFromDiceGroup(group, die.type);
           const position = rigidBody.translation();
           const rotation = rigidBody.rotation();
           const transform = {

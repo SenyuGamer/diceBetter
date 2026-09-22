@@ -8,7 +8,7 @@ let highestDot = -1;
 let dot = -1;
 let highestNumber = 0;
 
-export function getValueFromDiceGroup(parent: THREE.Group): { value: number; isCocked: boolean } {
+export function getValueFromDiceGroup(parent: THREE.Group, dieType?: string): { value: number; isCocked: boolean } {
   // Reset the order variables
   highestDot = -1;
   highestNumber = 0;
@@ -32,10 +32,12 @@ export function getValueFromDiceGroup(parent: THREE.Group): { value: number; isC
       }
     }
   }
-  // We consider a die cocked if the highest dot product is less than 0.98
-  // (Decreased tolerance: any tilt > 11 degrees is marked as cocked)
+  // We consider a die cocked if the highest dot product is less than a certain threshold.
+  // Standard tolerance is 0.98 (~11 degrees). D10 and D100 are less stable by shape, so we increase their tolerance to 0.95 (~18 degrees).
+  const tolerance = (dieType === "D10" || dieType === "D100") ? 0.95 : 0.98;
+
   return {
     value: highestNumber,
-    isCocked: highestDot < 0.98,
+    isCocked: highestDot < tolerance,
   };
 }
