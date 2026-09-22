@@ -76,7 +76,7 @@ export function InteractiveTray() {
             <Environment files={environment} />
             <ContactShadows
               resolution={256}
-              scale={[1 * trayScale, 2 * trayScale]}
+              scale={[2.2 * trayScale, 2.2 * trayScale]}
               position={[0, 0, 0]}
               blur={0.5}
               opacity={0.5}

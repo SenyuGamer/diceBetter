@@ -13,13 +13,13 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
   const s = typeof scale === 'number' ? scale : 1;
   const floorY = -WALL_THICKNESS + 0.005 * s;
   const roofY = WALL_THICKNESS + 1.5 * s;
-  const wallX = WALL_THICKNESS + 0.46 * s;
-  const wallZ = WALL_THICKNESS + 0.96 * s;
+  
+  // Apotema interior del hexágono (radio al centro de cada pared): ~0.866
+  const apothem = 0.866 * s;
 
   return (
     <group {...props}>
       {/* Floor of the tray */}
-      {/* Use a large friction and restitution to simulate a bouncy material */}
       <RigidBody
         type="fixed"
         friction={10}
@@ -31,40 +31,31 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
           position={[0, floorY, 0]}
         />
       </RigidBody>
-      {/* Walls of the tray */}
-      {/* Use a small friction to simulate a wooden material */}
-      {/* Use a high restitution to reduce the change that the dice will rest up against the wall */}
+
+      {/* 6 Walls of the hexagonal tray */}
       <RigidBody
         type="fixed"
         friction={1}
         restitution={0.9}
         userData={{ material: "WOOD" }}
       >
-        {/* Bottom wall */}
-        <CuboidCollider
-          args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, floorY, wallZ]}
-          rotation={[Math.PI / 2, 0, 0]}
-        />
-        {/* Top wall */}
-        <CuboidCollider
-          args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[0, floorY, -wallZ]}
-          rotation={[Math.PI / 2, 0, 0]}
-        />
-        {/* Right wall */}
-        <CuboidCollider
-          args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[wallX, floorY, 0]}
-          rotation={[0, 0, Math.PI / 2]}
-        />
-        {/* Left wall */}
-        <CuboidCollider
-          args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
-          position={[-wallX, floorY, 0]}
-          rotation={[0, 0, Math.PI / 2]}
-        />
-        {/* Roof */}
+        {Array.from({ length: 6 }).map((_, i) => {
+          const angle = (i * Math.PI) / 3; // 60 grados por cara
+          const dist = apothem + WALL_THICKNESS;
+          const x = Math.sin(angle) * dist;
+          const z = Math.cos(angle) * dist;
+
+          return (
+            <CuboidCollider
+              key={i}
+              args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
+              position={[x, floorY, z]}
+              rotation={[Math.PI / 2, angle, 0]}
+            />
+          );
+        })}
+
+        {/* Roof to prevent dice from flying out */}
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
           position={[0, roofY, 0]}

@@ -4,22 +4,22 @@ import { DiceVector3 } from "../types/DiceVector3";
 
 import { random } from "./random";
 
-const MIN_X = -0.3;
-const MAX_X = 0.3;
+const MIN_R = 0.1;
+const MAX_R = 0.55;
 const MIN_Y = 1;
 const MAX_Y = 1.2;
-const MIN_Z = -0.8;
-const MAX_Z = 0.8;
 const MIN_LAUNCH_VELOCITY = 1;
 const MAX_LAUNCH_VELOCITY = 2;
 const MIN_ANGULAR_VELOCITY = 2;
 const MAX_ANGULAR_VELOCITY = 6;
 
 export function randomPosition(scale: number = 1): DiceVector3 {
+  const angle = random(0, Math.PI * 2);
+  const r = random(MIN_R * scale, MAX_R * scale);
   return {
-    x: random(MIN_X * scale, MAX_X * scale),
+    x: Math.sin(angle) * r,
     y: random(MIN_Y, MAX_Y),
-    z: random(MIN_Z * scale, MAX_Z * scale),
+    z: Math.cos(angle) * r,
   };
 }
 
