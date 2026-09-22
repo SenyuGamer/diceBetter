@@ -88,10 +88,9 @@ export function PartyTrays() {
             onClick={() => setFocusTray(null)}
             sx={{
               position: "absolute",
-              left: 12,
-              top: 12,
-              height: "calc(100% - 24px)",
-              borderRadius: 0.5,
+              left: 16,
+              top: 16,
+              zIndex: 10,
             }}
           >
             <CloseIcon />
