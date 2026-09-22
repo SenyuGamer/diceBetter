@@ -12,7 +12,16 @@ chrome.tabs.onRemoved.addListener(async (tabId) => {
 chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (msg.action === "listOwlbearTabs") {
     chrome.tabs.query({ url: "https://www.owlbear.rodeo/*" }, (tabs) => {
-      const result = tabs.map(t => ({ tabId: t.id, title: t.title || "Owlbear Rodeo" }));
+      const result = tabs.map(t => {
+        let title = t.title || "Owlbear Rodeo";
+        if (t.url) {
+          const match = t.url.match(/room\/[^\/]+\/([^?#]+)/);
+          if (match && match[1]) {
+            title = decodeURIComponent(match[1]);
+          }
+        }
+        return { tabId: t.id, title };
+      });
       sendResponse(result);
     });
     return true; // Indicates async response
