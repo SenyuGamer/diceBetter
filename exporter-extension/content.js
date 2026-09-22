@@ -118,6 +118,14 @@ function scrapeCharacter() {
         if (nameEl && modEl) {
             const saveName = (nameEl.textContent || "").trim();
             const modText = (modEl.textContent || "").trim();
+            const htmlString = save.innerHTML.toLowerCase();
+            let finalAdvantage = null;
+            if (htmlString.includes("disadvantage-icon") || htmlString.includes("disadvantage-indicator")) {
+                finalAdvantage = "DISADVANTAGE";
+            } else if (htmlString.includes("advantage-icon") || htmlString.includes("advantage-indicator")) {
+                finalAdvantage = "ADVANTAGE";
+            }
+
             const match = modText.match(/([+-]\s*\d+)/);
             if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
@@ -126,7 +134,7 @@ function scrapeCharacter() {
                     category: "Tiradas de Salvación",
                     counts: { "d20": 1 },
                     bonus: bonus,
-                    advantage: null,
+                    advantage: finalAdvantage,
                     diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
@@ -134,7 +142,6 @@ function scrapeCharacter() {
         }
     });
 
-    // 2.6 Extraer Habilidades (Skills)
     const skills = document.querySelectorAll(".ddbc-skills__item, .ct-skills__item");
     skills.forEach(skill => {
         const nameEl = skill.querySelector(".ddbc-skills__col--skill, .ct-skills__col--skill");
@@ -143,6 +150,26 @@ function scrapeCharacter() {
         if (nameEl && modEl) {
             const skillName = (nameEl.textContent || "").trim();
             const modText = (modEl.textContent || "").trim();
+            
+            const advIcon = skill.querySelector(".ddbc-advantage-icon, .ddbc-advantage-indicator, .ct-advantage-icon, .ct-advantage-indicator, [class*='advantage']");
+            const disIcon = skill.querySelector(".ddbc-disadvantage-icon, .ddbc-disadvantage-indicator, .ct-disadvantage-icon, .ct-disadvantage-indicator, [class*='disadvantage']");
+            
+            // Be careful not to match 'disadvantage' if we're just matching 'advantage' loosely
+            let advantage = null;
+            if (disIcon && !disIcon.className.includes("advantage-icon")) {
+                // strict check for disadvantage
+                advantage = "DISADVANTAGE";
+            } else if (advIcon && !advIcon.className.includes("disadvantage")) {
+                advantage = "ADVANTAGE";
+            }
+            // simpler robust check:
+            let finalAdvantage = null;
+            const htmlString = skill.innerHTML.toLowerCase();
+            if (htmlString.includes("disadvantage-icon") || htmlString.includes("disadvantage-indicator")) {
+                finalAdvantage = "DISADVANTAGE";
+            } else if (htmlString.includes("advantage-icon") || htmlString.includes("advantage-indicator")) {
+                finalAdvantage = "ADVANTAGE";
+            }
             const match = modText.match(/([+-]\s*\d+)/);
             if (match && match[1]) {
                 const bonus = parseInt(match[1].replace(/\s/g, ''), 10);
@@ -151,7 +178,7 @@ function scrapeCharacter() {
                     category: "Habilidades",
                     counts: { "d20": 1 },
                     bonus: bonus,
-                    advantage: null,
+                    advantage: finalAdvantage,
                     diceById: { "d20": { id: "d20", style: "GALAXY", type: "D20" } },
                     isDamage: false
                 });
