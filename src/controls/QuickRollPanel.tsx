@@ -165,13 +165,8 @@ function QuickRollGroup({
         >
           {title}
         </Typography>
-        {catRolls.map((roll, i) => (
-          <React.Fragment key={roll.id}>
-            <QuickRollItem roll={roll} />
-            {i < catRolls.length - 1 && (
-              <div style={{ width: "40%", height: "1px", backgroundColor: alpha(theme.palette.divider, 0.15), marginTop: "4px", marginBottom: "4px" }} />
-            )}
-          </React.Fragment>
+        {catRolls.map((roll) => (
+          <QuickRollItem key={roll.id} roll={roll} />
         ))}
         <div style={{ width: "85%", height: "2px", backgroundColor: alpha(theme.palette.divider, 0.4), marginTop: "8px", borderRadius: "4px" }} />
       </Stack>
@@ -225,21 +220,28 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          width: "100%",
+          width: "90%",
+          bgcolor: alpha(theme.palette.background.paper, 0.4),
+          border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
+          borderRadius: 2,
+          p: 0.5,
+          my: 0.25,
+          boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, 0.2)}`,
         }}
       >
         {/* Roll name label */}
         <Typography
           variant="caption"
           sx={{
-            fontSize: "0.6rem",
-            lineHeight: 1,
-            maxWidth: "56px",
+            fontSize: "0.55rem",
+            lineHeight: 1.1,
+            maxWidth: "100%",
             overflow: "hidden",
             textOverflow: "ellipsis",
             whiteSpace: "nowrap",
             color: theme.palette.text.secondary,
-            mb: 0.25,
+            mb: 0.5,
+            textAlign: "center",
           }}
         >
           {roll.name}
@@ -261,9 +263,9 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
               }
             }}
             sx={{
-              p: 0.25,
-              width: "44px",
-              height: "44px",
+              p: 0,
+              width: "36px",
+              height: "36px",
               borderRadius: "50%",
               zIndex: 2,
               transition: theme.transitions.create([

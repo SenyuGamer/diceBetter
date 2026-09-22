@@ -68,9 +68,13 @@ function scrapeCharacter() {
         // Daño (Damage)
         const damageEl = row.querySelector(".ddbc-combat-attack__damage, .ct-combat-attack__damage");
         if (damageEl) {
-            const damageText = (damageEl.textContent || "").trim();
-            const damageRegex = /(\d+)d(\d+)\s*(?:([+-])\s*(\d+))?/;
-            const match = damageText.match(damageRegex);
+            // Fix versatile weapons: 1d8+5 and 1d10+5 getting concatenated into 1d8+51d10+5
+            // by replacing HTML tags with spaces before extracting text
+            let htmlRaw = damageEl.innerHTML || "";
+            let spacedText = htmlRaw.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+            
+            const damageRegex = /(\d+)\s*d\s*(\d+)\s*(?:([+-])\s*(\d+))?/;
+            const match = spacedText.match(damageRegex);
             if (match && match[1] && match[2]) {
                 const qty = parseInt(match[1], 10);
                 const faces = parseInt(match[2], 10);
