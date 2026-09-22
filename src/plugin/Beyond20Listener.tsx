@@ -109,7 +109,7 @@ export function Beyond20Listener() {
           
           // Añadir al historial local del jugador (DiceHistory)
           useDiceHistoryStore.getState().pushRecentRoll({
-            id: roll.recentRollId,
+            id: roll.recentRollId!,
             advantage: advantage,
             counts: allCounts,
             bonus: totalBonus,
