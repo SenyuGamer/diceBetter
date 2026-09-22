@@ -19,7 +19,7 @@ export function SunsetMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#ff0044")} // Magenta tint
+        color={new THREE.Color("#ffffff")}
         roughness={0.5}
         metalness={0.1}
         {...props}
@@ -30,7 +30,7 @@ export function SunsetMaterial({
   return (
     <meshPhysicalMaterial
       map={albedoMap}
-      color={new THREE.Color("#ff0044")} // Magenta tint
+      color={new THREE.Color("#ffffff")}
       aoMap={ormMap}
       roughnessMap={ormMap}
       metalnessMap={ormMap}

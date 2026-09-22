@@ -19,7 +19,7 @@ export function GalaxyMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#6600ff")} // Deep purple magic tint
+        color={new THREE.Color("#d8b4fe")} // Brighter purple
         roughness={0.5}
         metalness={0.1}
         {...props}
@@ -30,7 +30,7 @@ export function GalaxyMaterial({
   return (
     <meshPhysicalMaterial
       map={albedoMap}
-      color={new THREE.Color("#6600ff")} // Deep purple magic tint
+      color={new THREE.Color("#d8b4fe")} // Brighter purple so it absorbs less light
       aoMap={ormMap}
       roughnessMap={ormMap}
       metalnessMap={ormMap}

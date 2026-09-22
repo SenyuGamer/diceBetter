@@ -3,11 +3,15 @@ import create from "zustand";
 interface DebugState {
   allowOrbit: boolean;
   allowPhysicsDebug: boolean;
+  photoStudioEnabled: boolean;
+  togglePhotoStudio: () => void;
 }
 
-export const useDebugStore = create<DebugState>()(() => ({
+export const useDebugStore = create<DebugState>()((set) => ({
   allowOrbit: false,
   allowPhysicsDebug: false,
+  photoStudioEnabled: false,
+  togglePhotoStudio: () => set((state) => ({ photoStudioEnabled: !state.photoStudioEnabled })),
 }));
 
 function onKeyDown(event: KeyboardEvent) {

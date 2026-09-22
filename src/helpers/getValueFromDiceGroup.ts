@@ -33,5 +33,10 @@ export function getValueFromDiceGroup(parent: THREE.Group): number {
       }
     }
   }
-  return highestNumber;
+  // We consider a die cocked if the highest dot product is less than 0.98
+  // (Decreased tolerance: any tilt > 11 degrees is marked as cocked)
+  return {
+    value: highestNumber,
+    isCocked: highestDot < 0.98,
+  };
 }

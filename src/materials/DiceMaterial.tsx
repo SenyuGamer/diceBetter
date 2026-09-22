@@ -14,29 +14,31 @@ import { useDiceControlsStore } from "../controls/store";
 export function DiceMaterial({ diceStyle }: { diceStyle: DiceStyle }) {
   const simplify = useDiceControlsStore((state) => state.simplify3D);
 
+  const envInt = 0.4; // Disminuye el brillo y reflejo
+
   switch (diceStyle) {
     case "GALAXY":
-      return <GalaxyMaterial simplify={simplify} />;
+      return <GalaxyMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "GEMSTONE":
-      return <GemstoneMaterial simplify={simplify} />;
+      return <GemstoneMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "GLASS":
-      return <GlassMaterial simplify={simplify} />;
+      return <GlassMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "IRON":
-      return <IronMaterial simplify={simplify} />;
+      return <IronMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "NEBULA":
-      return <NebulaMaterial simplify={simplify} />;
+      return <NebulaMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "SUNRISE":
-      return <SunriseMaterial simplify={simplify} />;
+      return <SunriseMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "SUNSET":
-      return <SunsetMaterial simplify={simplify} />;
+      return <SunsetMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "WALNUT":
-      return <WalnutMaterial simplify={simplify} />;
+      return <WalnutMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "MAGMA":
-      return <MagmaMaterial simplify={simplify} />;
+      return <MagmaMaterial simplify={simplify} envMapIntensity={envInt} />;
     case "PLASMA":
-      return <PlasmaMaterial simplify={simplify} />;
+      return <PlasmaMaterial simplify={simplify} envMapIntensity={envInt} />;
     default:
-      return <GalaxyMaterial simplify={simplify} />;
+      return <GalaxyMaterial simplify={simplify} envMapIntensity={envInt} />;
   }
 }
 

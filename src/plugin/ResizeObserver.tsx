@@ -11,7 +11,7 @@ const SIDEBAR_WIDTH = 60;
 export function ResizeObserver() {
   useEffect(() => {
     const handleResize = throttle(() => {
-      OBR.action.setWidth(window.innerHeight / 2 + SIDEBAR_WIDTH);
+      OBR.action.setWidth(window.innerHeight);
     }, THROTTLE_TIME);
 
     handleResize();

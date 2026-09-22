@@ -298,7 +298,7 @@ function DicePickedControls() {
           <Typography
             textAlign="left"
             lineHeight="40px"
-            color="white"
+            color="black"
             variant="h6"
           >
             {advantage === "ADVANTAGE" ? "Adv" : "Dis"}
@@ -317,7 +317,7 @@ function DicePickedControls() {
             textAlign="right"
             variant="h6"
             lineHeight="40px"
-            color="white"
+            color="black"
           >
             {bonus > 0 && "+"}
             {bonus}
@@ -383,7 +383,7 @@ function FinishedRollControls() {
           <Tooltip title="Reroll" sx={{ pointerEvents: "all" }}>
             <IconButton
               onClick={() => reroll()}
-              sx={{ pointerEvents: "all", color: "white" }}
+              sx={{ pointerEvents: "all" }}
             >
               <RerollDiceIcon />
             </IconButton>
@@ -391,7 +391,7 @@ function FinishedRollControls() {
           <Tooltip title="Clear" sx={{ pointerEvents: "all" }}>
             <IconButton
               onClick={() => clearRoll()}
-              sx={{ pointerEvents: "all", color: "white" }}
+              sx={{ pointerEvents: "all" }}
             >
               <CloseIcon />
             </IconButton>
@@ -420,7 +420,7 @@ function FinishedRollControls() {
         )}
         {roll?.hidden && (
           <Tooltip title="Hidden Roll" sx={{ pointerEvents: "all" }}>
-            <HiddenIcon htmlColor="white" />
+            <HiddenIcon htmlColor="black" />
           </Tooltip>
         )}
       </Stack>

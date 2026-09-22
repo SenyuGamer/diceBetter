@@ -44,7 +44,8 @@ export function PhysicsDice({
   onRollFinished?: (
     id: string,
     number: number,
-    transform: DiceTransform
+    transform: DiceTransform,
+    isCocked: boolean
   ) => void;
   fixedTransform?: DiceTransform;
 }) {
@@ -103,7 +104,7 @@ export function PhysicsDice({
           ignorePhysics ||
           (speed < MIN_ROLL_FINISHED_SPEED && validPosition)
         ) {
-          const value = getValueFromDiceGroup(group);
+          const { value, isCocked } = getValueFromDiceGroup(group);
           const position = rigidBody.translation();
           const rotation = rigidBody.rotation();
           const transform = {
@@ -115,7 +116,7 @@ export function PhysicsDice({
               w: rotation.w,
             },
           };
-          onRollFinished?.(die.id, value, transform);
+          onRollFinished?.(die.id, value, transform, isCocked);
           lockDice();
         }
       }

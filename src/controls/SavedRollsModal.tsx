@@ -267,7 +267,7 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
                     )}
                   </Stack>
                   {editingGroup !== group && (
-                    <Stack direction="row" gap={0.5} mr={1}>
+                    <Stack direction="row" gap={0.5} mr={1} alignItems="center">
                       <Tooltip title={favoriteGroups.includes(group) ? "Quitar de acceso rápido" : "Acceso rápido"}>
                         <IconButton
                           size="small"

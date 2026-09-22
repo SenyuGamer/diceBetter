@@ -9,8 +9,8 @@
     "title": "BetterDice [Exp]",
     "icon": "/icon.svg",
     "popover": "/",
-    "height": 700,
-    "width": 600
+    "height": 480,
+    "width": 480
   },
   "background_url": "/background.html"
 }

@@ -10,7 +10,6 @@ import CloseIcon from "@mui/icons-material/CloseRounded";
 import MouseIcon from "@mui/icons-material/MouseRounded";
 import BookmarkIcon from "@mui/icons-material/BookmarkRounded";
 import ReplayIcon from "@mui/icons-material/ReplayRounded";
-import MenuBookIcon from "@mui/icons-material/MenuBookRounded";
 import EditIcon from "@mui/icons-material/EditRounded";
 
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesomeRounded";
@@ -58,12 +57,6 @@ const additions = [
       "En el modal de tiradas guardadas, ahora puedes exportar grupos enteros de tiradas a archivos .json y compartirlos o importarlos en cualquier momento.",
   },
   {
-    icon: <MenuBookIcon color="info" />,
-    title: "Compendio y Homebrew (TheGiddyLimit)",
-    description:
-      "Búsqueda automática de criaturas, armas, habilidades y salvaciones oficiales y colecciones Homebrew en formato 5etools, guardándolas listas para usar.",
-  },
-  {
     icon: <VolumeUpIcon color="warning" />,
     title: "Sonidos de Crítico (Nat 20) y Pifia (Nat 1)",
     description:
@@ -95,7 +88,14 @@ const additions = [
   },
 ];
 
+import Switch from "@mui/material/Switch";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import { useDebugStore } from "../debug/store";
+
 export function AdditionsModal({ open, onClose }: AdditionsModalProps) {
+  const photoStudioEnabled = useDebugStore((state) => state.photoStudioEnabled);
+  const togglePhotoStudio = useDebugStore((state) => state.togglePhotoStudio);
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle
@@ -124,6 +124,18 @@ export function AdditionsModal({ open, onClose }: AdditionsModalProps) {
             </ListItem>
           ))}
         </List>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={photoStudioEnabled}
+                onChange={togglePhotoStudio}
+                color="secondary"
+              />
+            }
+            label="Modo Debug (Photo Studio)"
+          />
+        </div>
       </DialogContent>
     </Dialog>
   );

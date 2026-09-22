@@ -11,6 +11,8 @@ import * as nebulaPreviews from "./nebula";
 import * as sunrisePreviews from "./sunrise";
 import * as sunsetPreviews from "./sunset";
 import * as walnutPreviews from "./walnut";
+import * as magmaPreviews from "./magma";
+import * as plasmaPreviews from "./plasma";
 
 const previews: Record<DiceStyle, Record<DiceType, string>> = {
   GALAXY: galaxyPreviews,
@@ -21,8 +23,8 @@ const previews: Record<DiceStyle, Record<DiceType, string>> = {
   SUNRISE: sunrisePreviews,
   SUNSET: sunsetPreviews,
   WALNUT: walnutPreviews,
-  MAGMA: galaxyPreviews,
-  PLASMA: galaxyPreviews,
+  MAGMA: magmaPreviews,
+  PLASMA: plasmaPreviews,
 };
 
 interface PreviewImageProps {
@@ -32,8 +34,9 @@ interface PreviewImageProps {
 const PreviewImage = styled("img", {
   shouldForwardProp: (prop) => prop !== "size",
 })<PreviewImageProps>(({ size }) => ({
-  width: size === "small" ? "28px" : size === "medium" ? "34px" : "38px",
-  height: size === "small" ? "28px" : size === "medium" ? "34px" : "38px",
+  width: size === "small" ? "32px" : size === "medium" ? "42px" : "52px",
+  height: size === "small" ? "32px" : size === "medium" ? "42px" : "52px",
+  transform: "scale(1.5)",
 }));
 
 type DiePreviewProps = {

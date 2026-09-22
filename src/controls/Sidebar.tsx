@@ -30,7 +30,6 @@ import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
-import { CompendiumModal } from "./CompendiumModal";
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
 
@@ -92,7 +91,6 @@ export function Sidebar() {
 
   const [additionsOpen, setAdditionsOpen] = useState(false);
   const [savedRollsOpen, setSavedRollsOpen] = useState(false);
-  const [compendiumOpen, setCompendiumOpen] = useState(false);
 
   const simplify = useDiceControlsStore(state => state.simplify3D);
   const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
@@ -196,10 +194,6 @@ export function Sidebar() {
       <SavedRollsModal
         open={savedRollsOpen}
         onClose={() => setSavedRollsOpen(false)}
-      />
-      <CompendiumModal
-        open={compendiumOpen}
-        onClose={() => setCompendiumOpen(false)}
       />
     </SimpleBar>
   );
