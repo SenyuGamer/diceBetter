@@ -226,7 +226,7 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
           width: "90%",
           bgcolor: alpha(theme.palette.background.paper, 0.4),
           border: `1px solid ${alpha(theme.palette.divider, 0.1)}`,
-          borderRadius: 2,
+          borderRadius: 1,
           p: 0.5,
           my: 0.25,
           boxShadow: `0 1px 2px ${alpha(theme.palette.common.black, 0.2)}`,
