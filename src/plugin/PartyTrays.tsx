@@ -68,6 +68,7 @@ export function PartyTrays() {
           sx: {
             bgcolor: "transparent",
             boxShadow: "none",
+            backgroundImage: "none",
           },
         }}
         // Keep mounted to allow the canvas to be ready
@@ -75,7 +76,6 @@ export function PartyTrays() {
         keepMounted
       >
         <Stack
-          pl="60px"
           position="relative"
           width="100%"
           height="100%"

@@ -48,12 +48,11 @@ export function PlayerTray({
   }, [diceRoll]);
 
   return (
-    <Box component="div" position="relative" display="flex">
+    <Box component="div" position="relative" display="flex" width="100%" height="100%">
       <Box
         component="div"
-        borderRadius={0.5}
         height="100vh"
-        width="calc(100vh / 2)"
+        width="100%"
         overflow="hidden"
         position="relative"
       >
