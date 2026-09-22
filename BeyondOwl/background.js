@@ -1,10 +1,13 @@
 // background.js
 
+// Usar storage.session con fallback a storage.local para máxima compatibilidad (móvil, etc.)
+const storage = (chrome.storage && chrome.storage.session) ? chrome.storage.session : chrome.storage.local;
+
 // Clean up if the owlbear tab is closed
 chrome.tabs.onRemoved.addListener(async (tabId) => {
-  const { connectedTabId } = await chrome.storage.session.get("connectedTabId");
+  const { connectedTabId } = await storage.get("connectedTabId");
   if (tabId === connectedTabId) {
-    await chrome.storage.session.remove("connectedTabId");
+    await storage.remove("connectedTabId");
     console.log("BeyondOwl: Owlbear tab closed, disconnected.");
   }
 });
@@ -28,7 +31,7 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
   
   if (msg.action === "connect") {
-    chrome.storage.session.set({ connectedTabId: msg.tabId }).then(() => {
+    storage.set({ connectedTabId: msg.tabId }).then(() => {
       console.log("BeyondOwl: Connected to tab", msg.tabId);
       sendResponse({ success: true });
     });
@@ -36,21 +39,21 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   }
   
   if (msg.action === "disconnect") {
-    chrome.storage.session.remove("connectedTabId").then(() => {
+    storage.remove("connectedTabId").then(() => {
       sendResponse({ success: true });
     });
     return true;
   }
   
   if (msg.action === "getStatus") {
-    chrome.storage.session.get("connectedTabId").then(({ connectedTabId }) => {
+    storage.get("connectedTabId").then(({ connectedTabId }) => {
       sendResponse({ connected: !!connectedTabId, tabId: connectedTabId });
     });
     return true;
   }
 
   if (msg.action === "roll") {
-    chrome.storage.session.get("connectedTabId").then(({ connectedTabId }) => {
+    storage.get("connectedTabId").then(({ connectedTabId }) => {
       if (connectedTabId) {
         chrome.tabs.sendMessage(connectedTabId, {
           action: "BeyondOwl_Roll",
