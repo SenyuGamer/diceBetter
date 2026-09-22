@@ -34,15 +34,43 @@ jobs:
         path: dist/
         retention-days: 7
 
-    - name: Package BeyondOwl Extension
+    - name: Package BeyondOwl for Chrome (.zip)
       run: |
         cd BeyondOwl
-        zip -r ../BeyondOwl-Extension.zip *
+        zip -r ../BeyondOwl-Chrome.zip *
         cd ..
 
-    - name: Upload BeyondOwl Artifact
+    - name: Package BeyondOwl for Firefox (.xpi)
+      run: |
+        cd BeyondOwl
+        zip -r ../BeyondOwl-Firefox.xpi *
+        cd ..
+
+    - name: Upload Artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: BeyondOwl-Extension
-        path: BeyondOwl-Extension.zip
+        name: BeyondOwl-Packages
+        path: |
+          BeyondOwl-Chrome.zip
+          BeyondOwl-Firefox.xpi
         retention-days: 7
+
+    - name: Publish Release to GitHub (Experimental)
+      if: github.ref == 'refs/heads/experimental'
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: experimental-latest
+        name: "BeyondOwl Experimental Build"
+        body: |
+          🚀 **Compilación automática de la rama `experimental`**
+          
+          ### Archivos para descargar:
+          - **Chrome / Edge / Brave / Opera**: `BeyondOwl-Chrome.zip` (Descomprimir y cargar en `chrome://extensions` con Modo desarrollador).
+          - **Firefox**: `BeyondOwl-Firefox.xpi` (Instalable en Firefox / Firefox Developer Edition o para subir a firmar en AMO).
+          - **BetterDice**: Plugin compilado para Owlbear Rodeo.
+        prerelease: true
+        files: |
+          BeyondOwl-Chrome.zip
+          BeyondOwl-Firefox.xpi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
