@@ -48,9 +48,9 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
           return (
             <CuboidCollider
               key={i}
-              args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
+              args={[WALL_SIZE, WALL_SIZE, WALL_THICKNESS]}
               position={[x, floorY, z]}
-              rotation={[Math.PI / 2, angle, 0]}
+              rotation={[0, angle, 0]}
             />
           );
         })}

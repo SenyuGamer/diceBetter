@@ -40,7 +40,7 @@ export function HexagonalTray({ scale = 1, ...props }: HexagonalTrayProps) {
   return (
     <group {...props} scale={s} dispose={null}>
       {/* Suelo hexagonal de terciopelo/cuero */}
-      <mesh geometry={floorGeometry} position={[0, -0.02, 0]} receiveShadow>
+      <mesh geometry={floorGeometry} position={[0, -0.02, 0]} rotation={[0, Math.PI / 6, 0]} receiveShadow>
         <TrayMaterial color="#1a202c" roughness={0.8} />
       </mesh>
 
@@ -54,7 +54,7 @@ export function HexagonalTray({ scale = 1, ...props }: HexagonalTrayProps) {
           <mesh
             key={i}
             position={[x, wallGeometries.wallHeight / 2 - 0.02, z]}
-            rotation={[0, angle + Math.PI / 2, 0]}
+            rotation={[0, angle, 0]}
             castShadow
             receiveShadow
           >
@@ -76,7 +76,7 @@ export function HexagonalTray({ scale = 1, ...props }: HexagonalTrayProps) {
       })}
 
       {/* Base externa protectora */}
-      <mesh position={[0, -0.05, 0]}>
+      <mesh position={[0, -0.05, 0]} rotation={[0, Math.PI / 6, 0]}>
         <cylinderGeometry args={[1.05, 1.05, 0.04, 6]} />
         <meshStandardMaterial color="#1f140e" roughness={0.5} />
       </mesh>
