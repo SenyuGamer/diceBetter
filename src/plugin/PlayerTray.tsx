@@ -84,25 +84,6 @@ export function PlayerTray({
         </TraySuspense>
       </Box>
       <PlayerTrayResults player={player} />
-      <Box
-        sx={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          width: "100%",
-          pointerEvents: "none",
-          padding: 3,
-        }}
-        component="div"
-      >
-        <Typography
-          variant="h6"
-          color="rgba(255, 255, 255, 0.7)"
-          textAlign="center"
-        >
-          {player?.name}
-        </Typography>
-      </Box>
     </Box>
   );
 }
@@ -161,46 +142,7 @@ function PlayerTrayResults({ player }: { player?: Player }) {
           </Tooltip>
         </Backdrop>
       )}
-      {finalValue !== null && (
-        <>
-          <Fade in>
-            <GradientOverlay top height={resultsExpanded ? 500 : undefined} />
-          </Fade>
-          <GradientOverlay />
-          <Fade in>
-            <Box
-              sx={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                pointerEvents: "none",
-                padding: 3,
-              }}
-              component="div"
-            >
-              <Stack
-                direction="row"
-                justifyContent="center"
-                width="100%"
-                alignItems="start"
-              >
-                {finishedRolling &&
-                  diceRoll &&
-                  finishedRollValues &&
-                  finalValue !== null && (
-                    <DiceResults
-                      diceRoll={diceRoll}
-                      rollValues={finishedRollValues}
-                      expanded={resultsExpanded}
-                      onExpand={setResultsExpanded}
-                    />
-                  )}
-              </Stack>
-            </Box>
-          </Fade>
-        </>
-      )}
+      {/* Results and overlays removed per user request */}
     </>
   );
 }

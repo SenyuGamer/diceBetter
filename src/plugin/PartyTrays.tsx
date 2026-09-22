@@ -66,10 +66,8 @@ export function PartyTrays() {
         hideBackdrop
         PaperProps={{
           sx: {
-            bgcolor:
-              theme.palette.mode === "dark"
-                ? "rgba(34, 38, 57, 0.9)"
-                : "rgba(241, 243, 249, 0.9)",
+            bgcolor: "transparent",
+            boxShadow: "none",
           },
         }}
         // Keep mounted to allow the canvas to be ready
