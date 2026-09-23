@@ -24,6 +24,7 @@ import { DiceResults } from "./DiceResults";
 import { getDiceToRoll, useDiceControlsStore, DiceCounts } from "./store";
 import { DiceType } from "../types/DiceType";
 import { useDiceHistoryStore } from "./history";
+import { getDieFromDice } from "../helpers/getDieFromDice";
 import { Die } from "../types/Die";
 import { getCombinedDiceValue } from "../helpers/getCombinedDiceValue";
 
@@ -112,7 +113,10 @@ function DicePickedControls() {
       const activeTimeSeconds = (performance.now() - rollPressTime) / 1000;
       const speedMultiplier = Math.max(1, Math.min(10, activeTimeSeconds * 2));
       const recentRollId = performance.now().toString();
-      startRoll({ dice, bonus, hidden, recentRollId }, speedMultiplier);
+      const diceList = getDieFromDice({ dice });
+      const diceCount = diceList.length;
+      const trayScale = diceCount > 20 ? 1.6 : diceCount > 10 ? 1.2 : 0.8;
+      startRoll({ dice, bonus, hidden, recentRollId }, speedMultiplier, trayScale);
 
       const activeCounts: DiceCounts = {};
       const rolledDiceById: Record<string, Die> = {};

@@ -53,11 +53,12 @@ export function PopoverTray({
   }, [finishedRolling]);
 
   const trayScale = useMemo(() => {
-    if (!diceRoll) return 1.0;
+    if (!diceRoll) return 0.8;
+    if (diceRoll.trayScale) return diceRoll.trayScale;
     const count = getDieFromDice(diceRoll).length;
-    if (count > 20) return 2.0;
-    if (count > 10) return 1.5;
-    return 1.0;
+    if (count > 20) return 1.6;
+    if (count > 10) return 1.2;
+    return 0.8;
   }, [diceRoll]);
 
   const shown = !hidden && !timedOut;

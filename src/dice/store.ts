@@ -31,7 +31,7 @@ interface DiceRollState {
    * A mapping from the die ID to a boolean indicating if it is cocked.
    */
   rollCocked: Record<string, boolean>;
-  startRoll: (roll: DiceRoll, speedMultiplier?: number) => void;
+  startRoll: (roll: DiceRoll, speedMultiplier?: number, trayScale?: number) => void;
   clearRoll: (ids?: string) => void;
   /** Reroll select ids of dice or reroll all dice by passing `undefined` */
   reroll: (ids?: string[], manualThrows?: Record<string, DiceThrow>) => void;
@@ -45,8 +45,10 @@ export const useDiceRollStore = create<DiceRollState>()(
     rollTransforms: {},
     rollThrows: {},
     rollCocked: {},
-    startRoll: (roll, speedMultiplier?: number) =>
+    startRoll: (roll, speedMultiplier?: number, activeTrayScale?: number) =>
       set((state) => {
+        // Embed the activeTrayScale so other players know what size tray to use
+        roll.trayScale = activeTrayScale || 1.0;
         state.roll = roll;
         state.rollValues = {};
         state.rollTransforms = {};
@@ -54,11 +56,11 @@ export const useDiceRollStore = create<DiceRollState>()(
         state.rollCocked = {};
         // Set all values to null
         const dice = getDieFromDice(roll);
-        const trayScale = dice.length > 20 ? 1.6 : dice.length > 10 ? 1.2 : 0.8;
+        const spawnScale = dice.length > 20 ? 1.6 : dice.length > 10 ? 1.2 : 0.8;
         for (const die of dice) {
           state.rollValues[die.id] = null;
           state.rollTransforms[die.id] = null;
-          state.rollThrows[die.id] = getRandomDiceThrow(speedMultiplier, trayScale);
+          state.rollThrows[die.id] = getRandomDiceThrow(speedMultiplier, spawnScale);
         }
       }),
     clearRoll: () =>

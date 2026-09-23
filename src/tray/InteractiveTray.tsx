@@ -40,6 +40,11 @@ function useTrayScale() {
   const previewDiceCount = useMemo(() => getDieFromDice(previewRoll).length, [previewRoll]);
 
   const activeRoll = useDiceRollStore((state) => state.roll);
+  
+  if (activeRoll && activeRoll.trayScale) {
+    return activeRoll.trayScale;
+  }
+
   const activeDiceCount = useMemo(() => activeRoll ? getDieFromDice(activeRoll).length : 0, [activeRoll]);
 
   const currentCount = Math.max(previewDiceCount, activeDiceCount);
