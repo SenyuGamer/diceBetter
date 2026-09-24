@@ -7,6 +7,7 @@ import { getPluginId } from "./getPluginId";
 /** Sync the current dice roll to the plugin */
 export function DiceRollSync() {
   const prevIds = useRef<string[]>([]);
+  const prevThrows = useRef<any>(null);
   useEffect(
     () =>
       useDiceRollStore.subscribe((state) => {
@@ -14,6 +15,7 @@ export function DiceRollSync() {
         if (!state.roll) {
           changed = true;
           prevIds.current = [];
+          prevThrows.current = null;
         } else {
           const ids = getDieFromDice(state.roll).map((die) => die.id);
           // Check array length for early change check
@@ -24,6 +26,10 @@ export function DiceRollSync() {
           else if (!ids.every((id, index) => id === prevIds.current[index])) {
             changed = true;
           }
+          // Check if we started a reroll (rollThrows changed)
+          else if (state.rollThrows !== prevThrows.current) {
+            changed = true;
+          }
           // Check if we'e completed a roll
           else if (
             Object.values(state.rollValues).every((value) => value !== null)
@@ -31,6 +37,7 @@ export function DiceRollSync() {
             changed = true;
           }
           prevIds.current = ids;
+          prevThrows.current = state.rollThrows;
         }
 
         if (changed) {
