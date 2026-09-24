@@ -68,6 +68,7 @@ export function InteractiveDice(
   );
 
   const reroll = useDiceRollStore((state) => state.reroll);
+  const trayScale = useDiceRollStore((state) => state.roll?.trayScale || 1.0);
 
   useEffect(() => {
     if (dragAnchor) {
@@ -81,11 +82,21 @@ export function InteractiveDice(
           const minWidth = Math.max(e.width, 5);
           const minHeight = Math.max(e.height, 5);
           if (deltaX > minWidth || deltaY > minHeight) {
+            // Re-clamp the final position just in case
+            let finalX = dice.position.x;
+            let finalZ = dice.position.z;
+            const maxRadius = (0.866 * trayScale) - 0.15;
+            const dist = Math.sqrt(finalX * finalX + finalZ * finalZ);
+            if (dist > maxRadius) {
+              finalX = (finalX / dist) * maxRadius;
+              finalZ = (finalZ / dist) * maxRadius;
+            }
+
             const position = {
-              x: dice.position.x,
+              x: finalX,
               // Fix dice throw position a 1 unit
               y: 1,
-              z: dice.position.z,
+              z: finalZ,
             };
             // Find the direction of movement
             let linearVelocity: DiceVector3;
@@ -128,8 +139,16 @@ export function InteractiveDice(
           );
 
           // Offset initial anchor position
-          const newDiceX = position.x - dragAnchor.x;
-          const newDiceZ = position.z - dragAnchor.z;
+          let newDiceX = position.x - dragAnchor.x;
+          let newDiceZ = position.z - dragAnchor.z;
+
+          // Clamp to tray radius
+          const maxRadius = (0.866 * trayScale) - 0.15;
+          const dist = Math.sqrt(newDiceX * newDiceX + newDiceZ * newDiceZ);
+          if (dist > maxRadius) {
+            newDiceX = (newDiceX / dist) * maxRadius;
+            newDiceZ = (newDiceZ / dist) * maxRadius;
+          }
 
           // Push to history
           const history = dragHistoryRef.current;
@@ -164,6 +183,7 @@ export function InteractiveDice(
     reroll,
     props.die.id,
     invalidate,
+    trayScale,
   ]);
 
   useEffect(() => {
