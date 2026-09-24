@@ -116,8 +116,10 @@ export function PhysicsDice({
               w: rotation.w,
             },
           };
-          onRollFinished?.(die.id, value, transform, isCocked);
-          lockDice();
+          if (onRollFinished) {
+            onRollFinished(die.id, value, transform, isCocked);
+            lockDice();
+          }
         }
       }
     },
