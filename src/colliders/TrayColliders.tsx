@@ -1,4 +1,4 @@
-import { CuboidCollider, RigidBody } from "@react-three/rapier";
+import { CuboidCollider, RigidBody, TrimeshCollider } from "@react-three/rapier";
 import * as THREE from "three";
 import { useMemo } from "react";
 
@@ -12,42 +12,21 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
   
   const innerRadius = 1.0 * s;
 
-  // Create a thick hexagonal wall using ExtrudeGeometry to prevent high-speed tunneling
-  const wallsGeometry = useMemo(() => {
-    const shape = new THREE.Shape();
-    // Outer hexagon (very large to prevent tunneling)
-    const outerRadius = 20; 
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI) / 3;
-      if (i === 0) shape.moveTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
-      else shape.lineTo(Math.cos(angle) * outerRadius, Math.sin(angle) * outerRadius);
-    }
-    shape.closePath();
-
-    // Inner hexagon (the actual tray boundary)
-    const hole = new THREE.Path();
-    for (let i = 0; i < 6; i++) {
-      const angle = (i * Math.PI) / 3;
-      if (i === 0) hole.moveTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
-      else hole.lineTo(Math.cos(angle) * innerRadius, Math.sin(angle) * innerRadius);
-    }
-    hole.closePath();
-    shape.holes.push(hole);
-
-    // Extrude the 2D shape into a 3D thick wall
-    const extrudeSettings = { depth: 15, bevelEnabled: false };
-    const geom = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+  // Create explicit vertices and indices for the trimesh
+  const { vertices, indices } = useMemo(() => {
+    // 6-sided cylinder, open ended (hollow tube)
+    // Height 20 is enough to cover from floor to roof
+    const geom = new THREE.CylinderGeometry(innerRadius, innerRadius, 20, 6, 1, true);
     
-    // ExtrudeGeometry extrudes along the Z axis by default. We need it along the Y axis.
-    geom.rotateX(Math.PI / 2);
-    
-    // Rotate to match the visual tray's orientation
+    // Rotate 30 degrees to match visual hexagon
     geom.rotateY(Math.PI / 6);
-    
-    // Translate down so it covers the floor upwards
-    geom.translate(0, 5, 0);
-    
-    return geom;
+    // Translate up to cover Y=0 to Y=20
+    geom.translate(0, 10, 0);
+
+    return {
+      vertices: geom.attributes.position.array as Float32Array,
+      indices: geom.index!.array as Uint32Array,
+    };
   }, [innerRadius]);
 
   return (
@@ -65,18 +44,14 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
         />
       </RigidBody>
 
-      {/* 6 Thick Walls of the hexagonal tray (unified trimesh) */}
+      {/* 6 Walls of the hexagonal tray (explicit trimesh) */}
       <RigidBody
         type="fixed"
         friction={1}
         restitution={0.9}
-        colliders="trimesh"
         userData={{ material: "WOOD" }}
       >
-        {/* Do not use visible={false} because Rapier might ignore it. Use opacity 0 instead. */}
-        <mesh geometry={wallsGeometry} position={[0, 0, 0]}>
-          <meshBasicMaterial transparent opacity={0} depthWrite={false} color="red" />
-        </mesh>
+        <TrimeshCollider args={[vertices, indices]} />
       </RigidBody>
 
       {/* Roof to prevent dice from flying out */}
