@@ -1,13 +1,11 @@
 import { CuboidCollider, RigidBody } from "@react-three/rapier";
+import * as THREE from "three";
+import { useMemo } from "react";
 
 // Use a very large wall size and thickness to avoid the possibility
 // of the dice teleporting through the dice tray
 const WALL_THICKNESS = 50;
 const WALL_SIZE = 100;
-const FLOOR_Y = -WALL_THICKNESS + 0.005; // Push the floor up a little for better contact shadows
-const ROOF_Y = WALL_THICKNESS + 1.5;
-const WALL_X = WALL_THICKNESS + 0.46; // Move the wall in a bit to account for the wood thickness
-const WALL_Z = WALL_THICKNESS + 0.96;
 
 export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["group"] & { scale?: number }) {
   const s = typeof scale === 'number' ? scale : 1;
@@ -15,7 +13,17 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
   const roofY = WALL_THICKNESS + 1.5 * s;
   
   // Apotema interior del hexágono (radio al centro de cada pared): ~0.866
-  const apothem = 0.866 * s;
+  // Para que CylinderGeometry cree un hexágono con apotema 0.866, el radio (vértice) debe ser 1.0.
+  const radius = 1.0 * s;
+
+  // Creamos la geometría de las paredes una sola vez
+  const wallsGeometry = useMemo(() => {
+    // openEnded = true para que sea un tubo sin tapas
+    const geom = new THREE.CylinderGeometry(radius, radius, 10, 6, 1, true);
+    // Rotate so the flat sides align with the z-axis (just like the visual tray)
+    geom.rotateY(Math.PI / 6); 
+    return geom;
+  }, [radius]);
 
   return (
     <group {...props}>
@@ -32,30 +40,21 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
         />
       </RigidBody>
 
-      {/* 6 Walls of the hexagonal tray */}
+      {/* 6 Walls of the hexagonal tray (unified trimesh) */}
       <RigidBody
         type="fixed"
         friction={1}
         restitution={0.9}
+        colliders="trimesh"
         userData={{ material: "WOOD" }}
       >
-        {Array.from({ length: 6 }).map((_, i) => {
-          const angle = (i * Math.PI) / 3; // 60 grados por cara
-          const dist = apothem + WALL_THICKNESS;
-          const x = Math.sin(angle) * dist;
-          const z = Math.cos(angle) * dist;
+        <mesh geometry={wallsGeometry} position={[0, 0, 0]} visible={false}>
+          <meshBasicMaterial side={THREE.DoubleSide} />
+        </mesh>
+      </RigidBody>
 
-          return (
-            <CuboidCollider
-              key={i}
-              args={[WALL_SIZE, WALL_SIZE, WALL_THICKNESS]}
-              position={[x, floorY, z]}
-              rotation={[0, angle, 0]}
-            />
-          );
-        })}
-
-        {/* Roof to prevent dice from flying out */}
+      {/* Roof to prevent dice from flying out */}
+      <RigidBody type="fixed">
         <CuboidCollider
           args={[WALL_SIZE, WALL_THICKNESS, WALL_SIZE]}
           position={[0, roofY, 0]}
