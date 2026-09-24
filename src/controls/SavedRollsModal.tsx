@@ -58,6 +58,8 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
   const addRoll = useSavedRollsStore((state) => state.addRoll);
   const groupColors = useSavedRollsStore((state) => state.groupColors);
   const setGroupColor = useSavedRollsStore((state) => state.setGroupColor);
+  const toggleCollapsedGroup = useSavedRollsStore((state) => state.toggleCollapsedGroup);
+  const collapsedGroups = useSavedRollsStore((state) => state.collapsedGroups || []);
 
   const stringToColor = (str: string) => {
     let hash = 0;
@@ -204,7 +206,12 @@ export function SavedRollsModal({ open, onClose }: SavedRollsModalProps) {
           {groups.map((group) => {
             const groupRolls = savedRolls.filter((r) => r.group === group);
             return (
-              <Accordion key={group} defaultExpanded disableGutters>
+              <Accordion 
+                key={group} 
+                expanded={!collapsedGroups.includes(group)}
+                onChange={() => toggleCollapsedGroup(group)}
+                disableGutters
+              >
                 <AccordionSummary
                   expandIcon={<ExpandMoreIcon />}
                   sx={{ px: 2 }}

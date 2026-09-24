@@ -20,6 +20,7 @@ interface SavedRollsState {
   groups: string[];
   favoriteGroups: string[];
   groupColors: Record<string, string>;
+  collapsedGroups: string[];
   savedRolls: SavedRoll[];
   addRoll: (roll: Omit<SavedRoll, "id">) => void;
   removeRoll: (id: string) => void;
@@ -27,6 +28,7 @@ interface SavedRollsState {
   removeGroup: (name: string) => void;
   renameGroup: (oldName: string, newName: string) => void;
   toggleFavoriteGroup: (name: string) => void;
+  toggleCollapsedGroup: (name: string) => void;
   setGroupColor: (name: string, color: string) => void;
   editRoll: (id: string, updates: Partial<Omit<SavedRoll, "id">>) => void;
 }
@@ -41,6 +43,7 @@ export const useSavedRollsStore = create<SavedRollsState>()(
       groups: [],
       favoriteGroups: [],
       groupColors: {},
+      collapsedGroups: [],
       savedRolls: [],
       setGroupColor(name, color) {
         set((state) => {
@@ -117,6 +120,17 @@ export const useSavedRollsStore = create<SavedRollsState>()(
             state.favoriteGroups.splice(idx, 1);
           } else {
             state.favoriteGroups.push(name);
+          }
+        });
+      },
+      toggleCollapsedGroup(name) {
+        set((state) => {
+          if (!state.collapsedGroups) state.collapsedGroups = [];
+          const idx = state.collapsedGroups.indexOf(name);
+          if (idx !== -1) {
+            state.collapsedGroups.splice(idx, 1);
+          } else {
+            state.collapsedGroups.push(name);
           }
         });
       },
