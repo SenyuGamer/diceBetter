@@ -10,6 +10,7 @@ import { DiceTransform } from "../types/DiceTransform";
 import { getRandomDiceThrow } from "../helpers/DiceThrower";
 import { generateDiceId } from "../helpers/generateDiceId";
 import { DiceThrow } from "../types/DiceThrow";
+import { useDiceHistoryStore } from "../controls/history";
 
 interface DiceRollState {
   roll: DiceRoll | null;
@@ -72,6 +73,9 @@ export const useDiceRollStore = create<DiceRollState>()(
         state.rollCocked = {};
       }),
     reroll: (ids, manualThrows) => {
+      let oldId: string | undefined;
+      let newId: string | undefined;
+
       set((state) => {
         if (state.roll) {
           rerollDraft(
@@ -83,8 +87,19 @@ export const useDiceRollStore = create<DiceRollState>()(
             state.rollThrows,
             state.rollCocked
           );
+          oldId = state.roll.recentRollId;
+          newId = performance.now().toString();
+          state.roll.recentRollId = newId;
         }
       });
+
+      if (oldId && newId) {
+        const historyState = useDiceHistoryStore.getState();
+        const oldEntry = historyState.recentRolls.find((r) => r.id === oldId);
+        if (oldEntry) {
+          historyState.pushRecentRoll({ ...oldEntry, id: newId, result: undefined });
+        }
+      }
     },
     finishDieRoll: (id, number, transform, isCocked) => {
       set((state) => {
