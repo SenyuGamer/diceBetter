@@ -69,7 +69,7 @@ export function Beyond20Listener() {
           }
         } else if (["skill", "ability", "saving-throw", "initiative", "death-save"].includes(request.type)) {
            // Standard 1d20 rolls
-           let toHit = request["to-hit"] || "+0";
+           let toHit = request.modifier || request["to-hit"] || "+0";
            if (!toHit.startsWith("+") && !toHit.startsWith("-")) toHit = "+" + toHit;
            const parsed = parseDiceString(`1d20${toHit}`, availableDice);
            if (parsed) {
