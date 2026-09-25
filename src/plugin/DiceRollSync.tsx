@@ -47,11 +47,16 @@ export function DiceRollSync() {
           const transforms = state.roll?.hidden
             ? undefined
             : state.rollTransforms;
+          const cocked = state.roll?.hidden
+            ? undefined
+            : state.rollCocked;
+            
           OBR.player.setMetadata({
             [getPluginId("roll")]: state.roll,
             [getPluginId("rollThrows")]: throws,
             [getPluginId("rollValues")]: values,
             [getPluginId("rollTransforms")]: transforms,
+            [getPluginId("rollCocked")]: cocked,
           });
         }
       }),

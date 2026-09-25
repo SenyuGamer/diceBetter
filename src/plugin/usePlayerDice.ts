@@ -29,6 +29,12 @@ export function usePlayerDice(player?: Player) {
       | undefined;
   }, [player]);
 
+  const rollCocked = useMemo(() => {
+    return player?.metadata[getPluginId("rollCocked")] as
+      | Record<string, boolean>
+      | undefined;
+  }, [player]);
+
   const finishedRollTransforms = useMemo(() => {
     if (!rollTransforms) {
       return undefined;
@@ -87,6 +93,7 @@ export function usePlayerDice(player?: Player) {
     rollThrows,
     rollValues,
     rollTransforms,
+    rollCocked,
     transformsRef,
     finishedRollTransforms,
     finalValue,
