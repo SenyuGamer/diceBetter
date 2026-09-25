@@ -10,8 +10,10 @@ import SettingsBackupRestoreIcon from "@mui/icons-material/SettingsBackupRestore
 
 import { useGlobalHistoryStore } from "./globalHistoryStore";
 import { DicePreview } from "../previews/DicePreview";
+import { useI18n } from "../i18n";
 
 export function GlobalHistory() {
+  const t = useI18n((state) => state.t);
   const globalRolls = useGlobalHistoryStore((state) => state.globalRolls);
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -25,7 +27,7 @@ export function GlobalHistory() {
 
   return (
     <>
-      <Tooltip title="Historial Global" placement="right">
+      <Tooltip title={t.globalHistory} placement="right">
         <IconButton onClick={handleClick} disabled={globalRolls.length === 0}>
           <SettingsBackupRestoreIcon />
         </IconButton>
