@@ -1,10 +1,14 @@
 import React from "react";
 import { useDiceRollStore } from "./store";
+import { DiceTransform } from "../types/DiceTransform";
 
-export function CockedMarkers() {
-  const rollCocked = useDiceRollStore((state) => state.rollCocked);
-  const rollTransforms = useDiceRollStore((state) => state.rollTransforms);
-
+export function CockedMarkersRenderer({
+  rollCocked,
+  rollTransforms
+}: {
+  rollCocked: Record<string, boolean>;
+  rollTransforms: Record<string, DiceTransform | null>;
+}) {
   return (
     <>
       {Object.entries(rollCocked).map(([id, isCocked]) => {
@@ -22,4 +26,11 @@ export function CockedMarkers() {
       })}
     </>
   );
+}
+
+export function CockedMarkers() {
+  const rollCocked = useDiceRollStore((state) => state.rollCocked);
+  const rollTransforms = useDiceRollStore((state) => state.rollTransforms);
+
+  return <CockedMarkersRenderer rollCocked={rollCocked} rollTransforms={rollTransforms} />;
 }
