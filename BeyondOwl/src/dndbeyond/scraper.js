@@ -1,5 +1,3 @@
-// src/dndbeyond/scraper.js
-
 /**
  * Scraper minimalista para D&D Beyond.
  * Solo lee los números que DDB ya ha calculado en el DOM visible.
@@ -7,15 +5,20 @@
 
 window.BeyondOwlScraper = {
   getRollDataFromElement: function(element) {
+    function extractMod(el, fallbackEl) {
+      const text = el ? el.textContent : (fallbackEl ? fallbackEl.textContent : "");
+      const match = text.match(/([+-]\s*\d+)/);
+      return match ? match[1].replace(/\s/g, '') : "+0";
+    }
+
     // 1. Ataque (To-Hit)
     if (element.closest(".ct-combat-attack__tohit, .ddbc-combat-attack__tohit, .ct-spells-spell__tohit, .ddbc-spells-spell__tohit")) {
       const row = element.closest(".ct-combat-attack, .ddbc-combat-attack, .ct-spells-spell, .ddbc-spells-spell");
       const nameEl = row.querySelector(".ct-combat-attack__name, .ddbc-combat-attack__name, .ct-spell-name, .ddbc-spell-name, .ct-spells-spell__name, .ddbc-spells-spell__name");
       const name = nameEl ? nameEl.textContent.replace(/\n/g, ' ').trim() : "Ataque";
       
-      const toHitEl = row.querySelector(".ct-combat-attack__tohit, .ddbc-combat-attack__tohit, .ct-spells-spell__tohit, .ddbc-spells-spell__tohit");
-      const match = toHitEl.textContent.match(/([+-]\s*\d+)/);
-      const toHit = match ? match[1].replace(/\s/g, '') : "+0";
+      const toHitEl = element.closest(".ct-combat-attack__tohit, .ddbc-combat-attack__tohit, .ct-spells-spell__tohit, .ddbc-spells-spell__tohit") || row;
+      const toHit = extractMod(toHitEl, row);
 
       return {
         action: "roll",
@@ -54,8 +57,7 @@ window.BeyondOwlScraper = {
         const bonus = sign * flat;
         damages.push(`${qty}d${faces}${bonus >= 0 && bonus !== 0 ? '+' + bonus : (bonus === 0 ? '' : bonus)}`);
         
-        // Buscar daño extra en las notas de la fila (ej. Sneak Attack, Divine Strike)
-        // Ignoramos el texto dentro de los botones para no duplicar
+        // Buscar daño extra en las notas de la fila
         const clonedRow = row.cloneNode(true);
         clonedRow.querySelectorAll('.integrated-dice__container').forEach(e => e.remove());
         const extraText = clonedRow.textContent;
@@ -86,9 +88,8 @@ window.BeyondOwlScraper = {
       const nameEl = row.querySelector(".ct-skills__col--skill, .ddbc-skills__col--skill");
       const name = nameEl ? nameEl.textContent.trim() : "Habilidad";
       
-      const modEl = row.querySelector(".ct-skills__col--modifier, .ddbc-skills__col--modifier");
-      const match = modEl.textContent.match(/([+-]\s*\d+)/);
-      const toHit = match ? match[1].replace(/\s/g, '') : "+0";
+      const modEl = element.closest(".ct-skills__col--modifier, .ddbc-skills__col--modifier") || row.querySelector(".ct-skills__col--modifier, .ddbc-skills__col--modifier");
+      const toHit = extractMod(modEl, row);
 
       // Detectar badges de ventaja
       const htmlString = row.innerHTML.toLowerCase();
@@ -114,9 +115,8 @@ window.BeyondOwlScraper = {
       const nameEl = row.querySelector(".ct-saving-throws-summary__ability-name, .ddbc-saving-throws-summary__ability-name");
       const name = nameEl ? nameEl.textContent.trim() : "Salvación";
       
-      const modEl = row.querySelector(".ct-saving-throws-summary__ability-modifier, .ddbc-saving-throws-summary__ability-modifier");
-      const match = modEl.textContent.match(/([+-]\s*\d+)/);
-      const toHit = match ? match[1].replace(/\s/g, '') : "+0";
+      const modEl = element.closest(".ct-saving-throws-summary__ability-modifier, .ddbc-saving-throws-summary__ability-modifier") || row.querySelector(".ct-saving-throws-summary__ability-modifier, .ddbc-saving-throws-summary__ability-modifier");
+      const toHit = extractMod(modEl, row);
 
       // Detectar badges
       const htmlString = row.innerHTML.toLowerCase();
@@ -139,9 +139,7 @@ window.BeyondOwlScraper = {
     // 5. Iniciativa
     if (element.closest(".ct-combat__summary-group--initiative, .ddbc-combat__summary-group--initiative")) {
       const row = element.closest(".ct-combat__summary-group--initiative, .ddbc-combat__summary-group--initiative");
-      const textContent = row.textContent;
-      const match = textContent ? textContent.match(/([+-]\s*\d+)/) : null;
-      const toHit = match ? match[1].replace(/\s/g, '') : "+0";
+      const toHit = extractMod(element, row);
 
       const htmlString = row.innerHTML.toLowerCase();
       let advantage = 0;
@@ -159,14 +157,16 @@ window.BeyondOwlScraper = {
     }
 
     // 6. Ability Checks (Fuerza, Destreza, etc.)
-    if (element.closest(".ddbc-ability-summary__primary") || element.closest(".ddbc-ability-summary__secondary")) {
+    if (element.closest(".ddbc-ability-summary__primary") || element.closest(".ddbc-ability-summary__secondary") || element.closest(".ddbc-ability-summary, .ct-ability-summary")) {
       const row = element.closest(".ddbc-ability-summary, .ct-ability-summary");
-      const nameEl = row.querySelector(".ddbc-ability-summary__heading, .ct-ability-summary__heading");
-      const name = nameEl ? nameEl.textContent.trim() : "Atributo";
+      const nameEl = row ? row.querySelector(".ddbc-ability-summary__heading, .ct-ability-summary__heading") : null;
+      let name = "Atributo";
+      if (nameEl) {
+        name = nameEl.textContent.trim().split('\n')[0].trim();
+      }
       
-      const modEl = row.querySelector(".ddbc-signed-number, .ct-signed-number");
-      const match = modEl ? modEl.textContent.match(/([+-]\s*\d+)/) : null;
-      const toHit = match ? match[1].replace(/\s/g, '') : "+0";
+      const modEl = element.closest(".ddbc-ability-summary__primary, .ddbc-ability-summary__secondary") || (row ? row.querySelector(".ddbc-ability-summary__primary, .ddbc-ability-summary__secondary") : null);
+      const toHit = extractMod(modEl, row);
 
       return {
         action: "roll",
