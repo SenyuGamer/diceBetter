@@ -19,7 +19,10 @@ import { useTheme } from "@mui/material/styles";
 import Typography from "@mui/material/Typography";
 import { getDiceToRoll, useDiceControlsStore } from "./store";
 
+import { useI18n } from "../i18n";
+
 export function DiceHistory() {
+  const t = useI18n((state) => state.t);
   const startRoll = useDiceRollStore((state) => state.startRoll);
 
   const hidden = useDiceControlsStore((state) => state.diceHidden);
@@ -54,7 +57,7 @@ export function DiceHistory() {
 
   return (
     <>
-      <Tooltip title="History" placement="top" disableInteractive>
+      <Tooltip title={t.history} placement="top" disableInteractive>
         <IconButton
           id="history-button"
           aria-controls={open ? "history-menu" : undefined}
@@ -185,6 +188,7 @@ function RecentRollChip({
 }
 
 function EmptyMessage() {
+  const t = useI18n((state) => state.t);
   const theme = useTheme();
 
   return (
@@ -211,9 +215,9 @@ function EmptyMessage() {
       >
         <NoHistoryIcon />
       </Box>
-      <Typography variant="h6">No History</Typography>
+      <Typography variant="h6">{t.noHistory}</Typography>
       <Typography variant="caption" textAlign="center">
-        Roll dice to add to the roll history.
+        {t.rollDiceToAdd}
       </Typography>
     </Stack>
   );
