@@ -1,16 +1,37 @@
 // src/dndbeyond/widget.js
 
+const getLangW = () => navigator.language.startsWith('es') ? 'es' : 'en';
+const tw = {
+  en: {
+    disconnected: "🔴 Disconnected",
+    connected: "🟢 Connected",
+    searching: "Searching for Owlbear...",
+    empty: "No open Owlbear Rodeo tabs.",
+    disconnectBtn: "🔴 Disconnect",
+    title: "🦉 BeyondOwl"
+  },
+  es: {
+    disconnected: "🔴 Desconectado",
+    connected: "🟢 Conectado",
+    searching: "Buscando Owlbear...",
+    empty: "No hay pestañas de Owlbear Rodeo abiertas.",
+    disconnectBtn: "🔴 Desconectar",
+    title: "🦉 BeyondOwl"
+  }
+};
+
 let isConnected = false;
 
 function createWidget() {
+  const t = tw[getLangW()];
   const container = document.createElement("div");
   container.id = "beyondowl-widget";
   
   const header = document.createElement("div");
   header.className = "beyondowl-header";
   header.innerHTML = `
-    <span class="beyondowl-title">🦉 BeyondOwl</span>
-    <span class="beyondowl-status">🔴 Desconectado</span>
+    <span class="beyondowl-title">${t.title}</span>
+    <span class="beyondowl-status">${t.disconnected}</span>
   `;
 
   const dropdownContainer = document.createElement("div");
@@ -26,7 +47,6 @@ function createWidget() {
   
   document.body.appendChild(container);
 
-  // Toggle dropdown
   header.addEventListener("click", () => {
     if (dropdownContainer.style.display === "none") {
       refreshTabs(tabsList);
@@ -40,25 +60,25 @@ function createWidget() {
 }
 
 function refreshTabs(listEl) {
-  listEl.innerHTML = "<div class='beyondowl-tab-item'>Buscando Owlbear...</div>";
+  const t = tw[getLangW()];
+  listEl.innerHTML = `<div class='beyondowl-tab-item'>${t.searching}</div>`;
   chrome.runtime.sendMessage({ action: "listOwlbearTabs" }, (tabs) => {
     listEl.innerHTML = "";
     if (!tabs || tabs.length === 0) {
-      listEl.innerHTML = "<div class='beyondowl-tab-item empty'>No hay pestañas de Owlbear Rodeo abiertas.</div>";
+      listEl.innerHTML = `<div class='beyondowl-tab-item empty'>${t.empty}</div>`;
       return;
     }
     
-    // Disconnect button
     const discBtn = document.createElement("div");
     discBtn.className = "beyondowl-tab-item disconnect";
-    discBtn.textContent = "🔴 Desconectar";
+    discBtn.textContent = t.disconnectBtn;
     discBtn.addEventListener("click", () => connectToTab(null));
     listEl.appendChild(discBtn);
 
     tabs.forEach(tab => {
       const item = document.createElement("div");
       item.className = "beyondowl-tab-item";
-      item.textContent = `🟢 ${tab.title}`;
+      item.textContent = `🎲 ${tab.title}`;
       item.addEventListener("click", () => connectToTab(tab.tabId, tab.title));
       listEl.appendChild(item);
     });
@@ -90,31 +110,29 @@ function checkStatus() {
 }
 
 function updateStatusUI(connected, title) {
+  const t = tw[getLangW()];
   isConnected = connected;
-  window.BeyondOwlIsConnected = connected; // Add global flag for buttons.js
+  window.BeyondOwlIsConnected = connected;
   const statusEl = document.querySelector(".beyondowl-status");
   if (!statusEl) return;
   
   if (connected) {
-    statusEl.innerHTML = `🟢 Conectado`;
+    statusEl.innerHTML = t.connected;
     statusEl.classList.add("connected");
     
-    // Inject real buttons via buttons.js
     if (window.BeyondOwlInjectAll) {
       window.BeyondOwlInjectAll();
     }
   } else {
-    statusEl.innerHTML = `🔴 Desconectado`;
+    statusEl.innerHTML = t.disconnected;
     statusEl.classList.remove("connected");
     
-    // Remove all injected menus/buttons
     document.querySelectorAll(".beyondowl-btn-container").forEach(e => e.remove());
     const menu = document.getElementById("beyondowl-global-menu");
     if (menu) menu.style.display = "none";
   }
 }
 
-// Initialize
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", createWidget);
 } else {

@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BeyondOwl",
   "version": "1.0.0",
-  "description": "Lanza dados de D&D Beyond en Owlbear Rodeo",
+  "description": "Send D&D Beyond dice rolls directly to Owlbear Rodeo",
   "permissions": ["tabs", "storage"],
   "host_permissions": [
     "*://*.dndbeyond.com/*",

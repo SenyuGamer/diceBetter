@@ -1,5 +1,25 @@
 // src/dndbeyond/buttons.js
 
+const getLang = () => navigator.language.startsWith('es') ? 'es' : 'en';
+const i18nButtons = {
+  en: {
+    normal: "🦉 Normal",
+    adv: "⬆️ Advantage",
+    dis: "⬇️ Disadvantage",
+    sent: "🦉 Sent",
+    advLabel: " - Advantage",
+    disLabel: " - Disadvantage"
+  },
+  es: {
+    normal: "🦉 Normal",
+    adv: "⬆️ Ventaja",
+    dis: "⬇️ Desventaja",
+    sent: "🦉 Enviado",
+    advLabel: " - Ventaja",
+    disLabel: " - Desventaja"
+  }
+};
+
 let currentRollTarget = null;
 let currentRollData = null;
 
@@ -46,33 +66,35 @@ function sendRoll(rollData, overrideAdvantage) {
 
   chrome.runtime.sendMessage({ action: "roll", data: rollData });
   
-  // Mostrar notificación
+  const t = i18nButtons[getLang()];
+  
   let rollText = rollData.name;
   if (rollData["to-hit"]) rollText += ` (${rollData["to-hit"]})`;
   if (rollData.damages) rollText += ` [${rollData.damages.join(", ")}]`;
-  if (rollData.advantage === 3) rollText += " - Ventaja";
-  if (rollData.advantage === 4) rollText += " - Desventaja";
-  showToast(`🦉 Enviado: ${rollText}`);
+  if (rollData.advantage === 3) rollText += t.advLabel;
+  if (rollData.advantage === 4) rollText += t.disLabel;
+  showToast(`${t.sent}: ${rollText}`);
 }
 
 function createGlobalMenu() {
   if (document.getElementById("beyondowl-global-menu")) return;
 
+  const t = i18nButtons[getLang()];
   const menu = document.createElement("div");
   menu.id = "beyondowl-global-menu";
-  menu.className = "beyondowl-hover-menu"; // Reusing the class for styling
+  menu.className = "beyondowl-hover-menu";
   
   const btnNormal = document.createElement("button");
   btnNormal.className = "beyondowl-menu-btn normal";
-  btnNormal.innerHTML = "🦉 Normal";
+  btnNormal.innerHTML = t.normal;
 
   const btnAdv = document.createElement("button");
   btnAdv.className = "beyondowl-menu-btn adv";
-  btnAdv.innerHTML = "⬆️ Ventaja";
+  btnAdv.innerHTML = t.adv;
 
   const btnDis = document.createElement("button");
   btnDis.className = "beyondowl-menu-btn dis";
-  btnDis.innerHTML = "⬇️ Desventaja";
+  btnDis.innerHTML = t.dis;
 
   menu.appendChild(btnNormal);
   menu.appendChild(btnAdv);
@@ -80,7 +102,6 @@ function createGlobalMenu() {
 
   document.body.appendChild(menu);
 
-  // Click handlers
   btnNormal.addEventListener("click", (e) => {
     e.stopPropagation(); e.preventDefault();
     if (currentRollData) sendRoll(currentRollData, 0);
@@ -99,7 +120,6 @@ function createGlobalMenu() {
     hideMenu();
   });
 
-  // Close menu when clicking outside
   document.addEventListener("click", (e) => {
     if (menu.style.display === "flex" && !menu.contains(e.target)) {
       hideMenu();
@@ -116,7 +136,6 @@ function showMenu(target, data, clickEvent) {
 
   menu.style.display = "flex";
   
-  // Position near the click or target
   const rect = target.getBoundingClientRect();
   menu.style.top = `${window.scrollY + rect.top + (rect.height / 2) - (menu.offsetHeight / 2)}px`;
   menu.style.left = `${window.scrollX + rect.right + 4}px`; 
@@ -130,14 +149,12 @@ function hideMenu() {
 }
 
 function handleHijackedEvent(e, el) {
-  // Solo secuestramos si estamos conectados
   if (!window.BeyondOwlIsConnected) return;
 
   e.preventDefault();
   e.stopPropagation();
   e.stopImmediatePropagation();
 
-  // Solo actuar en el click para no lanzar dos veces (una por mousedown y otra por click)
   if (e.type !== "click") return;
 
   const data = window.BeyondOwlScraper.getRollDataFromElement(el);
@@ -171,7 +188,6 @@ function attachHijackEvents() {
         el.style.cursor = "pointer";
         el.style.boxShadow = "inset 0 0 0 1px rgba(100, 150, 255, 0.3)";
         
-        // Bloquear todos los eventos de ratón para que DDB no los pille
         const eventOptions = { capture: true };
         el.addEventListener("mousedown", (e) => handleHijackedEvent(e, el), eventOptions);
         el.addEventListener("mouseup", (e) => handleHijackedEvent(e, el), eventOptions);
