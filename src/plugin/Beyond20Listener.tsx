@@ -16,7 +16,7 @@ export function Beyond20Listener() {
         let request = event.data.data;
         if (!request) return;
 
-        // Si viene de un RenderedRoll (owl20 o nuestro bridge), la tirada real está dentro de .request
+        // Si viene de un RenderedRoll (owl20 o nuestro bridge), la tirada real estǭ dentro de .request
         if (request.action === "rendered-roll" && request.request) {
             request = request.request;
         }
@@ -38,9 +38,9 @@ export function Beyond20Listener() {
         // Determine what to roll based on request type
         if (request.type === "attack" || request.type === "spell-attack") {
           // Check if we should roll attack
-          if (request.rollAttack !== false && request["to-hit"]) {
-            let toHit = request["to-hit"];
-            if (!toHit.startsWith("+") && !toHit.startsWith("-")) toHit = "+" + toHit;
+          if (request.rollAttack !== false && request["to-hit"] !== undefined) {
+            let toHit = String(request["to-hit"] || "+0").replace(/\s/g, '');
+            if (!toHit.startsWith("+") && !toHit.startsWith("-") && toHit !== "") toHit = "+" + toHit;
             const parsed = parseDiceString(`1d20${toHit}`, availableDice);
             if (parsed) {
               Object.assign(allCounts, parsed.counts);
@@ -48,16 +48,12 @@ export function Beyond20Listener() {
               totalBonus += parsed.bonus;
             }
           }
-          // Note: If request.rollDamage is true, Beyond20 rolls damage with it.
-          // For 3D dice, summing attack and damage in one number is bad, so we 
-          // might want to prioritize attack, and ignore damage if attack is rolled.
-          // We will just roll attack if it's an attack event for now.
         } else if (request.type === "damage" || request.rollDamage) {
           isDamage = true;
           if (request.damages && Array.isArray(request.damages)) {
             for (const dmg of request.damages) {
                // dmg is like "1d8+3" or "2d6-1"
-               const parsed = parseDiceString(dmg, availableDice);
+               const parsed = parseDiceString(String(dmg).replace(/\s/g, ''), availableDice);
                if (parsed) {
                  for (const [id, count] of Object.entries(parsed.counts)) {
                    allCounts[id] = (allCounts[id] || 0) + count;
@@ -69,8 +65,8 @@ export function Beyond20Listener() {
           }
         } else if (["skill", "ability", "saving-throw", "initiative", "death-save"].includes(request.type)) {
            // Standard 1d20 rolls
-           let toHit = request.modifier || request["to-hit"] || "+0";
-           if (!toHit.startsWith("+") && !toHit.startsWith("-")) toHit = "+" + toHit;
+           let toHit = String(request.modifier || request["to-hit"] || "+0").replace(/\s/g, '');
+           if (!toHit.startsWith("+") && !toHit.startsWith("-") && toHit !== "") toHit = "+" + toHit;
            const parsed = parseDiceString(`1d20${toHit}`, availableDice);
            if (parsed) {
              Object.assign(allCounts, parsed.counts);
@@ -85,6 +81,8 @@ export function Beyond20Listener() {
              allCounts[id] *= 2;
            }
         }
+
+        console.log("Parsed Roll Data:", { allCounts, totalBonus, isDamage, advantage });
 
         // Generate the DiceRoll payload
         const controlsState = useDiceControlsStore.getState();
@@ -107,7 +105,7 @@ export function Beyond20Listener() {
         if (dice.length > 0) {
           useDiceRollStore.getState().startRoll(roll);
           
-          // Añadir al historial local del jugador (DiceHistory)
+          // Aadir al historial local del jugador (DiceHistory)
           useDiceHistoryStore.getState().pushRecentRoll({
             id: roll.recentRollId!,
             advantage: advantage,
