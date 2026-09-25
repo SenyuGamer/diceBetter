@@ -28,6 +28,8 @@ An advanced 3D dice extension with realistic physics for [Owlbear Rodeo](https:/
 ### 2. D&D Beyond Integration (Optional)
 To send rolls from D&D Beyond directly into this 3D physical tray, you can use the **BeyondOwl** browser extension (available in the `BeyondOwl` folder) or the classic **Beyond20** extension.
 
+[🦊 Get BeyondOwl for Firefox / Firefox Android](https://addons.mozilla.org/es-ES/android/addon/beyondowl/)
+
 ---
 
 ## 💻 Local Development

@@ -44,6 +44,8 @@ Una extensión avanzada de dados 3D con físicas realistas para [Owlbear Rodeo](
 1. Descarga `BeyondOwl-Firefox.xpi` desde [Releases](https://github.com/SenyuGamer/diceBetter/releases) o instálalo directamente desde [addons.mozilla.org](https://addons.mozilla.org/) si está publicado.
 2. Abre el archivo en Firefox y pulsa **Añadir**.
 
+[🦊 Consigue BeyondOwl para Firefox / Firefox Android](https://addons.mozilla.org/es-ES/android/addon/beyondowl/)
+
 ---
 
 ## 💻 Desarrollo Local
