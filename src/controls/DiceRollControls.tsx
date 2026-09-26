@@ -370,43 +370,9 @@ function FinishedRollControls() {
   return (
     <>
       <GradientOverlay top height={resultsExpanded ? 500 : undefined} />
-      <Box
-        sx={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          pointerEvents: "none",
-          pt: 3,
-          px: 11,
-        }}
-        component="div"
-      >
-        <Stack
-          direction="row"
-          justifyContent="space-between"
-          width="100%"
-          alignItems="start"
-        >
-          <Tooltip title="Reroll" sx={{ pointerEvents: "all" }}>
-            <IconButton
-              onClick={() => reroll()}
-              sx={{ pointerEvents: "all" }}
-            >
-              <RerollDiceIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title="Clear" sx={{ pointerEvents: "all" }}>
-            <IconButton
-              onClick={() => clearRoll()}
-              sx={{ pointerEvents: "all" }}
-            >
-              <CloseIcon />
-            </IconButton>
-          </Tooltip>
-        </Stack>
-      </Box>
       <Stack
+        direction="row"
+        spacing={{ xs: 1, sm: 2 }}
         sx={{
           position: "absolute",
           top: 0,
@@ -414,23 +380,43 @@ function FinishedRollControls() {
           transform: "translateX(-50%)",
           pointerEvents: "none",
           padding: 3,
-          alignItems: "center",
+          alignItems: "flex-start",
         }}
         component="div"
       >
-        {roll && (
-          <DiceResults
-            diceRoll={roll}
-            rollValues={finishedRollValues}
-            expanded={resultsExpanded}
-            onExpand={setResultsExpanded}
-          />
-        )}
-        {roll?.hidden && (
-          <Tooltip title="Hidden Roll" sx={{ pointerEvents: "all" }}>
-            <HiddenIcon htmlColor="black" />
-          </Tooltip>
-        )}
+        <Tooltip title="Reroll" sx={{ pointerEvents: "all" }}>
+          <IconButton
+            onClick={() => reroll()}
+            sx={{ pointerEvents: "all" }}
+          >
+            <RerollDiceIcon />
+          </IconButton>
+        </Tooltip>
+
+        <Stack alignItems="center" gap={1}>
+          {roll && (
+            <DiceResults
+              diceRoll={roll}
+              rollValues={finishedRollValues}
+              expanded={resultsExpanded}
+              onExpand={setResultsExpanded}
+            />
+          )}
+          {roll?.hidden && (
+            <Tooltip title="Hidden Roll" sx={{ pointerEvents: "all" }}>
+              <HiddenIcon htmlColor="black" />
+            </Tooltip>
+          )}
+        </Stack>
+
+        <Tooltip title="Clear" sx={{ pointerEvents: "all" }}>
+          <IconButton
+            onClick={() => clearRoll()}
+            sx={{ pointerEvents: "all" }}
+          >
+            <CloseIcon />
+          </IconButton>
+        </Tooltip>
       </Stack>
     </>
   );
