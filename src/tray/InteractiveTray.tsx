@@ -24,6 +24,8 @@ import { useDiceRollStore } from "../dice/store";
 import { getDieFromDice } from "../helpers/getDieFromDice";
 import { CockedMarkers } from "../dice/CockedMarkers";
 
+import { ResponsiveCamera } from "./ResponsiveCamera";
+
 function useTrayScale() {
   const counts = useDiceControlsStore((state) => state.diceCounts);
   const advantage = useDiceControlsStore((state) => state.diceAdvantage);
@@ -93,12 +95,7 @@ export function InteractiveTray() {
             <PreviewDiceRoll trayScale={trayScale} />
             <InteractiveDiceRoll trayScale={trayScale} />
             <CockedMarkers />
-            <PerspectiveCamera
-              makeDefault
-              fov={15}
-              position={[0, 8.5 * trayScale, 0]}
-              rotation={[-Math.PI / 2, 0, 0]}
-            />
+            <ResponsiveCamera trayScale={trayScale} />
 
             {allowOrbit && <OrbitControls />}
           </AudioListenerProvider>

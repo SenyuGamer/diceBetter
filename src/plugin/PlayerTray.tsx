@@ -30,6 +30,7 @@ import { AudioListenerProvider } from "../audio/AudioListenerProvider";
 import { Tray } from "../tray/Tray";
 import { useDebugStore } from "../debug/store";
 import { TraySuspense } from "../tray/TraySuspense";
+import { ResponsiveCamera } from "../tray/ResponsiveCamera";
 
 export function PlayerTray({
   player,
@@ -72,12 +73,7 @@ export function PlayerTray({
               />
               <Tray scale={trayScale} />
               <PlayerDiceRoll player={player} trayScale={trayScale} />
-              <PerspectiveCamera
-                makeDefault
-                fov={28}
-                position={[0, 4.3 * trayScale, 0]}
-                rotation={[-Math.PI / 2, 0, 0]}
-              />
+              <ResponsiveCamera trayScale={trayScale} baseFov={28} baseY={4.3} />
               {allowOrbit && <OrbitControls />}
             </AudioListenerProvider>
           </Canvas>
