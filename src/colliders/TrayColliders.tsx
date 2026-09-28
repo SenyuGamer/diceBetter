@@ -14,12 +14,12 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
 
   // Create explicit vertices and indices for the trimesh
   const { vertices, indices } = useMemo(() => {
-    // 6-sided cylinder, open ended (hollow tube)
+    // 4-sided cylinder, open ended (hollow tube) - this is a square tube
     // Height 20 is enough to cover from floor to roof
-    const geom = new THREE.CylinderGeometry(innerRadius, innerRadius, 20, 6, 1, true);
+    const geom = new THREE.CylinderGeometry(innerRadius, innerRadius, 20, 4, 1, true);
     
-    // Rotate 30 degrees to match visual hexagon
-    geom.rotateY(Math.PI / 6);
+    // Rotate 45 degrees to match visual square
+    geom.rotateY(Math.PI / 4);
     // Translate up to cover Y=0 to Y=20
     geom.translate(0, 10, 0);
 

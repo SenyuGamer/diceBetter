@@ -1,5 +1,5 @@
-import { HexagonalTray } from "./HexagonalTray";
+import { SquareTray } from "./SquareTray";
 
 export function Tray(props: JSX.IntrinsicElements["group"] & { scale?: number }) {
-  return <HexagonalTray {...props} />;
+  return <SquareTray {...props} />;
 }
