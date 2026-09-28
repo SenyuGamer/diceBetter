@@ -32,6 +32,7 @@ import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
+import { useDiceRollStore } from "../dice/store";
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
 
@@ -99,6 +100,8 @@ export function Sidebar() {
   const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
   const trayShape = useDiceControlsStore(state => state.trayShape);
   const setTrayShape = useDiceControlsStore(state => state.setTrayShape);
+  const clearRoll = useDiceRollStore(state => state.clearRoll);
+  const hasRoll = useDiceRollStore(state => state.roll !== undefined);
 
   return (
     <SimpleBar
@@ -156,7 +159,10 @@ export function Sidebar() {
             {/* 3. Toggle Forma de Bandeja */}
             <Tooltip title={trayShape === "SQUARE" ? "Cambiar a Hexágono" : "Cambiar a Cuadrado"} placement="right" disableInteractive>
               <IconButton 
-                onClick={() => setTrayShape(trayShape === "SQUARE" ? "HEXAGONAL" : "SQUARE")} 
+                onClick={() => {
+                  setTrayShape(trayShape === "SQUARE" ? "HEXAGONAL" : "SQUARE");
+                  if (hasRoll) clearRoll();
+                }} 
               >
                 {trayShape === "SQUARE" ? <HexagonIcon /> : <CropSquareIcon />}
               </IconButton>
