@@ -1,11 +1,13 @@
 import { CuboidCollider, RigidBody, TrimeshCollider } from "@react-three/rapier";
 import * as THREE from "three";
 import { useMemo } from "react";
+import { useDiceControlsStore } from "../controls/store";
 
 const WALL_THICKNESS = 50;
 const WALL_SIZE = 100;
 
 export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["group"] & { scale?: number }) {
+  const shape = useDiceControlsStore(state => state.trayShape);
   const s = typeof scale === 'number' ? scale : 1;
   const floorY = -WALL_THICKNESS + 0.005 * s;
   const roofY = WALL_THICKNESS + 1.5 * s;
@@ -14,12 +16,13 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
 
   // Create explicit vertices and indices for the trimesh
   const { vertices, indices } = useMemo(() => {
-    // 4-sided cylinder, open ended (hollow tube) - this is a square tube
-    // Height 20 is enough to cover from floor to roof
-    const geom = new THREE.CylinderGeometry(innerRadius, innerRadius, 20, 4, 1, true);
+    // 4-sided cylinder (square) or 6-sided (hexagon)
+    const sides = shape === "HEXAGONAL" ? 6 : 4;
+    const geom = new THREE.CylinderGeometry(innerRadius, innerRadius, 20, sides, 1, true);
     
-    // Rotate 45 degrees to match visual square
-    geom.rotateY(Math.PI / 4);
+    // Rotate to match visual
+    const angle = shape === "HEXAGONAL" ? Math.PI / 6 : Math.PI / 4;
+    geom.rotateY(angle);
     // Translate up to cover Y=0 to Y=20
     geom.translate(0, 10, 0);
 
@@ -27,7 +30,7 @@ export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["gr
       vertices: geom.attributes.position.array as Float32Array,
       indices: geom.index!.array as Uint32Array,
     };
-  }, [innerRadius]);
+  }, [innerRadius, shape]);
 
   return (
     <group {...props}>
