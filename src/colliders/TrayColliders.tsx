@@ -6,8 +6,9 @@ import { useDiceControlsStore } from "../controls/store";
 const WALL_THICKNESS = 50;
 const WALL_SIZE = 100;
 
-export function TrayColliders({ scale = 1, ...props }: JSX.IntrinsicElements["group"] & { scale?: number }) {
-  const shape = useDiceControlsStore(state => state.trayShape);
+export function TrayColliders({ scale = 1, shape: rollShape, ...props }: JSX.IntrinsicElements["group"] & { scale?: number, shape?: "SQUARE" | "HEXAGONAL" }) {
+  const localShape = useDiceControlsStore(state => state.trayShape);
+  const shape = rollShape || localShape;
   const s = typeof scale === 'number' ? scale : 1;
   const floorY = -WALL_THICKNESS + 0.005 * s;
   const roofY = WALL_THICKNESS + 1.5 * s;

@@ -95,7 +95,7 @@ export function DiceRoll({
         updateLoop="independent"
         paused={paused}
       >
-        <TrayColliders scale={trayScale} />
+        <TrayColliders scale={trayScale} shape={roll.trayShape} />
         {dice?.map((die) => {
           const dieThrow = rollThrows[die.id];
           // Use a fixed transform if we have it
