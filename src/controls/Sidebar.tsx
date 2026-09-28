@@ -19,6 +19,8 @@ import CasinoIcon from "@mui/icons-material/CasinoRounded";
 import TuneIcon from "@mui/icons-material/TuneRounded";
 import BuildIcon from "@mui/icons-material/BuildRounded";
 import SpeedIcon from "@mui/icons-material/SpeedRounded";
+import HexagonIcon from "@mui/icons-material/HexagonRounded";
+import CropSquareIcon from "@mui/icons-material/CropSquareRounded";
 
 import { DiceSetPicker } from "./DiceSetPicker";
 import { DicePicker } from "./DicePicker";
@@ -30,6 +32,7 @@ import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
+import { useDiceRollStore } from "../dice/store";
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
 
@@ -95,6 +98,10 @@ export function Sidebar() {
 
   const simplify = useDiceControlsStore(state => state.simplify3D);
   const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
+  const trayShape = useDiceControlsStore(state => state.trayShape);
+  const setTrayShape = useDiceControlsStore(state => state.setTrayShape);
+  const clearRoll = useDiceRollStore(state => state.clearRoll);
+  const hasRoll = useDiceRollStore(state => state.roll !== undefined);
 
   return (
     <SimpleBar
@@ -149,7 +156,18 @@ export function Sidebar() {
                 <SpeedIcon />
               </IconButton>
             </Tooltip>
-            {/* 3. Bless */}
+            {/* 3. Toggle Forma de Bandeja */}
+            <Tooltip title={trayShape === "SQUARE" ? "Cambiar a Hexágono" : "Cambiar a Cuadrado"} placement="right" disableInteractive>
+              <IconButton 
+                onClick={() => {
+                  setTrayShape(trayShape === "SQUARE" ? "HEXAGONAL" : "SQUARE");
+                  if (hasRoll) clearRoll();
+                }} 
+              >
+                {trayShape === "SQUARE" ? <HexagonIcon /> : <CropSquareIcon />}
+              </IconButton>
+            </Tooltip>
+            {/* 4. Bless */}
             <BlessButton />
           </Stack>
         </SidebarSection>

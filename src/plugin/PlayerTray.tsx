@@ -71,7 +71,7 @@ export function PlayerTray({
                 far={1}
                 color="#222222"
               />
-              <Tray scale={trayScale} />
+              <Tray scale={trayScale} shape={diceRoll?.trayShape} />
               <PlayerDiceRoll player={player} trayScale={trayScale} />
               <ResponsiveCamera trayScale={trayScale} baseFov={28} baseY={4.3} />
               {allowOrbit && <OrbitControls />}

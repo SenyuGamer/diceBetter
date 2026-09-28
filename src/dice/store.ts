@@ -11,6 +11,7 @@ import { getRandomDiceThrow } from "../helpers/DiceThrower";
 import { generateDiceId } from "../helpers/generateDiceId";
 import { DiceThrow } from "../types/DiceThrow";
 import { useDiceHistoryStore } from "../controls/history";
+import { useDiceControlsStore } from "../controls/store";
 
 interface DiceRollState {
   roll: DiceRoll | null;
@@ -50,6 +51,7 @@ export const useDiceRollStore = create<DiceRollState>()(
       set((state) => {
         // Embed the activeTrayScale so other players know what size tray to use
         roll.trayScale = activeTrayScale || 1.0;
+        roll.trayShape = useDiceControlsStore.getState().trayShape;
         state.roll = roll;
         state.rollValues = {};
         state.rollTransforms = {};

@@ -37,6 +37,8 @@ interface DiceControlsState {
   setBlessCount: (count: number) => void;
   simplify3D: boolean;
   toggleSimplify3D: () => void;
+  trayShape: "SQUARE" | "HEXAGONAL";
+  setTrayShape: (shape: "SQUARE" | "HEXAGONAL") => void;
 }
 
 const initialSet = diceSets[0];
@@ -197,11 +199,18 @@ export const useDiceControlsStore = create<DiceControlsState>()(
           state.simplify3D = !state.simplify3D;
         });
       },
+      trayShape: "SQUARE",
+      setTrayShape(shape) {
+        set((state) => {
+          state.trayShape = shape;
+        });
+      },
     })),
     {
       name: "dice-controls-storage",
       partialize: (state) => ({ 
-        simplify3D: state.simplify3D 
+        simplify3D: state.simplify3D,
+        trayShape: state.trayShape
       }),
     }
   )
