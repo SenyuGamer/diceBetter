@@ -79,4 +79,4 @@ This project is distributed under the **GNU General Public License v3.0 (GPLv3)*
 
 ## 🙌 Credits
 - Developed and maintained by **SenyuDev**.
-- Built upon the open-source work of [Owlbear Rodeo Dice Roller by SeamusBoyle](https://github.com/SeamusBoyle/owlbear-dice) and [owlbear-rodeo/dice](https://github.com/owlbear-rodeo/dice).
+- Built upon the open-source work of [Owlbear Rodeo Dice Roller by SeamusFinlayson](https://github.com/SeamusFinlayson/dice-extension) and [owlbear-rodeo/dice](https://github.com/owlbear-rodeo/dice).
