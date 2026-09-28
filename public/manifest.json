@@ -6,7 +6,7 @@
   "icon": "/logo.png",
   "description": "Advanced 3D dice extension with real physics, global history, saved rolls, and native BeyondOwl (D&D Beyond) integration.",
   "action": {
-    "title": "Better Dice [Exp]",
+    "title": "Better Dice",
     "icon": "/icon.svg",
     "popover": "/",
     "height": 480,
