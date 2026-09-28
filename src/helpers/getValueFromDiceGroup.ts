@@ -33,8 +33,13 @@ export function getValueFromDiceGroup(parent: THREE.Group, dieType?: string): { 
     }
   }
   // We consider a die cocked if the highest dot product is less than a certain threshold.
-  // Standard tolerance is 0.98 (~11 degrees). D10 and D100 are less stable by shape, so we increase their tolerance to 0.95 (~18 degrees).
-  const tolerance = (dieType === "D10" || dieType === "D100") ? 0.95 : 0.98;
+  // Standard tolerance is 0.98 (~11 degrees). 
+  // D10 and D100 are less stable by shape, so we increase their tolerance to 0.95 (~18 degrees).
+  // D20 has smaller faces and often lands slightly tilted against the tray walls, so we use 0.95 for it as well.
+  let tolerance = 0.98;
+  if (dieType === "D10" || dieType === "D100" || dieType === "D20") {
+    tolerance = 0.95;
+  }
 
   return {
     value: highestNumber,
