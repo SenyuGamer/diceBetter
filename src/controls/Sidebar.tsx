@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import SimpleBar from "simplebar-react";
 import Stack from "@mui/material/Stack";
@@ -32,6 +32,7 @@ import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
 import { AdditionsModal } from "./AdditionsModal";
 import { SavedRollsModal } from "./SavedRollsModal";
+import { CompendiumModal } from "./CompendiumModal";
 import { useDiceRollStore } from "../dice/store";
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
@@ -95,6 +96,19 @@ export function Sidebar() {
 
   const [additionsOpen, setAdditionsOpen] = useState(false);
   const [savedRollsOpen, setSavedRollsOpen] = useState(false);
+  const [compendiumOpen, setCompendiumOpen] = useState(false);
+
+  // Hidden compendium: activated by Ctrl+Shift+5
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.ctrlKey && e.shiftKey && e.key === "5") {
+        e.preventDefault();
+        setCompendiumOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, []);
 
   const simplify = useDiceControlsStore(state => state.simplify3D);
   const toggleSimplify = useDiceControlsStore(state => state.toggleSimplify3D);
@@ -217,10 +231,15 @@ export function Sidebar() {
       <AdditionsModal
         open={additionsOpen}
         onClose={() => setAdditionsOpen(false)}
+        onOpenCompendium={() => setCompendiumOpen(true)}
       />
       <SavedRollsModal
         open={savedRollsOpen}
         onClose={() => setSavedRollsOpen(false)}
+      />
+      <CompendiumModal
+        open={compendiumOpen}
+        onClose={() => setCompendiumOpen(false)}
       />
     </SimpleBar>
   );

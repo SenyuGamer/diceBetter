@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
@@ -25,10 +26,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import { useDebugStore } from "../debug/store";
 import { useI18n } from "../i18n";
 
-interface AdditionsModalProps {
-  open: boolean;
-  onClose: () => void;
-}
+
 
 const getAdditions = (lang: string) => {
   if (lang === "es") {
@@ -184,13 +182,42 @@ const getAdditions = (lang: string) => {
   ];
 };
 
-export function AdditionsModal({ open, onClose }: AdditionsModalProps) {
+interface AdditionsModalProps {
+  open: boolean;
+  onClose: () => void;
+  onOpenCompendium?: () => void;
+}
+
+// ... existing code ...
+
+export function AdditionsModal({ open, onClose, onOpenCompendium }: AdditionsModalProps) {
   const photoStudioEnabled = useDebugStore((state) => state.photoStudioEnabled);
   const togglePhotoStudio = useDebugStore((state) => state.togglePhotoStudio);
 
   const language = useI18n((state) => state.language);
   const t = useI18n((state) => state.t);
   const additions = getAdditions(language);
+
+  // Easter egg: 5 clicks on title
+  const [clickCount, setClickCount] = useState(0);
+
+  // Reset clicks when modal closes
+  useEffect(() => {
+    if (!open) {
+      setClickCount(0);
+    }
+  }, [open]);
+
+  const handleTitleClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 5) {
+      if (onOpenCompendium) {
+        onOpenCompendium();
+      }
+      setClickCount(0);
+    }
+  };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
@@ -201,7 +228,9 @@ export function AdditionsModal({ open, onClose }: AdditionsModalProps) {
           justifyContent: "space-between",
         }}
       >
-        {t.additions}
+        <span onClick={handleTitleClick} style={{ cursor: "pointer", userSelect: "none" }}>
+          {t.additions}
+        </span>
         <IconButton onClick={onClose} size="small">
           <CloseIcon />
         </IconButton>
