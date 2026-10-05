@@ -34,16 +34,12 @@ Una extensión avanzada de dados 3D con físicas realistas para [Owlbear Rodeo](
 
 ### 2. Instalar BeyondOwl en tu Navegador
 
-#### Google Chrome / Edge / Brave:
-1. Descarga `BeyondOwl-Chrome.zip` desde la sección [Releases](https://github.com/SenyuGamer/diceBetter/releases).
-2. Descomprime el archivo en una carpeta.
-3. Abre `chrome://extensions/` y activa el **Modo de desarrollador**.
-4. Haz clic en **Cargar descomprimida** y selecciona la carpeta descomprimida.
+#### Google Chrome / Edge / Brave / Opera:
+Puedes instalarla directamente desde la Chrome Web Store:
+[🌐 Consigue BeyondOwl para Chrome / Chromium](https://chromewebstore.google.com/detail/beyondowl/ldicemmfkjhbjhagefpfceijncjlnndn)
 
 #### Firefox (Desktop y Android):
-1. Descarga `BeyondOwl-Firefox.xpi` desde [Releases](https://github.com/SenyuGamer/diceBetter/releases) o instálalo directamente desde [addons.mozilla.org](https://addons.mozilla.org/) si está publicado.
-2. Abre el archivo en Firefox y pulsa **Añadir**.
-
+Puedes instalarla directamente desde la tienda oficial de Add-ons de Mozilla:
 [🦊 Consigue BeyondOwl para Firefox / Firefox Android](https://addons.mozilla.org/es-ES/android/addon/beyondowl/)
 
 ---
