@@ -200,18 +200,28 @@ export function AdditionsModal({ open, onClose, onOpenCompendium }: AdditionsMod
 
   // Easter egg: 5 clicks on title
   const [clickCount, setClickCount] = useState(0);
+  const [isUnlocked, setIsUnlocked] = useState(() => {
+    return localStorage.getItem("dice-compendium-unlocked") === "true";
+  });
 
-  // Reset clicks when modal closes
+  // Reset clicks when modal closes, but only if not unlocked yet
   useEffect(() => {
-    if (!open) {
+    if (!open && !isUnlocked) {
       setClickCount(0);
     }
-  }, [open]);
+  }, [open, isUnlocked]);
 
   const handleTitleClick = () => {
+    if (isUnlocked) {
+      if (onOpenCompendium) onOpenCompendium();
+      return;
+    }
+
     const newCount = clickCount + 1;
     setClickCount(newCount);
     if (newCount >= 5) {
+      setIsUnlocked(true);
+      localStorage.setItem("dice-compendium-unlocked", "true");
       if (onOpenCompendium) {
         onOpenCompendium();
       }
