@@ -101,7 +101,7 @@ export function PopoverTray({
                   <Canvas frameloop="demand">
                     <AudioListenerProvider volume={0.25}>
                       <Environment files={environment} />
-                      <Tray scale={trayScale} />
+                      <Tray scale={trayScale} shape={diceRoll?.trayShape} />
                       <PlayerDiceRoll player={player} trayScale={trayScale} />
                       <AnimatedPlayerCamera
                         rollTransforms={
