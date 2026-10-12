@@ -4,14 +4,11 @@ import { Die } from "../types/Die";
 
 import { DiceMesh } from "../meshes/DiceMesh";
 import { DiceMaterial } from "../materials/DiceMaterial";
-import { useDiceRollStore } from "./store";
 
 type DiceProps = JSX.IntrinsicElements["group"] & { die: Die };
 
 export const Dice = React.forwardRef<THREE.Group, DiceProps>(
   ({ die, children, ...props }, ref) => {
-    const isCocked = useDiceRollStore((state) => state.rollCocked[die.id]);
-
     return (
       <group>
         <DiceMesh

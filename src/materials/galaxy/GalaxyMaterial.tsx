@@ -6,6 +6,8 @@ import orm from "./orm.jpg";
 import normal from "./normal.jpg";
 import { gltfTexture } from "../../helpers/gltfTexture";
 
+const IRIDESCENCE_RANGE: [number, number] = [200, 600];
+
 export function GalaxyMaterial({
   simplify,
   ...props
@@ -19,7 +21,7 @@ export function GalaxyMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#d8b4fe")} // Brighter purple
+        color="#d8b4fe" // Brighter purple
         roughness={0.5}
         metalness={0.1}
         {...(props as any)}
@@ -30,7 +32,7 @@ export function GalaxyMaterial({
   return (
     <meshPhysicalMaterial
       map={albedoMap}
-      color={new THREE.Color("#d8b4fe")} // Brighter purple so it absorbs less light
+      color="#d8b4fe" // Brighter purple so it absorbs less light
       aoMap={ormMap}
       roughnessMap={ormMap}
       metalnessMap={ormMap}
@@ -39,7 +41,7 @@ export function GalaxyMaterial({
       clearcoatRoughness={0.3}
       iridescence={0.5}
       iridescenceIOR={2.0}
-      iridescenceThicknessRange={[200, 600]}
+      iridescenceThicknessRange={IRIDESCENCE_RANGE}
       {...(props as any)}
     />
   );

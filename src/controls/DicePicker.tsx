@@ -17,9 +17,8 @@ export function DicePicker() {
     (state) => state.decrementDieCount
   );
   const clearRoll = useDiceRollStore((state) => state.clearRoll);
-  const roll = useDiceRollStore((state) => state.roll);
   function clearRollIfNeeded() {
-    if (roll) {
+    if (useDiceRollStore.getState().roll) {
       clearRoll();
     }
   }

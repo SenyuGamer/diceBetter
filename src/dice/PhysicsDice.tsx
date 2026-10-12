@@ -127,6 +127,7 @@ export function PhysicsDice({
   );
 
   const handleFrame = useCallback(() => {
+    if (lockedRef.current) return;
     checkRollFinished();
   }, [checkRollFinished]);
   useFrame(handleFrame);

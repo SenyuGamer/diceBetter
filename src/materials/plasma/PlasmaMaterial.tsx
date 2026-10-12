@@ -8,6 +8,8 @@ import normal from "../glass/normal.jpg";
 import mask from "../glass/mask.png";
 import { gltfTexture } from "../../helpers/gltfTexture";
 
+const NORMAL_SCALE = new THREE.Vector2(2.0, 2.0);
+
 export function PlasmaMaterial({
   simplify,
   ...props
@@ -31,8 +33,8 @@ export function PlasmaMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#001133")}
-        emissive={new THREE.Color("#00ffff")}
+        color="#001133"
+        emissive="#00ffff"
         emissiveIntensity={1.0}
         emissiveMap={maskMap}
         roughness={0.5}
@@ -45,13 +47,13 @@ export function PlasmaMaterial({
   return (
     <meshPhysicalMaterial
       ref={matRef}
-      color={new THREE.Color("#001133")}
-      emissive={new THREE.Color("#00ffff")}
+      color="#001133"
+      emissive="#00ffff"
       emissiveMap={maskMap}
       roughness={0.1}
       metalness={1.0}
       normalMap={normalMap}
-      normalScale={new THREE.Vector2(2.0, 2.0)}
+      normalScale={NORMAL_SCALE}
       clearcoat={1.0}
       clearcoatRoughness={0.0}
       iridescence={1.0}

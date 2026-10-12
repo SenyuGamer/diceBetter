@@ -23,9 +23,8 @@ export function BlessButton() {
   const setBlessCount = useDiceControlsStore((state) => state.setBlessCount);
 
   const clearRoll = useDiceRollStore((state) => state.clearRoll);
-  const roll = useDiceRollStore((state) => state.roll);
   function clearRollIfNeeded() {
-    if (roll) clearRoll();
+    if (useDiceRollStore.getState().roll) clearRoll();
   }
 
   return (

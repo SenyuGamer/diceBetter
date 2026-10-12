@@ -18,9 +18,8 @@ export function DiceExtras() {
   const setAdvantage = useDiceControlsStore((state) => state.setDiceAdvantage);
 
   const clearRoll = useDiceRollStore((state) => state.clearRoll);
-  const roll = useDiceRollStore((state) => state.roll);
   function clearRollIfNeeded() {
-    if (roll) {
+    if (useDiceRollStore.getState().roll) {
       clearRoll();
     }
   }

@@ -22,7 +22,7 @@ export function GlassMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#bbddff")}
+        color="#bbddff"
         roughnessMap={maskMap}
         metalnessMap={maskMap}
         roughness={1.0}
@@ -35,7 +35,7 @@ export function GlassMaterial({
   return (
     <meshPhysicalMaterial
       map={albedoMap}
-      sheenColor={new THREE.Color("#88ddff")}
+      sheenColor="#88ddff"
       sheen={1}
       roughness={0.5}
       metalness={0.0}
@@ -47,7 +47,7 @@ export function GlassMaterial({
       clearcoat={0.3}
       clearcoatRoughness={0.5}
       envMapIntensity={1.0}
-      attenuationColor={new THREE.Color("#bbffff")}
+      attenuationColor="#bbffff"
       attenuationDistance={0.5}
       {...(props as any)}
     />

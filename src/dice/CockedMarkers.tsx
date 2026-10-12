@@ -1,6 +1,14 @@
 import React from "react";
+import * as THREE from "three";
 import { useDiceRollStore } from "./store";
 import { DiceTransform } from "../types/DiceTransform";
+
+const markerGeometry = new THREE.SphereGeometry(0.015, 8, 8);
+const markerMaterial = new THREE.MeshStandardMaterial({
+  color: "#ff0000",
+  emissive: "#ff0000",
+  emissiveIntensity: 5,
+});
 
 export function CockedMarkersRenderer({
   rollCocked,
@@ -18,10 +26,12 @@ export function CockedMarkersRenderer({
 
         // Position the marker slightly above the die's world position
         return (
-          <mesh key={id} position={[transform.position.x, transform.position.y + 0.6, transform.position.z]}>
-            <sphereGeometry args={[0.015, 8, 8]} />
-            <meshStandardMaterial color="#ff0000" emissive="#ff0000" emissiveIntensity={5} />
-          </mesh>
+          <mesh
+            key={id}
+            geometry={markerGeometry}
+            material={markerMaterial}
+            position={[transform.position.x, transform.position.y + 0.6, transform.position.z]}
+          />
         );
       })}
     </>

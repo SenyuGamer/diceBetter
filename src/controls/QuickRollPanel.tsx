@@ -182,7 +182,6 @@ function QuickRollItem({ roll }: { roll: SavedRoll }) {
   const anchorRef = useRef<HTMLButtonElement>(null);
   const theme = useTheme();
 
-  const hidden = useDiceControlsStore((state) => state.diceHidden);
   const setDiceCounts = useDiceControlsStore((state) => state.setDiceCounts);
   const setBonus = useDiceControlsStore((state) => state.setDiceBonus);
   const setAdvantage = useDiceControlsStore((state) => state.setDiceAdvantage);

@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { styled } from "@mui/material/styles";
 
 import { DiceStyle } from "../types/DiceStyle";
@@ -45,7 +46,7 @@ type DiePreviewProps = {
   size?: "small" | "medium" | "large";
 };
 
-export function DicePreview({ diceType, diceStyle, size }: DiePreviewProps) {
+export const DicePreview = memo(function DicePreview({ diceType, diceStyle, size }: DiePreviewProps) {
   const safeStyle = previews[diceStyle] ? diceStyle : "GALAXY";
   return (
     <PreviewImage
@@ -54,4 +55,4 @@ export function DicePreview({ diceType, diceStyle, size }: DiePreviewProps) {
       size={size}
     />
   );
-}
+});

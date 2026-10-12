@@ -8,6 +8,8 @@ import normal from "../glass/normal.jpg";
 import mask from "../glass/mask.png";
 import { gltfTexture } from "../../helpers/gltfTexture";
 
+const NORMAL_SCALE = new THREE.Vector2(1.5, 1.5);
+
 export function MagmaMaterial({
   simplify,
   ...props
@@ -30,8 +32,8 @@ export function MagmaMaterial({
     return (
       <meshStandardMaterial
         map={albedoMap}
-        color={new THREE.Color("#050000")}
-        emissive={new THREE.Color("#ff2a00")}
+        color="#050000"
+        emissive="#ff2a00"
         emissiveMap={maskMap}
         emissiveIntensity={1.0}
         roughness={0.6}
@@ -44,13 +46,13 @@ export function MagmaMaterial({
   return (
     <meshPhysicalMaterial
       ref={matRef}
-      color={new THREE.Color("#050000")}
-      emissive={new THREE.Color("#ff2a00")}
+      color="#050000"
+      emissive="#ff2a00"
       emissiveMap={maskMap}
       roughness={0.4}
       metalness={0.9}
       normalMap={normalMap}
-      normalScale={new THREE.Vector2(1.5, 1.5)}
+      normalScale={NORMAL_SCALE}
       clearcoat={1.0}
       clearcoatRoughness={0.1}
       {...(props as any)}

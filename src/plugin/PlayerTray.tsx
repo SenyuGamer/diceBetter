@@ -146,10 +146,21 @@ function PlayerTrayResults({ player }: { player?: Player }) {
 // -----------------------------------------------------------------------------
 // Web Audio API Sound Synthesizers for Crit and Fumble
 // -----------------------------------------------------------------------------
+let sharedAudioCtx: AudioContext | null = null;
+function getSharedAudioContext(): AudioContext | null {
+  const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+  if (!AudioContextClass) return null;
+  if (!sharedAudioCtx || sharedAudioCtx.state === "closed") {
+    sharedAudioCtx = new AudioContextClass();
+  } else if (sharedAudioCtx.state === "suspended") {
+    sharedAudioCtx.resume();
+  }
+  return sharedAudioCtx;
+}
+
 function playCritSound() {
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioContext) return;
-  const ctx = new AudioContext();
+  const ctx = getSharedAudioContext();
+  if (!ctx) return;
   const playTone = (freq: number, startTime: number, duration: number) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
@@ -173,9 +184,8 @@ function playCritSound() {
 }
 
 function playFumbleSound() {
-  const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-  if (!AudioContext) return;
-  const ctx = new AudioContext();
+  const ctx = getSharedAudioContext();
+  if (!ctx) return;
   const playTone = (freq1: number, freq2: number, startTime: number, duration: number) => {
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();

@@ -6,7 +6,7 @@ import {
   PerspectiveCamera,
 } from "@react-three/drei";
 import * as THREE from "three";
-import { useMemo } from "react";
+import { useMemo, lazy, Suspense } from "react";
 
 import Box from "@mui/material/Box";
 
@@ -18,11 +18,12 @@ import { Tray } from "./Tray";
 import { useDebugStore } from "../debug/store";
 import { TraySuspense } from "./TraySuspense";
 import { PreviewDiceRoll } from "../dice/PreviewDiceRoll";
-import { FairnessTester } from "../tests/FairnessTester";
 import { getDiceToRoll, useDiceControlsStore } from "../controls/store";
 import { useDiceRollStore } from "../dice/store";
 import { getDieFromDice } from "../helpers/getDieFromDice";
 import { CockedMarkers } from "../dice/CockedMarkers";
+
+const FairnessTester = lazy(() => import("../tests/FairnessTester").then(m => ({ default: m.FairnessTester })));
 
 import { ResponsiveCamera } from "./ResponsiveCamera";
 
@@ -60,6 +61,8 @@ function useTrayScale() {
 export function InteractiveTray() {
   const allowOrbit = useDebugStore((state) => state.allowOrbit);
   const trayScale = useTrayScale();
+
+  const fairnessTesterOpen = useDiceControlsStore((state) => state.fairnessTesterOpen);
 
   return (
     <Box
@@ -102,7 +105,11 @@ export function InteractiveTray() {
         </Canvas>
       </TraySuspense>
       <DiceRollControls />
-      <FairnessTester />
+      {fairnessTesterOpen && (
+        <Suspense fallback={null}>
+          <FairnessTester />
+        </Suspense>
+      )}
     </Box>
   );
 }

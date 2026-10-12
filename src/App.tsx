@@ -1,10 +1,11 @@
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { InteractiveTray } from "./tray/InteractiveTray";
 import { Sidebar } from "./controls/Sidebar";
 import { QuickRollPanel } from "./controls/QuickRollPanel";
 import { Beyond20Listener } from "./plugin/Beyond20Listener";
-import { PhotoStudio } from "./debug/PhotoStudio";
 import { useDebugStore } from "./debug/store";
+
+const PhotoStudio = lazy(() => import("./debug/PhotoStudio").then(m => ({ default: m.PhotoStudio })));
 
 export function App() {
   const [showStudio, setShowStudio] = useState(false);
@@ -53,7 +54,11 @@ export function App() {
         </button>
       )}
 
-      {showStudio && <PhotoStudio onClose={() => setShowStudio(false)} />}
+      {showStudio && (
+        <Suspense fallback={null}>
+          <PhotoStudio onClose={() => setShowStudio(false)} />
+        </Suspense>
+      )}
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { getPluginId } from "./getPluginId";
 export function DiceRollSync() {
   const prevIds = useRef<string[]>([]);
   const prevThrows = useRef<any>(null);
+  const prevCompleted = useRef<boolean>(false);
   useEffect(
     () =>
       useDiceRollStore.subscribe((state) => {
@@ -16,25 +17,32 @@ export function DiceRollSync() {
           changed = true;
           prevIds.current = [];
           prevThrows.current = null;
+          prevCompleted.current = false;
         } else {
           const ids = getDieFromDice(state.roll).map((die) => die.id);
           // Check array length for early change check
           if (prevIds.current.length !== ids.length) {
             changed = true;
+            prevCompleted.current = false;
           }
           // Check the ids have changed
           else if (!ids.every((id, index) => id === prevIds.current[index])) {
             changed = true;
+            prevCompleted.current = false;
           }
           // Check if we started a reroll (rollThrows changed)
           else if (state.rollThrows !== prevThrows.current) {
             changed = true;
+            prevCompleted.current = false;
           }
-          // Check if we'e completed a roll
+          // Check if we just completed a roll (only sync completion once)
           else if (
+            !prevCompleted.current &&
+            Object.keys(state.rollValues).length > 0 &&
             Object.values(state.rollValues).every((value) => value !== null)
           ) {
             changed = true;
+            prevCompleted.current = true;
           }
           prevIds.current = ids;
           prevThrows.current = state.rollThrows;

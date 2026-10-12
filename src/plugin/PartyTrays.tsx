@@ -71,9 +71,7 @@ export function PartyTrays() {
             backgroundImage: "none",
           },
         }}
-        // Keep mounted to allow the canvas to be ready
-        // during the open animation
-        keepMounted
+        // Unmount when closed to free the second WebGL context and GPU memory
       >
         <Stack
           position="relative"

@@ -109,15 +109,15 @@ export function GlobalHistorySync({ readOnly = false }: { readOnly?: boolean }) 
     }
 
     if (OBR.isAvailable) {
-      OBR.party.onChange(handlePlayersChange);
+      const unsubParty = OBR.party.onChange(handlePlayersChange);
       
       // Also check the local player
-      OBR.player.onChange((player) => {
+      const unsubPlayer = OBR.player.onChange((player) => {
          handlePlayersChange([player]);
       });
       
       // Check room metadata
-      OBR.room.onMetadataChange(handleRoomMetadataChange);
+      const unsubRoom = OBR.room.onMetadataChange(handleRoomMetadataChange);
 
       // Initial check
       OBR.room.getMetadata().then(handleRoomMetadataChange);
@@ -132,6 +132,12 @@ export function GlobalHistorySync({ readOnly = false }: { readOnly?: boolean }) 
              });
          });
       });
+
+      return () => {
+        unsubParty();
+        unsubPlayer();
+        unsubRoom();
+      };
     }
   }, [pushGlobalRoll, updateGlobalRollResult]);
 

@@ -16,6 +16,27 @@ export default defineConfig({
         popover: resolve(__dirname, "popover.html"),
         background: resolve(__dirname, "background.html"),
       },
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            if (id.includes("@react-three/rapier") || id.includes("@dimforge/rapier3d")) {
+              return "vendor-rapier";
+            }
+            if (id.includes("three")) {
+              return "vendor-three";
+            }
+            if (id.includes("@react-three")) {
+              return "vendor-r3f";
+            }
+            if (id.includes("@mui") || id.includes("@emotion")) {
+              return "vendor-mui";
+            }
+            if (id.includes("react") || id.includes("zustand") || id.includes("immer")) {
+              return "vendor-framework";
+            }
+          }
+        },
+      },
     },
   },
 });

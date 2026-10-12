@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 
 import SimpleBar from "simplebar-react";
 import Stack from "@mui/material/Stack";
@@ -30,10 +30,11 @@ import { BlessButton } from "./BlessButton";
 import { DiceHistory } from "./DiceHistory";
 import { GlobalHistory } from "./GlobalHistory";
 import { useDiceControlsStore } from "./store";
-import { AdditionsModal } from "./AdditionsModal";
-import { SavedRollsModal } from "./SavedRollsModal";
-import { CompendiumModal } from "./CompendiumModal";
 import { useDiceRollStore } from "../dice/store";
+
+const AdditionsModal = lazy(() => import("./AdditionsModal").then(m => ({ default: m.AdditionsModal })));
+const SavedRollsModal = lazy(() => import("./SavedRollsModal").then(m => ({ default: m.SavedRollsModal })));
+const CompendiumModal = lazy(() => import("./CompendiumModal").then(m => ({ default: m.CompendiumModal })));
 
 import { FairnessTesterButton } from "../tests/FairnessTesterButton";
 
@@ -115,7 +116,7 @@ export function Sidebar() {
   const trayShape = useDiceControlsStore(state => state.trayShape);
   const setTrayShape = useDiceControlsStore(state => state.setTrayShape);
   const clearRoll = useDiceRollStore(state => state.clearRoll);
-  const hasRoll = useDiceRollStore(state => state.roll !== undefined);
+  const hasRoll = useDiceRollStore(state => state.roll !== null);
 
   return (
     <SimpleBar
@@ -228,19 +229,31 @@ export function Sidebar() {
 
       </Stack>
 
-      <AdditionsModal
-        open={additionsOpen}
-        onClose={() => setAdditionsOpen(false)}
-        onOpenCompendium={() => setCompendiumOpen(true)}
-      />
-      <SavedRollsModal
-        open={savedRollsOpen}
-        onClose={() => setSavedRollsOpen(false)}
-      />
-      <CompendiumModal
-        open={compendiumOpen}
-        onClose={() => setCompendiumOpen(false)}
-      />
+      {additionsOpen && (
+        <Suspense fallback={null}>
+          <AdditionsModal
+            open={additionsOpen}
+            onClose={() => setAdditionsOpen(false)}
+            onOpenCompendium={() => setCompendiumOpen(true)}
+          />
+        </Suspense>
+      )}
+      {savedRollsOpen && (
+        <Suspense fallback={null}>
+          <SavedRollsModal
+            open={savedRollsOpen}
+            onClose={() => setSavedRollsOpen(false)}
+          />
+        </Suspense>
+      )}
+      {compendiumOpen && (
+        <Suspense fallback={null}>
+          <CompendiumModal
+            open={compendiumOpen}
+            onClose={() => setCompendiumOpen(false)}
+          />
+        </Suspense>
+      )}
     </SimpleBar>
   );
 }
